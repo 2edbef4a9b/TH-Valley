@@ -1,0 +1,20 @@
+# Ensure text files are normalized to LF.
+* text=auto
+
+# C++ source files with LF line endings.
+*.cpp text eol=lf
+*.h text eol=lf
+
+# Disable diffs for binary files (object files, libraries, etc.).
+*.o binary
+*.a binary
+*.lib binary
+*.dll binary
+
+# Mark executable files as executable.
+*.sh text eol=lf
+*.exe binary
+*.out binary
+
+# Treat CMakeLists files as text files.
+CMakeLists.txt text eol=lf
