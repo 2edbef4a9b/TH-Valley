@@ -79,7 +79,7 @@ add_subdirectory(${COCOS2DX_ROOT_PATH}/cocos ${ENGINE_BINARY_PATH}/cocos/core)
 find_package(GTest, QUIET)
 
 # Use the installed GTest if it is found, otherwise download and build it.
-if(not GTest_FOUND)
+if(GTest_FOUND)
     message(STATUS "Found installed GTest, using local library.")
 else()
     message(STATUS
