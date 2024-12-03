@@ -75,21 +75,22 @@ list(REMOVE_ITEM SOURCE_FILES_WITHOUT_MAIN "${CMAKE_SOURCE_DIR}/src/main.cpp")
 include(CocosBuildSet)
 add_subdirectory(${COCOS2DX_ROOT_PATH}/cocos ${ENGINE_BINARY_PATH}/cocos/core)
 
-# Include the GoogleTest framework.
-include(GoogleTest OPTIONAL RESULT_VARIABLE GTEST_INCLUDE_RESULT)
+# Find the GoogleTest library.
+find_package(GTest, QUIET)
 
 # Use the installed GTest if it is found, otherwise download and build it.
-if(GTEST_INCLUDE_RESULT)
+if(not GTest_FOUND)
     message(STATUS "Found installed GTest, using local library.")
 else()
-    message(STATUS "GTest not found, using FetchContent to download and build.")
-    include(FetchContent)
+    message(STATUS
+        "GTest not found, using FetchContent to download and build."
+    )
 
+    include(FetchContent)
     FetchContent_Declare(
         googletest
         URL https://github.com/google/googletest/archive/refs/heads/main.zip
     )
-
     FetchContent_MakeAvailable(googletest)
 endif()
 
