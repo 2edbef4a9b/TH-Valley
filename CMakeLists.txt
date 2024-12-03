@@ -25,7 +25,16 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -no-pie -fexceptions -Wno-deprecated-declarations -Wno-reorder")
+
+# Set the compiler flags for the different toolchains.
+if(MSVC)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W3 /EHsc")
+else()
+    set(CMAKE_CXX_FLAGS
+        "${CMAKE_CXX_FLAGS}
+        -no-pie -fexceptions -Wno-deprecated-declarations -Wno-reorder"
+    )
+endif()
 
 # Set the COCOS2DX_ROOT_PATH with the environment variable.
 if(DEFINED ENV{COCOS_X_ROOT})
@@ -106,6 +115,11 @@ add_custom_command(TARGET ${APP_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
     ${RESOURCES_DIR} ${APP_RESOURCE_DIR}
 )
+
+# Copy the dynamic-link libraries on Windows.
+if(WINDOWS)
+    cocos_copy_target_dll(${APP_NAME})
+endif()
 
 # Enable CTest.
 enable_testing()
