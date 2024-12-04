@@ -5,7 +5,7 @@
 
 SampleApplication::~SampleApplication() {
     // Release the shared instance of the audio engine.
-    cocos2d::experimental::AudioEngine::end();
+    cocos2d::AudioEngine::end();
 }
 
 void SampleApplication::initGLContextAttrs() {
@@ -47,10 +47,10 @@ bool SampleApplication::applicationDidFinishLaunching() {
 
 void SampleApplication::applicationDidEnterBackground() {
     // Pause the audio engine when the application enters the background.
-    cocos2d::experimental::AudioEngine::pauseAll();
+    cocos2d::AudioEngine::pauseAll();
 }
 
 void SampleApplication::applicationWillEnterForeground() {
     // Resume the audio engine when the application enters the foreground.
-    cocos2d::experimental::AudioEngine::resumeAll();
+    cocos2d::AudioEngine::resumeAll();
 }
