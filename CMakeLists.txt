@@ -1,6 +1,10 @@
-cmake_minimum_required(VERSION 3.29)
+cmake_minimum_required(VERSION 3.15)
 
+# Set the project name.
 project(THValley)
+
+# Define an option for building tests.
+option(BUILD_TESTS "Build tests" ON)
 
 # Set the output directory if it isn't already set.
 if(NOT CMAKE_BINARY_DIR)
@@ -75,23 +79,26 @@ list(REMOVE_ITEM SOURCE_FILES_WITHOUT_MAIN "${CMAKE_SOURCE_DIR}/src/main.cpp")
 include(CocosBuildSet)
 add_subdirectory(${COCOS2DX_ROOT_PATH}/cocos ${ENGINE_BINARY_PATH}/cocos/core)
 
-# Find the GoogleTest library.
-find_package(GTest, QUIET)
+# Conditionally find and fetch GoogleTest if BUILD_TESTS is ON.
+if(BUILD_TESTS)
+    # Find the GoogleTest library.
+    find_package(GTest, QUIET)
 
-# Use the installed GTest if it is found, otherwise download and build it.
-if(GTest_FOUND)
-    message(STATUS "Found installed GTest, using local library.")
-else()
-    message(STATUS
-        "GTest not found, using FetchContent to download and build."
-    )
+    # Use the installed GTest if it is found, otherwise download and build it.
+    if(GTest_FOUND)
+        message(STATUS "Found installed GTest, using local library.")
+    else()
+        message(STATUS
+            "GTest not found, using FetchContent to download and build."
+        )
 
-    include(FetchContent)
-    FetchContent_Declare(
-        googletest
-        URL https://github.com/google/googletest/archive/refs/heads/main.zip
-    )
-    FetchContent_MakeAvailable(googletest)
+        include(FetchContent)
+        FetchContent_Declare(
+            googletest
+            URL https://github.com/google/googletest/archive/refs/heads/main.zip
+        )
+        FetchContent_MakeAvailable(googletest)
+    endif()
 endif()
 
 # Set the application name.
@@ -110,7 +117,7 @@ set_target_properties(${APP_NAME} PROPERTIES
 # Link the application with the cocos2d library.
 target_link_libraries(${APP_NAME} cocos2d)
 
-# Copy resources to the output directory
+# Copy resources to the output directory.
 set(APP_RESOURCE_DIR "$<TARGET_FILE_DIR:${APP_NAME}>/assets")
 add_custom_command(TARGET ${APP_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
@@ -153,5 +160,7 @@ function(add_googletest TEST_MODULE TEST_NAME)
     )
 endfunction()
 
-# Add the tests.
-add_googletest(sample sample_application_tests)
+# Conditionally add the tests if BUILD_TESTS is ON.
+if(BUILD_TESTS)
+    add_googletest(sample sample_application_tests)
+endif()
