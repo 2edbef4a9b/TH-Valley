@@ -1,0 +1,18 @@
+# .editorconfig file to enforce code style rules for all files.
+root = true
+
+# Apply rules to all file types.
+[*]
+
+# Use 4 spaces for indentation.
+indent_style = space
+indent_size = 4
+
+# Use LF for line endings (Unix-style).
+end_of_line = LF
+
+# Insert a final newline at the end of the file.
+insert_final_newline = true
+
+# Trim any trailing whitespace.
+trim_trailing_whitespace = true
