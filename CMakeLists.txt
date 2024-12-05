@@ -93,6 +93,10 @@ if(BUILD_TESTS)
         )
 
         include(FetchContent)
+
+        # Cache the downloaded files to avoid downloading them again.
+        set(FETCHCONTENT_BASE_DIR "${CMAKE_SOURCE_DIR}/.cmakecache")
+
         FetchContent_Declare(
             googletest
             URL https://github.com/google/googletest/archive/refs/heads/main.zip
