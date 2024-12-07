@@ -1,5 +1,5 @@
 # Ensure text files are normalized to LF.
-* text=auto
+* text=auto eol=lf
 
 # C++ source files with LF line endings.
 *.cpp text eol=lf
