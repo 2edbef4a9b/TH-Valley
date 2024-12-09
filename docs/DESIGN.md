@@ -95,6 +95,52 @@ graph TD
 10. 更新 `QueryServer` 的状态
 11. 等待下一个 `gametick`
 
+### 存储在 UniverseServer 中的数据
+
+1. 加载的 [`Scene`](#scene) 数据
+2. 每个 `Scene` 中的非玩家实体数据 [`NonPlayerEntityData`](#nonplayerentitydata)
+3. 每个玩家的数据 [`AvatarData`](#avatardata)
+4. 游戏的全局状态 [`GameState`](#gamestate)
+5. 服务器信息 [`ServerInfo`](#serverinfo)
+6. 服务器运行日志 [`ServerLog`](#serverlog)
+
+#### Scene
+
+#### NonPlayerEntityData
+
+#### AvatarData
+
+#### GameState
+
+#### ServerInfo
+
+#### ServerLog
+
+### UniverseServer 的运行
+
 ## QueryServer
 
 ## RconServer
+
+## ClientApplication
+
+客户端应用程序 `ClientApplication` 以与服务端相同的周期读取用户输入, 服务端未运行的情况下, 提供 GUI 界面, 服务器运行时, 通过网络连接到服务端, 与服务端通信.
+
+### 存储在 ClientApplication 中的数据
+
+1. 当前用户的档案数据 [`UserProfile`](#userprofile)
+   - 用户的名称 `user_name_`, 用户在游戏中的名字
+   - 用户的 UUID `user_uuid_`, 用户的唯一标识符, 用于确定用户的身份
+   - Note: 使用 JSON 格式存储
+2. 当前用户的配置数据 [`UserConfig`](#userconfig)
+   - 用户的设置 `user_settings_`, 用户的游戏设置, 包括音量, 分辨率等
+   - 用户的键位设置 `user_keybindings_`, 用户的键位设置, 包括移动, 交互等
+   - Note: 使用 JSON 格式存储
+3. 客户端当前的状态 [`ClientState`](#clientstate)
+   - 客户端的状态 `client_state_`, 可能的状态包括 `Title`, `SinglePlayerSelection`, `SinglePlayerInGame`, `MultiPlayerSelection`, `MultiPlayerInGame`, `Config`, `Loading`, `Quit`, `StartUp`, `ShutDown`.
+4. 游戏玩家 [`Avatar`](#avatar)
+   - `Avatar` 仅保存必要的数据, 包括玩家的位置, 朝向, 行走状态等, 其他数据保存在服务端
+5. 连接的服务器 [`ConnectedServer`](#connectedserver)
+   - 服务器的 IP 地址 `server_ip_`, 服务器的 IP 地址
+   - 服务器的端口 `server_port_`, 服务器的端口
+   - 服务器的状态 `server_status_`, 服务器的状态, 包括 `Offline`, `Online`, `Connecting`, `Connected`, `Disconnecting`
