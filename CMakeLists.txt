@@ -162,9 +162,16 @@ function(add_googletest TEST_MODULE TEST_NAME)
         NAME ${TEST_NAME}
         COMMAND ${TEST_NAME}
     )
+
+    # Copy resources to the output directory.
+    add_custom_command(TARGET ${TEST_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${RESOURCES_DIR} "$<TARGET_FILE_DIR:${TEST_NAME}>/assets"
+    )
 endfunction()
 
 # Conditionally add the tests if BUILD_TESTS is ON.
 if(BUILD_TESTS)
     add_googletest(sample sample_application_tests)
+    add_googletest(frontend title_screen_tests)
 endif()
