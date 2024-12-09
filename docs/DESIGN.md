@@ -137,7 +137,7 @@ graph TD
    - 用户的键位设置 `user_keybindings_`, 用户的键位设置, 包括移动, 交互等
    - Note: 使用 JSON 格式存储
 3. 客户端当前的状态 [`ClientState`](#clientstate)
-   - 客户端的状态 `client_state_`, 可能的状态包括 `Title`, `SinglePlayerSelection`, `SinglePlayerInGame`, `MultiPlayerSelection`, `MultiPlayerInGame`, `Config`, `Loading`, `Quit`, `StartUp`, `ShutDown`.
+   - 客户端的状态 `client_state_`, 可能的状态包括 `TitleScreen`, `SinglePlayer`, `MultiPlayer`, `Settings`, `Loading`, `Quit`, `StartUp`, `ShutDown`.
 4. 游戏玩家 [`Avatar`](#avatar)
    - `Avatar` 仅保存必要的数据, 包括玩家的位置, 朝向, 行走状态等, 其他数据保存在服务端
 5. 连接的服务器 [`ConnectedServer`](#connectedserver)
