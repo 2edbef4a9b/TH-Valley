@@ -1,6 +1,8 @@
 #ifndef TITLE_SCREEN_H_
 #define TITLE_SCREEN_H_
 
+#include <string_view>
+
 #include "cocos2d.h"
 
 namespace th_valley {
@@ -13,10 +15,16 @@ public:
     TitleScreen& operator=(const TitleScreen& other) = delete;
     TitleScreen(TitleScreen&& other) = delete;
     TitleScreen& operator=(TitleScreen&& other) = delete;
-
     bool init() override;
 
     CREATE_FUNC(TitleScreen);
+
+private:
+    void AddBackground(const std::string_view& background_image);
+    void AddLabels();
+    void AddTitle();
+    cocos2d::Size visible_size_;
+    cocos2d::Vec2 visible_origin_;
 };
 
 }  // namespace th_valley
