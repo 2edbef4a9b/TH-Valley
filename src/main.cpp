@@ -1,6 +1,6 @@
-#include "sample/sample_application.h"
+#include "avatar/avatar_application.h"
 
 int main(int argc, char** argv) {
-    const SampleApplication app;
-    return SampleApplication::getInstance()->run();
+    const avatarApplication app;
+    return avatarApplication::getInstance()->run();
 }
