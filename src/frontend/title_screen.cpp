@@ -1,5 +1,7 @@
 #include "frontend/title_screen.h"
 
+#include <cstddef>
+#include <cstdint>
 #include <string_view>
 
 #include "CCEventDispatcher.h"
@@ -14,7 +16,8 @@ bool th_valley::TitleScreen::init() {
     visible_size_ = cocos2d::Director::getInstance()->getVisibleSize();
     visible_origin_ = cocos2d::Director::getInstance()->getVisibleOrigin();
 
-    AddBackground("gui/title/background_blank.png");
+    AddBackground("gui/title/koishi.jpg");
+    AddTitle();
     AddLabels();
 
     return true;
@@ -39,32 +42,40 @@ void th_valley::TitleScreen::AddBackground(
     this->addChild(background, 0);
 }
 
-void th_valley::TitleScreen::AddButton() {
+void th_valley::TitleScreen::AddButton(const std::string_view& text,
+                                       const float pox_x, const float pos_y) {
     // Add the button to the scene.
-    auto* button = cocos2d::ui::Button::create("gui/bar/purplebar_normal.png");
+    auto* button = cocos2d::ui::Button::create("gui/bar/purple.png");
+    constexpr uint8_t kButtonNormalOpacity = 100;
+    constexpr uint8_t kButtonSelectedOpacity = 160;
+    constexpr uint8_t kButtonPressedOpacity = 230;
+    constexpr size_t kFontSize = 36;
+    constexpr float kButtonScale = 0.05F;
 
     // Set the zoom scale to 0 so the button doesn't zoom in when clicked.
-    button->setZoomScale(0.0F);
+    button->setZoomScale(kButtonScale);
 
     // Create the button text.
-    button->setTitleFontName("fonts/DFHannotateW5-A.ttf");
-    button->setTitleText("Start");
-    button->setTitleColor(cocos2d::Color3B::WHITE);
+    auto* label = cocos2d::Label::createWithTTF(
+        std::string(text), "fonts/DFHannotateW5-A.ttf", kFontSize);
+    button->setPosition(cocos2d::Vec2(pox_x, pos_y));
+    button->setOpacity(kButtonNormalOpacity);
+    label->setPosition(button->getPosition());
 
-    button->setPosition(
-        cocos2d::Vec2(visible_origin_.x + (visible_size_.width / 2),
-                      visible_origin_.y + (visible_size_.height / 2)));
+    auto change_button_opacity = [=](const uint8_t opacity) mutable {
+        button->setOpacity(opacity);
+        label->setScale(opacity == kButtonSelectedOpacity ? 1 + kButtonScale
+                                                          : 1);
+    };
 
     // Change button texture on mouse hover.
     auto* mouse_listener = cocos2d::EventListenerMouse::create();
     mouse_listener->onMouseMove = [=](cocos2d::EventMouse* event) mutable {
-        auto mouse_pos = event->getLocationInView();
-        mouse_pos = cocos2d::Director::getInstance()->convertToGL(mouse_pos);
-
-        if (button->getBoundingBox().containsPoint(mouse_pos)) {
-            button->loadTextureNormal("gui/bar/purplebar_selected.png");
+        if (button->getBoundingBox().containsPoint(
+                event->getLocationInView())) {
+            change_button_opacity(kButtonSelectedOpacity);
         } else {
-            button->loadTextureNormal("gui/bar/purplebar_normal.png");
+            change_button_opacity(kButtonNormalOpacity);
         }
     };
 
@@ -79,19 +90,19 @@ void th_valley::TitleScreen::AddButton() {
             const cocos2d::ui::Widget::TouchEventType type) mutable {
             switch (type) {
                 case cocos2d::ui::Widget::TouchEventType::BEGAN:
-                    button->loadTextureNormal("gui/bar/purplebar_pressed.png");
+                    button->setOpacity(kButtonPressedOpacity);
                     CCLOG("Button touch began");
                     break;
                 case cocos2d::ui::Widget::TouchEventType::ENDED:
-                    button->loadTextureNormal("gui/bar/purplebar_selected.png");
+                    button->setOpacity(kButtonSelectedOpacity);
                     CCLOG("Button touch ended");
                     break;
                 case cocos2d::ui::Widget::TouchEventType::CANCELED:
-                    button->loadTextureNormal("gui/bar/purplebar_normal.png");
+                    button->setOpacity(kButtonNormalOpacity);
                     CCLOG("Button touch canceled");
                     break;
                 case cocos2d::ui::Widget::TouchEventType::MOVED:
-                    button->loadTextureNormal("gui/bar/purplebar_pressed.png");
+                    button->setOpacity(kButtonSelectedOpacity);
                     CCLOG("Button touch moved");
                     break;
                 default:
@@ -101,13 +112,31 @@ void th_valley::TitleScreen::AddButton() {
 
     // Add the button to the scene.
     this->addChild(button, 1);
+    this->addChild(label, 2);
 }
 
 void th_valley::TitleScreen::AddLabels() {
-    // Add the labels to the scene.
-    AddButton();
+    const float label_pos_x = visible_origin_.x + (visible_size_.width / 4);
+    const float label_pos_y = visible_origin_.y + (visible_size_.height * 0.6F);
+    constexpr float kLabelSpacing = 120;
+
+    // Add the buttons to the scene.
+    AddButton("SinglePlayer", label_pos_x, label_pos_y);
+    AddButton("MultiPlayer", label_pos_x, label_pos_y - kLabelSpacing);
+    AddButton("Settings", label_pos_x, label_pos_y - (kLabelSpacing * 2));
+    AddButton("Exit", label_pos_x, label_pos_y - (kLabelSpacing * 3));
 }
 
 void th_valley::TitleScreen::AddTitle() {
+    constexpr size_t kTitleFontSize = 72;
+    constexpr float kTitleHeightScale = 0.75F;
     // Add the title to the scene.
+    auto* title = cocos2d::Label::createWithTTF(
+        "Touhou Valley\n~ The Last Remote", "fonts/DFHannotateW5-A.ttf",
+        kTitleFontSize);
+    title->setPosition(cocos2d::Vec2(
+        visible_origin_.x + (visible_size_.width / 4),
+        visible_origin_.y + (visible_size_.height * kTitleHeightScale)));
+    title->setAlignment(cocos2d::TextHAlignment::CENTER);
+    this->addChild(title, 1);
 }

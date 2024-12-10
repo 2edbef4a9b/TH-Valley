@@ -21,7 +21,7 @@ public:
 
 private:
     void AddBackground(const std::string_view& background_image);
-    void AddButton();
+    void AddButton(const std::string_view& text, float pox_x, float pos_y);
     void AddLabels();
     void AddTitle();
     cocos2d::Size visible_size_;
