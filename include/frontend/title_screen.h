@@ -1,6 +1,7 @@
 #ifndef TITLE_SCREEN_H_
 #define TITLE_SCREEN_H_
 
+#include <functional>
 #include <string_view>
 
 #include "cocos2d.h"
@@ -21,13 +22,16 @@ public:
 
 private:
     void AddBackground(const std::string_view& background_image);
-    void AddButton(const std::string_view& text, float pox_x, float pos_y);
+    void AddButton(const std::string_view& text, float pox_x, float pos_y,
+                   const std::function<void()>& callback);
     void AddLabels();
     void AddTitle();
 
     constexpr static std::string_view kFontPath = "fonts/DFHannotateW5-A.ttf";
     constexpr static std::string_view kBackgroundImagePath =
         "gui/title/koishi.jpg";
+    constexpr static std::string_view kTitleText =
+        "Touhou Valley\n~ The Last Remote";
 
     cocos2d::Size visible_size_;
     cocos2d::Vec2 visible_origin_;
