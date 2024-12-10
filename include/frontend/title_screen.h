@@ -24,6 +24,11 @@ private:
     void AddButton(const std::string_view& text, float pox_x, float pos_y);
     void AddLabels();
     void AddTitle();
+
+    constexpr static std::string_view kFontPath = "fonts/DFHannotateW5-A.ttf";
+    constexpr static std::string_view kBackgroundImagePath =
+        "gui/title/koishi.jpg";
+
     cocos2d::Size visible_size_;
     cocos2d::Vec2 visible_origin_;
 };
