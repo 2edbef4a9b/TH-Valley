@@ -11,14 +11,19 @@ public:
     avatarScene& operator=(const avatarScene& other) = default;
     avatarScene(avatarScene&& other) = default;
     avatarScene& operator=(avatarScene&& other) = default;
-
+    cocos2d::TMXTiledMap* map_;
     // 定义方向枚举
     enum direction { Down = 0, Right = 1, Up = 2, Left = 3 };
-
+    float idleTime = 0.0f;             // 记录无输入时间
+    const float idleThreshold = 0.5f;  // 设定无输入的阈值
+    bool moved = false;                // 记录是否发生移动
     bool init() override;
-    void move();
+    void move(auto &character);
+    int _movetimes = 0;
     void handleKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode,
-                          cocos2d::Event* event,auto character);
+                          cocos2d::Event* event, auto& character);
+    void handleKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode,
+                                        cocos2d::Event* event);
     static void SetResourcePath(const std::string& path);
     CREATE_FUNC(avatarScene);
 };
