@@ -3,29 +3,24 @@
 #include "AudioEngine.h"
 #include "sample/sample_scene.h"
 
-SampleApplication::~SampleApplication() {
-    // Release the shared instance of the audio engine.
-    cocos2d::AudioEngine::end();
-}
-
-void SampleApplication::initGLContextAttrs() {
+void th_valley::SampleApplication::initGLContextAttrs() {
     // Set OpenGL context attributes:
     // red, green, blue, alpha, depth, stencil and multisamples count.
     GLContextAttrs gl_context_attrs{8, 8, 8, 8, 24, 8, 0};
-    cocos2d::GLView::setGLContextAttrs(gl_context_attrs);
+    ax::GLView::setGLContextAttrs(gl_context_attrs);
 }
 
-bool SampleApplication::applicationDidFinishLaunching() {
+bool th_valley::SampleApplication::applicationDidFinishLaunching() {
     // Initialize director.
-    auto *director = cocos2d::Director::getInstance();
-    auto *glview = director->getOpenGLView();
+    auto *director = ax::Director::getInstance();
+    auto *glview = director->getGLView();
     if (!glview) {
-        glview = cocos2d::GLViewImpl::create("Sample Application");
-        director->setOpenGLView(glview);
+        glview = ax::GLViewImpl::create("Sample Application");
+        director->setGLView(glview);
     }
 
     // Set the window size.
-    glview->setFrameSize(1280, 720);
+    glview->setFrameSize(1920, 1080);
 
     // Set the design resolution size to improve resolution on high-res screens.
     glview->setDesignResolutionSize(1920, 1080, ResolutionPolicy::NO_BORDER);
@@ -34,7 +29,7 @@ bool SampleApplication::applicationDidFinishLaunching() {
     director->setAnimationInterval(1.0 / 60);
 
     // Create a scene. it's an autorelease object.
-    auto *scene = SampleScene::create();
+    auto *scene = ax::utils::createInstance<SampleScene>();
     if (scene == nullptr) {
         return false;
     }
@@ -45,12 +40,14 @@ bool SampleApplication::applicationDidFinishLaunching() {
     return true;
 }
 
-void SampleApplication::applicationDidEnterBackground() {
+void th_valley::SampleApplication::applicationDidEnterBackground() {
+    ax::Director::getInstance()->stopAnimation();
     // Pause the audio engine when the application enters the background.
-    cocos2d::AudioEngine::pauseAll();
+    ax::AudioEngine::pauseAll();
 }
 
-void SampleApplication::applicationWillEnterForeground() {
+void th_valley::SampleApplication::applicationWillEnterForeground() {
+    ax::Director::getInstance()->startAnimation();
     // Resume the audio engine when the application enters the foreground.
-    cocos2d::AudioEngine::resumeAll();
+    ax::AudioEngine::resumeAll();
 }
