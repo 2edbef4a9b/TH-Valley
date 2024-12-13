@@ -3,6 +3,11 @@ cmake_minimum_required(VERSION 3.15)
 # Set the project name.
 project(THValley)
 
+# Specific configurations for Xcode.
+if(XCODE)
+    set(CMAKE_XCODE_GENERATE_TOP_LEVEL_PROJECT_ONLY TRUE)
+endif()
+
 # Define an option for building tests.
 option(BUILD_TESTS "Build tests" ON)
 
@@ -22,6 +27,9 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/Release)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${CMAKE_BINARY_DIR}/RelWithDebInfo)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL ${CMAKE_BINARY_DIR}/MinSizeRel)
 
+# Set the runtime output directory based on the build type.
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE})
+
 # Set cmake to export compile commands.
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
@@ -36,23 +44,55 @@ if(MSVC)
 else()
     set(CMAKE_CXX_FLAGS
         "${CMAKE_CXX_FLAGS} \
-        -no-pie -fexceptions -Wno-deprecated-declarations -Wno-reorder"
+        -fexceptions -Wno-deprecated-declarations -Wno-reorder"
     )
 endif()
 
-# Set the COCOS2DX_ROOT_PATH with the environment variable.
-if(DEFINED ENV{COCOS_X_ROOT})
-    set(COCOS2DX_ROOT_PATH $ENV{COCOS_X_ROOT})
+# Axmol engine configuration.
+# Check if the Axmol engine is in the project directory.
+set(IS_AXMOL_EMBED FALSE)
+
+# Set the Axmol Engine root directory.
+if(DEFINED ENV{AX_ROOT})
+    # Use the system environment variable if it is set.
+    set(_AX_ROOT $ENV{AX_ROOT})
+    message(STATUS
+        "Using System Environment Variable AX_ROOT = "
+        "${_AX_ROOT}"
+    )
+elseif(IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/external/axmol")
+    # Use the embedded Axmol engine if the directory exists.
+    file(GLOB_RECURSE AXMOL_ENGINE_CONTENTS "${CMAKE_CURRENT_SOURCE_DIR}/external/axmol/*")
+    if(AXMOL_ENGINE_CONTENTS)
+        set(_AX_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/external/axmol")
+        set(IS_AXMOL_EMBED TRUE)
+        message(STATUS 
+            "Building isolated project: ${PROJECT_NAME} with AX_ROOT = "
+            "${_AX_ROOT}"
+        )
+    endif()
 else()
-    message(FATAL_ERROR "Environment variable COCOS_X_ROOT is not set.")
+    # Otherwise, throw an error.
+    message(FATAL_ERROR
+        "Environment variable AX_ROOT is not set and "
+        "the Axmol engine is not embedded."
+    )
 endif()
 
 # Initialize and set the cmake module path.
 set(CMAKE_MODULE_PATH)
 list(APPEND CMAKE_MODULE_PATH
-    ${COCOS2DX_ROOT_PATH}/cmake/Modules
+    ${_AX_ROOT}/cmake/Modules
 )
 
+# Include the AXBuildSet module.
+include(AXBuildSet)
+
+# Include the subdirectories for the Axmol engine.
+# We don't use prebuilt libraries for simplicity.
+add_subdirectory(${_AX_ROOT}/core ${ENGINE_BINARY_PATH}/axmol/core)
+
+# Project configuration.
 # Set the resource folder for the application.
 set(RESOURCES_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/assets"
@@ -62,7 +102,7 @@ set(RESOURCES_DIR
 set(INCLUDE_DIR)
 list(APPEND INCLUDE_DIR
     ${CMAKE_SOURCE_DIR}/include/
-    ${COCOS2DX_ROOT_PATH}/cocos/audio/include/
+    ${_AX_ROOT}/3rdparty/yaml-cpp/include/
 )
 include_directories(${INCLUDE_DIR})
 
@@ -71,13 +111,56 @@ file(GLOB_RECURSE SOURCE_FILES
     "${CMAKE_SOURCE_DIR}/src/*.cpp"
 )
 
+# Function to link the resources.
+function(link_resources TARGET_NAME)
+    add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E make_directory
+        ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+        COMMAND ${CMAKE_COMMAND} -E create_symlink
+        ${CMAKE_BINARY_DIR}/runtime/axslc
+        ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/axslc
+        COMMAND ${CMAKE_COMMAND} -E create_symlink
+        ${CMAKE_SOURCE_DIR}/assets
+        ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/assets
+        COMMAND ${CMAKE_COMMAND} -E remove_directory
+        ${CMAKE_BINARY_DIR}/bin
+        COMMENT "Creating symlink for /runtime/axslc and /assets in the "
+        "CMAKE_RUNTIME_OUTPUT_DIRECTORY and removing /build/bin directory."
+    )
+endfunction()
+
+# Set the application name.
+set(APP_NAME th_valley)
+
+# Add the application executable.
+add_executable(${APP_NAME}
+    ${SOURCE_FILES}
+)
+
+# Set the C++ standard for the application.
+set_target_properties(${APP_NAME} PROPERTIES
+    CXX_STANDARD 20
+)
+
+# Link the application with the Axmol engine library.
+target_link_libraries(${APP_NAME} ${_AX_CORE_LIB})
+
+# Copy the dynamic-link libraries on Windows.
+if(WINDOWS)
+    ax_sync_target_dlls(${APP_NAME})
+endif()
+
+# Set up the axmol application configuration.
+ax_setup_app_config(${APP_NAME})
+ax_setup_app_props(${APP_NAME})
+
+# Link the resources.
+link_resources(${APP_NAME})
+
+# Unit testing configuration.
 # Set the source files without main.cpp for unit testing.
 set(SOURCE_FILES_WITHOUT_MAIN ${SOURCE_FILES})
 list(REMOVE_ITEM SOURCE_FILES_WITHOUT_MAIN "${CMAKE_SOURCE_DIR}/src/main.cpp")
-
-# Include the cocos framework.
-include(CocosBuildSet)
-add_subdirectory(${COCOS2DX_ROOT_PATH}/cocos ${ENGINE_BINARY_PATH}/cocos/core)
 
 # Conditionally find and fetch GoogleTest if BUILD_TESTS is ON.
 if(BUILD_TESTS)
@@ -105,34 +188,6 @@ if(BUILD_TESTS)
     endif()
 endif()
 
-# Set the application name.
-set(APP_NAME th_valley)
-
-# Add the application executable.
-add_executable(${APP_NAME}
-    ${SOURCE_FILES}
-)
-
-# Set the C++ standard for the application.
-set_target_properties(${APP_NAME} PROPERTIES
-    CXX_STANDARD 20
-)
-
-# Link the application with the cocos2d library.
-target_link_libraries(${APP_NAME} cocos2d)
-
-# Copy resources to the output directory.
-set(APP_RESOURCE_DIR "$<TARGET_FILE_DIR:${APP_NAME}>/assets")
-add_custom_command(TARGET ${APP_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-    ${RESOURCES_DIR} ${APP_RESOURCE_DIR}
-)
-
-# Copy the dynamic-link libraries on Windows.
-if(WINDOWS)
-    cocos_copy_target_dll(${APP_NAME})
-endif()
-
 # Enable CTest.
 enable_testing()
 
@@ -154,7 +209,7 @@ function(add_googletest TEST_MODULE TEST_NAME)
         gtest
         gtest_main
         gmock
-        cocos2d
+        ${_AX_CORE_LIB}
     )
 
     # Add the test to CTest.
@@ -162,6 +217,13 @@ function(add_googletest TEST_MODULE TEST_NAME)
         NAME ${TEST_NAME}
         COMMAND ${TEST_NAME}
     )
+
+    # Set up the axmol application configuration.
+    ax_setup_app_config(${TEST_NAME})
+    ax_setup_app_props(${TEST_NAME})
+
+    # Link the resources.
+    link_resources(${TEST_NAME})
 endfunction()
 
 # Conditionally add the tests if BUILD_TESTS is ON.
