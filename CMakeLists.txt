@@ -40,7 +40,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Set the compiler flags for the different toolchains.
 if(MSVC)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W3 /EHsc")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zm2000 /Zi")
 else()
     set(CMAKE_CXX_FLAGS
         "${CMAKE_CXX_FLAGS} \
@@ -55,18 +55,21 @@ set(IS_AXMOL_EMBED FALSE)
 # Set the Axmol Engine root directory.
 if(DEFINED ENV{AX_ROOT})
     # Use the system environment variable if it is set.
-    set(_AX_ROOT $ENV{AX_ROOT})
+    file(TO_CMAKE_PATH "$ENV{AX_ROOT}" _AX_ROOT)
     message(STATUS
         "Using System Environment Variable AX_ROOT = "
         "${_AX_ROOT}"
     )
 elseif(IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/external/axmol")
     # Use the embedded Axmol engine if the directory exists.
-    file(GLOB_RECURSE AXMOL_ENGINE_CONTENTS "${CMAKE_CURRENT_SOURCE_DIR}/external/axmol/*")
+    file(GLOB_RECURSE AXMOL_ENGINE_CONTENTS
+        "${CMAKE_CURRENT_SOURCE_DIR}/external/axmol/*"
+    )
+
     if(AXMOL_ENGINE_CONTENTS)
         set(_AX_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/external/axmol")
         set(IS_AXMOL_EMBED TRUE)
-        message(STATUS 
+        message(STATUS
             "Building isolated project: ${PROJECT_NAME} with AX_ROOT = "
             "${_AX_ROOT}"
         )
@@ -141,6 +144,14 @@ add_executable(${APP_NAME}
 set_target_properties(${APP_NAME} PROPERTIES
     CXX_STANDARD 20
 )
+
+# Set the subsystem for the application on Windows.
+if(WIN32)
+    # Set the subsystem to Windows for a Console application.
+    set_target_properties(${APP_NAME} PROPERTIES
+        LINK_FLAGS "/SUBSYSTEM:CONSOLE"
+    )
+endif()
 
 # Link the application with the Axmol engine library.
 target_link_libraries(${APP_NAME} ${_AX_CORE_LIB})
