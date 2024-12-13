@@ -1,8 +1,6 @@
 #include "map.h"
 
 bool Map::initWithTMXFile(const std::string& tmxFile) {
-    
-
     if (!cocos2d::TMXTiledMap::initWithTMXFile(tmxFile)) {
         return false;
     }
@@ -12,8 +10,9 @@ bool Map::initWithTMXFile(const std::string& tmxFile) {
     this->setPosition(cocos2d::Vec2(0, 0));
 
     // 初始化地图的其他内容
-    std::vector<std::string> layerNames = {
-        "Back", "Back2", "Block", "Interact", "Building", "Paths", "Front", "Front2"};
+    std::vector<std::string> layerNames = {"Back",     "Back2",    "Block",
+                                           "Interact", "Building", "Paths",
+                                           "Front",    "Front2"};
 
     int zOrder = -5;  // 初始 z-order，从 0 开始
     for (const auto& name : layerNames) {
@@ -43,7 +42,7 @@ bool Map::initWithTMXFile(const std::string& tmxFile) {
         float x = player.at("x").asFloat();
         float y = player.at("y").asFloat();
         playerPos = cocos2d::Vec2(x, y);
-        
+
     } else {
         CCLOG("Player object not found");
         playerPos = cocos2d::Vec2::ZERO;
@@ -114,8 +113,8 @@ void Map::setPlayerPos(cocos2d::Vec2 pos) {
 }
 
 cocos2d::Vec2 Map::tileCoordFromPos(cocos2d::Vec2 pos) {
-    //pos = this->convertToNodeSpace(pos);
-    // 将像素坐标转换为瓦片坐标
+    // pos = this->convertToNodeSpace(pos);
+    //  将像素坐标转换为瓦片坐标
     int x = pos.x / tileMap->getTileSize().width;
     int y =
         (tileMap->getMapSize().height * tileMap->getTileSize().height - pos.y) /
@@ -179,14 +178,12 @@ bool Map::isCollision(cocos2d::Vec2 pos, std::string LayerName) {
                 return true;
             }
 
-
-            //auto it2 = valueMap.find("Cultivable");
-            //if (it2 != valueMap.end() && it2->second.asString() == "true") {
-            //    CCLOG("LAND detected at tile: %f, %f at Layer %s",
-            //          tileCoord.x, tileCoord.y, LayerName.c_str());
-            //    updateTileAt(tileCoord, 557, LayerName);
-            //}
-
+            // auto it2 = valueMap.find("Cultivable");
+            // if (it2 != valueMap.end() && it2->second.asString() == "true") {
+            //     CCLOG("LAND detected at tile: %f, %f at Layer %s",
+            //           tileCoord.x, tileCoord.y, LayerName.c_str());
+            //     updateTileAt(tileCoord, 557, LayerName);
+            // }
         }
     }
     return false;
@@ -246,24 +243,27 @@ void Map::triggerPortalEvent(const std::string& portalName) {
 
 void Map::checkEventsAndTrigger(cocos2d::Vec2 tileCoord) {
     //// 获取瓦片坐标对应的gid
-    //int gid = collisionLayer->getTileGIDAt(tileCoord);
-    //if (gid) {
-    //    auto properties = this->getPropertiesForGID(gid).asValueMap();
-    //    if (properties["Event"].asString() == "True") {
-    //        // 触发事件
-    //        CCLOG("Event triggered at tile: %f, %f", tileCoord.x, tileCoord.y);
-    //        // 根据事件类型执行相应的逻辑
-    //        // 例如：this->triggerBattleEvent();
-    //    }
-    //}
+    // int gid = collisionLayer->getTileGIDAt(tileCoord);
+    // if (gid) {
+    //     auto properties = this->getPropertiesForGID(gid).asValueMap();
+    //     if (properties["Event"].asString() == "True") {
+    //         // 触发事件
+    //         CCLOG("Event triggered at tile: %f, %f", tileCoord.x,
+    //         tileCoord.y);
+    //         // 根据事件类型执行相应的逻辑
+    //         // 例如：this->triggerBattleEvent();
+    //     }
+    // }
 }
 
 cocos2d::Vec2 Map::getPos() { return playerPos; }
 
-void Map::updateTileAt(cocos2d::Vec2 tileCoord, int newGID, std::string LayerName) {
+void Map::updateTileAt(cocos2d::Vec2 tileCoord, int newGID,
+                       std::string LayerName) {
     auto layer = tileMap->getLayer(LayerName);
     layer->setTileGID(newGID, tileCoord);
-    CCLOG("Tile updated at %f, %f with GID: %d", tileCoord.x, tileCoord.y, newGID);
+    CCLOG("Tile updated at %f, %f with GID: %d", tileCoord.x, tileCoord.y,
+          newGID);
 }
 
 void Map::onEnter() {
@@ -283,8 +283,7 @@ void Map::onEnter() {
         for (const auto& layer : mapLayer) {
             if (layer.second != nullptr) {
                 int gid = layer.second->getTileGIDAt(tilePos);
-                CCLOG("Checking layer: %s, gid: %d",
-                      layer.first.c_str(), gid);
+                CCLOG("Checking layer: %s, gid: %d", layer.first.c_str(), gid);
                 isCollision(pos, layer.first);
             }
         }
@@ -295,8 +294,8 @@ void Map::onEnter() {
         auto mouseEvent = dynamic_cast<cocos2d::EventMouse*>(event);
         auto pos = this->convertToNodeSpace(mouseEvent->getLocationInView());
         auto tilePos = tileCoordFromPos(pos);
-        //CCLOG("Mouse Move Tile: %f, %f", tilePos.x, tilePos.y);
-        //CCLOG("Mouse Move: %f, %f", pos.x, pos.y);
+        // CCLOG("Mouse Move Tile: %f, %f", tilePos.x, tilePos.y);
+        // CCLOG("Mouse Move: %f, %f", pos.x, pos.y);
     };
 
     auto keyListener = cocos2d::EventListenerKeyboard::create();
@@ -340,8 +339,8 @@ void Map::onEnter() {
         }
     };
 
-
-    cocos2d::EventDispatcher* dispatcher = cocos2d::Director::getInstance()->getEventDispatcher();
+    cocos2d::EventDispatcher* dispatcher =
+        cocos2d::Director::getInstance()->getEventDispatcher();
     dispatcher->addEventListenerWithSceneGraphPriority(listener, this);
     dispatcher->addEventListenerWithSceneGraphPriority(keyListener, this);
 
@@ -363,13 +362,10 @@ void Map::createMiniMap() {
 
 void Map::save() {
     // 获取玩家位置
-    
 
     // 获取地图偏移
-    
 
     // 保存状态到文件
-    
 }
 
 void Map::load() {
@@ -379,8 +375,6 @@ void Map::load() {
 
     // 设置地图偏移
 }
-
-
 
 void Map::update(float delta) {
     cocos2d::Vec2 currentPos = getPos();

@@ -1,9 +1,10 @@
 #ifndef MAP_H_
 #define MAP_H_
 
-#include "cocos2d.h"
-#include <vector>
 #include <unordered_map>
+#include <vector>
+
+#include "cocos2d.h"
 
 struct Tile {
     int x, y;
@@ -15,8 +16,8 @@ class Map : public cocos2d::TMXTiledMap {
 protected:
     cocos2d::TMXTiledMap* tileMap;
     std::unordered_map<std::string, cocos2d::TMXLayer*> mapLayer;
-    cocos2d::TMXObjectGroup* objectGroup;   // 物品组
-    cocos2d::Vec2 playerPos;          // 玩家位置
+    cocos2d::TMXObjectGroup* objectGroup;  // 物品组
+    cocos2d::Vec2 playerPos;               // 玩家位置
     cocos2d::Sprite* playerSprite;
     cocos2d::ValueMap playerObject;
 
@@ -25,6 +26,7 @@ protected:
     bool isKeyPressedA;
     bool isKeyPressedS;
     bool isKeyPressedD;
+
 public:
     Map() = default;
     ~Map() override = default;
@@ -38,8 +40,7 @@ public:
      * @param string tmxFile
      * @return true: 成功加载 false: 加载失败
      */
-    bool initWithTMXFile(const std::string& tmxFile)
-        ;
+    bool initWithTMXFile(const std::string& tmxFile);
     /**
      * @brief 设置玩家位置
      * @param cocos2d::Vec2 pos
@@ -72,7 +73,7 @@ public:
 
     /**
      * @brief 切图
-     * @param string portalName 
+     * @param string portalName
      false: 无
      */
     void triggerPortalEvent(const std::string& portalName);
@@ -99,7 +100,8 @@ public:
      * @brief 更新贴图
      * @param cocos2d::Vec2 tileCoord; int newGID; string LayerName
      */
-    void updateTileAt(cocos2d::Vec2 tileCoord, int newGID, std::string LayerName);
+    void updateTileAt(cocos2d::Vec2 tileCoord, int newGID,
+                      std::string LayerName);
 
     /**
      * @brief 监视用户操作
@@ -124,8 +126,6 @@ public:
     void update(float delta) override;
 
     static Map* create(const std::string& tmxFile);
-
 };
-
 
 #endif  // MAP_H_
