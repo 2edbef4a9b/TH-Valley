@@ -20,13 +20,15 @@ bool th_valley::SampleApplication::applicationDidFinishLaunching() {
     }
 
     // Set the window size.
-    glview->setFrameSize(1920, 1080);
+    glview->setFrameSize(kWindowSize.width, kWindowSize.height);
 
     // Set the design resolution size to improve resolution on high-res screens.
-    glview->setDesignResolutionSize(1920, 1080, ResolutionPolicy::NO_BORDER);
+    glview->setDesignResolutionSize(kDesignResolutionSize.width,
+                                    kDesignResolutionSize.height,
+                                    ResolutionPolicy::SHOW_ALL);
 
     // Set FPS. the default value is 1.0/60 if you don't call this.
-    director->setAnimationInterval(1.0 / 60);
+    director->setAnimationInterval(kAnimationInterval);
 
     // Create a scene. it's an autorelease object.
     auto *scene = ax::utils::createInstance<SampleScene>();
