@@ -111,7 +111,7 @@ set(APP_NAME th_valley)
 # Add the application executable.
 add_executable(${APP_NAME}
     ${SOURCE_FILES}
-)
+ "src/map.cpp" "include/map.h")
 
 # Set the C++ standard for the application.
 set_target_properties(${APP_NAME} PROPERTIES
@@ -142,7 +142,7 @@ function(add_googletest TEST_MODULE TEST_NAME)
     add_executable(${TEST_NAME}
         ${SOURCE_FILES_WITHOUT_MAIN}
         tests/${TEST_MODULE}/${TEST_NAME}.cpp
-    )
+     "src/map.cpp" "include/map.h")
 
     # Set the C++ standard for the test.
     set_target_properties(${TEST_NAME} PROPERTIES
@@ -168,3 +168,5 @@ endfunction()
 if(BUILD_TESTS)
     add_googletest(sample sample_application_tests)
 endif()
+
+

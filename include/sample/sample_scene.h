@@ -16,6 +16,9 @@ public:
 
     static void SetResourcePath(const std::string& path);
 
+    // add declaration of tiledmap
+    cocos2d::TMXTiledMap* _map;
+
     CREATE_FUNC(SampleScene);
 };
 
