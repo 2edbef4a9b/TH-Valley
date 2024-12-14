@@ -105,6 +105,15 @@ if(BUILD_TESTS)
     endif()
 endif()
 
+# Copy resources to the output directory.
+function(link_resources TARGET_NAME)
+    set(APP_RESOURCE_DIR "$<TARGET_FILE_DIR:${TARGET_NAME}>/assets")
+    add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${RESOURCES_DIR} ${APP_RESOURCE_DIR}
+    )
+endfunction()
+
 # Set the application name.
 set(APP_NAME th_valley)
 
@@ -122,11 +131,7 @@ set_target_properties(${APP_NAME} PROPERTIES
 target_link_libraries(${APP_NAME} cocos2d)
 
 # Copy resources to the output directory.
-set(APP_RESOURCE_DIR "$<TARGET_FILE_DIR:${APP_NAME}>/assets")
-add_custom_command(TARGET ${APP_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-    ${RESOURCES_DIR} ${APP_RESOURCE_DIR}
-)
+link_resources(${APP_NAME})
 
 # Copy the dynamic-link libraries on Windows.
 if(WINDOWS)
@@ -164,10 +169,7 @@ function(add_googletest TEST_MODULE TEST_NAME)
     )
 
     # Copy resources to the output directory.
-    add_custom_command(TARGET ${TEST_NAME} POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${RESOURCES_DIR} "$<TARGET_FILE_DIR:${TEST_NAME}>/assets"
-    )
+    link_resources(${TEST_NAME})
 endfunction()
 
 # Conditionally add the tests if BUILD_TESTS is ON.
