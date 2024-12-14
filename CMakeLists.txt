@@ -143,18 +143,29 @@ function(link_resources TARGET_NAME)
         )
     endif()
 
-    # Copy the resources to the runtime output directory.
-    add_custom_command(
-        TARGET ${TARGET_NAME} POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${CMAKE_SOURCE_DIR}/${RESOURCES_DIR}
-        ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${RESOURCES_DIR}
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${AXSLC_RUNTIME_DIR}
-        ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/axslc
-        COMMAND ${CMAKE_COMMAND} -E remove_directory
-        ${CMAKE_BINARY_DIR}/bin
-    )
+    # Link the resources to the runtime output directory.
+    if(WIN32)
+        # Copy the resources on Windows since symlinks require admin privileges.
+        add_custom_command(
+            TARGET ${TARGET_NAME} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_directory
+            ${CMAKE_SOURCE_DIR}/${RESOURCES_DIR}
+            ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${RESOURCES_DIR}
+            COMMAND ${CMAKE_COMMAND} -E copy_directory
+            ${AXSLC_RUNTIME_DIR}
+            ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/axslc
+        )
+    else()
+        add_custom_command(
+            TARGET ${TARGET_NAME} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E create_symlink
+            ${CMAKE_SOURCE_DIR}/${RESOURCES_DIR}
+            ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${RESOURCES_DIR}
+            COMMAND ${CMAKE_COMMAND} -E create_symlink
+            ${AXSLC_RUNTIME_DIR}
+            ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/axslc
+        )
+    endif()
 endfunction()
 
 # Function to configure the prebuilt Axmol engine.
