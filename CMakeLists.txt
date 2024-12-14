@@ -38,9 +38,14 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+# Set the number of parallel jobs for the build process.
+if(NOT DEFINED CMAKE_BUILD_PARALLEL_LEVEL)
+    set(CMAKE_BUILD_PARALLEL_LEVEL 2)
+endif()
+
 # Set the compiler flags for the different toolchains.
 if(MSVC)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zm2000 /Zi")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zm2000 /Zi /utf-8")
 else()
     set(CMAKE_CXX_FLAGS
         "${CMAKE_CXX_FLAGS} \
@@ -49,8 +54,11 @@ else()
 endif()
 
 # Axmol engine configuration.
-# Check if the Axmol engine is in the project directory.
-set(IS_AXMOL_EMBED FALSE)
+# Check whether to use the embedded Axmol engine.
+set(USE_EMBED_AXMOL FALSE)
+
+# Check whether to use the prebuilt Axmol engine.
+set(USE_PREBUILT_AXMOL FALSE)
 
 # Set the Axmol Engine root directory.
 if(DEFINED ENV{AX_ROOT})
@@ -68,7 +76,7 @@ elseif(IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/external/axmol")
 
     if(AXMOL_ENGINE_CONTENTS)
         set(_AX_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/external/axmol")
-        set(IS_AXMOL_EMBED TRUE)
+        set(USE_EMBED_AXMOL TRUE)
         message(STATUS
             "Building isolated project: ${PROJECT_NAME} with AX_ROOT = "
             "${_AX_ROOT}"
@@ -91,14 +99,22 @@ list(APPEND CMAKE_MODULE_PATH
 # Include the AXBuildSet module.
 include(AXBuildSet)
 
-# Include the subdirectories for the Axmol engine.
-# We don't use prebuilt libraries for simplicity.
-add_subdirectory(${_AX_ROOT}/core ${ENGINE_BINARY_PATH}/axmol/core)
+if(NOT USE_EMBED_AXMOL)
+    # Check whether to use the prebuilt Axmol engine.
+    if(DEFINED AX_PREBUILT_DIR AND IS_DIRECTORY ${_AX_ROOT}/${AX_PREBUILT_DIR})
+        set(USE_PREBUILT_AXMOL TRUE)
+    endif()
+endif()
+
+if(NOT USE_PREBUILT_AXMOL)
+    # Add the Axmol engine core library.
+    add_subdirectory(${_AX_ROOT}/core ${ENGINE_BINARY_PATH}/axmol/core)
+endif()
 
 # Project configuration.
-# Set the resource folder for the application.
+# Set the relative path to the resources directory.
 set(RESOURCES_DIR
-    "${CMAKE_CURRENT_SOURCE_DIR}/assets"
+    "assets/"
 )
 
 # Initialize and set the include directories.
@@ -116,20 +132,39 @@ file(GLOB_RECURSE SOURCE_FILES
 
 # Function to link the resources.
 function(link_resources TARGET_NAME)
-    add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E make_directory
-        ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-        COMMAND ${CMAKE_COMMAND} -E create_symlink
-        ${CMAKE_BINARY_DIR}/runtime/axslc
+    # Set the axmol shader language compiler runtime directory.
+    if(USE_PREBUILT_AXMOL)
+        set(AXSLC_RUNTIME_DIR
+            ${_AX_ROOT}/${AX_PREBUILT_DIR}/runtime/axslc
+        )
+    else()
+        set(AXSLC_RUNTIME_DIR
+            ${CMAKE_BINARY_DIR}/runtime/axslc
+        )
+    endif()
+
+    # Copy the resources to the runtime output directory.
+    add_custom_command(
+        TARGET ${TARGET_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/${RESOURCES_DIR}
+        ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${RESOURCES_DIR}
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${AXSLC_RUNTIME_DIR}
         ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/axslc
-        COMMAND ${CMAKE_COMMAND} -E create_symlink
-        ${CMAKE_SOURCE_DIR}/assets
-        ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/assets
         COMMAND ${CMAKE_COMMAND} -E remove_directory
         ${CMAKE_BINARY_DIR}/bin
-        COMMENT "Creating symlink for /runtime/axslc and /assets in the "
-        "CMAKE_RUNTIME_OUTPUT_DIRECTORY and removing /build/bin directory."
     )
+endfunction()
+
+# Function to configure the prebuilt Axmol engine.
+function(configure_prebuilt_axmol TARGET_NAME)
+    if(USE_PREBUILT_AXMOL)
+        # Link the prebuilt Axmol engine.
+        use_ax_compile_define(${TARGET_NAME})
+        include(AXLinkHelpers)
+        ax_link_cxx_prebuilt(${TARGET_NAME} ${_AX_ROOT} ${AX_PREBUILT_DIR})
+    endif()
 endfunction()
 
 # Set the application name.
@@ -145,25 +180,21 @@ set_target_properties(${APP_NAME} PROPERTIES
     CXX_STANDARD 20
 )
 
-# Set the subsystem for the application on Windows.
-if(WIN32)
-    # Set the subsystem to Windows for a Console application.
-    set_target_properties(${APP_NAME} PROPERTIES
-        LINK_FLAGS "/SUBSYSTEM:CONSOLE"
-    )
-endif()
-
 # Link the application with the Axmol engine library.
 target_link_libraries(${APP_NAME} ${_AX_CORE_LIB})
 
 # Copy the dynamic-link libraries on Windows.
 if(WINDOWS)
-    ax_sync_target_dlls(${APP_NAME})
+    if(NOT USE_PREBUILT_AXMOL)
+        ax_sync_target_dlls(${APP_NAME})
+    endif()
 endif()
 
 # Set up the axmol application configuration.
-ax_setup_app_config(${APP_NAME})
+# Building console application for now.
+ax_setup_app_config(${APP_NAME} CONSOLE)
 ax_setup_app_props(${APP_NAME})
+configure_prebuilt_axmol(${APP_NAME})
 
 # Link the resources.
 link_resources(${APP_NAME})
@@ -230,11 +261,12 @@ function(add_googletest TEST_MODULE TEST_NAME)
     )
 
     # Set up the axmol application configuration.
-    ax_setup_app_config(${TEST_NAME})
+    ax_setup_app_config(${TEST_NAME} CONSOLE)
     ax_setup_app_props(${TEST_NAME})
+    configure_prebuilt_axmol(${TEST_NAME})
 
     # Link the resources.
-    link_resources(${TEST_NAME})
+    # link_resources(${TEST_NAME})
 endfunction()
 
 # Conditionally add the tests if BUILD_TESTS is ON.
