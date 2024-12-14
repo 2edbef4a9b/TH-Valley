@@ -2,72 +2,8 @@
 #include <string>
 #include "avatar/avatar_scene.h"
 
-bool avatarScene::init() {
-    // 初始化父类
-    if (!cocos2d::Scene::init()) {
-        return false;
-    }
-    // 更改默认资源路径
-    SetResourcePath("assets");
-    const auto _map = cocos2d::TMXTiledMap::create("maps/Farm.tmx");
-    if (_map) CCLOG("mapLayer found");
-
-    _map->setPosition(cocos2d::Vec2(0, 0));
-    _map->setVisible(true);
-    this->addChild(_map);
-
-
-    // 创建精灵并添加到场景
-    auto character = cocos2d::Sprite::create("avatar/sandy.png");
-    character->setTextureRect(cocos2d::Rect(0, 0, 16, 32));  // 初始显示第一帧
-    character->setPosition(cocos2d::Vec2(240, 160));  // 设置初始位置
-    this->addChild(character);
-    move(character);
-    
-    return true;  // 确保返回 true，表示初始化成功
-}
-void avatarScene::handleKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode,
-                                   cocos2d::Event *event){
-    moved = false;
-}
-void avatarScene::handleKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode,
-                                   cocos2d::Event *event, auto &character) {
-    cocos2d::Vec2 position = character->getPosition();  // 获取精灵当前的位置
-    direction dir = Down;
-    const float speed = 10.0f;
-    // 更新方向和位置
-    switch (keyCode) {
-        case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_A:
-        case cocos2d::EventKeyboard::KeyCode::KEY_A:
-            dir = Left;
-            position.x -= speed;
-            moved = true;
-            break;
-        case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_D:
-        case cocos2d::EventKeyboard::KeyCode::KEY_D:
-            dir = Right;
-            position.x += speed;
-            moved = true;
-            break;
-        case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_W:
-        case cocos2d::EventKeyboard::KeyCode::KEY_W:
-            dir = Up;
-            position.y += speed;
-            moved = true;
-            break;
-        case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_S:
-        case cocos2d::EventKeyboard::KeyCode::KEY_S:
-            dir = Down;
-            position.y -= speed;
-            moved = true;
-            break;
-        default:
-            moved = false;  // 如果按下的不是移动键，标记为未移动
-            break;
-    }
-    // 只有在角色移动时才更新位置和动画
-    //     // 更新精灵的位置
-    character->setPosition(position);
+void avatarScene::animateRunning()
+{
     // 更新动画帧
     cocos2d::Vector<cocos2d::SpriteFrame *> animFrames;
     for (int i = 0; i < 4; i++) {
@@ -78,46 +14,112 @@ void avatarScene::handleKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode,
             animFrames.pushBack(frame);
         }
     }
-
     // 创建动画
     auto animation =
         cocos2d::Animation::createWithSpriteFrames(animFrames, float(0.1));
     auto animate = cocos2d::Animate::create(animation);
+    character->runAction(cocos2d::RepeatForever::create(animate));         
+}
+bool avatarScene::init() {
+    // 初始化父类
+    if (!cocos2d::Scene::init()) {
+        return false;
+    }
+    // 更改默认资源路径
+    SetResourcePath("assets");
 
-    // 停止之前的所有动作
-    character->stopAllActions();
-    character->runAction(cocos2d::RepeatForever::create(animate));
-    // 重置无输入时间
-    idleTime = 0.0f;
-
-   
 
 
-    
-    
+    const auto _map = cocos2d::TMXTiledMap::create("maps/Farm.tmx");
+    if (_map) CCLOG("mapLayer found");
+    _map->setPosition(cocos2d::Vec2(0, 0));
+    _map->setVisible(true);
+    this->addChild(_map);
+
+
+
+
+    // 创建精灵并添加到场景
+    character = cocos2d::Sprite::create("avatar/sandy.png");
+    character->setTextureRect(cocos2d::Rect(0, 0, 16, 32));  // 初始显示第一帧
+    character->setPosition(cocos2d::Vec2(240, 160));  // 设置初始位置
+    this->addChild(character);
+    keyboardreading();
+    return true;  // 确保返回 true，表示初始化成功
+}
+void avatarScene::handleKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode,
+                                    cocos2d::Event *event) {
+    moved = false;
+}
+cocos2d::Vec2 avatarScene::handleKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode,
+                                   cocos2d::Event *event,
+                                   cocos2d::Vec2 position) {
+    // 定义按键按下时的回调
+    double a = position.x;
+    double b = position.y;
+    // 更新方向和位置
+    switch (keyCode) {
+        case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_A:
+        case cocos2d::EventKeyboard::KeyCode::KEY_A:
+            dir = Left;
+            a -= speed;
+            moved = true;
+            break;
+        case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_D:
+        case cocos2d::EventKeyboard::KeyCode::KEY_D:
+            dir = Right;
+            a += speed;
+            moved = true;
+            break;
+        case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_W:
+        case cocos2d::EventKeyboard::KeyCode::KEY_W:
+            dir = Up;
+             b += speed;
+            moved = true;
+            break;
+        case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_S:
+        case cocos2d::EventKeyboard::KeyCode::KEY_S:
+            dir = Down;
+            b -= speed;
+            moved = true;
+            break;
+        default:
+            moved = false;  // 如果按下的不是移动键，标记为未移动
+            break;
+    }
+    animateRunning();
+    return cocos2d::Vec2(a, b);
 }
 
-void avatarScene::move(auto &character) {
+void avatarScene::keyboardreading() {
     // 更改默认资源路径
     SetResourcePath("assets");
     // 创建键盘监听器
     auto keyboardListener = cocos2d::EventListenerKeyboard::create();
-    /**/
     // 定义按键按下时的回调
+    cocos2d::Vec2 position = character->getPosition();  // 获取精灵当前的位置
+    cocos2d::Vec2 positionout;
     keyboardListener->onKeyPressed =
-        [this, character](cocos2d::EventKeyboard::KeyCode keyCode,
-                          cocos2d::Event *event) {
-            this->handleKeyPressed(keyCode, event, character);
+        [=](cocos2d::EventKeyboard::KeyCode keyCode,cocos2d::Event *event) mutable{
+            positionout.set(this->handleKeyPressed(keyCode, event, position).x,
+                            this->handleKeyPressed(keyCode, event, position).y);
+            CCLOG("=======");
+            CCLOG("%lf,%lf", positionout.x, positionout.y);
+            CCLOG("=======");
+
+            character->setPosition(positionout);
+            position =character->getPosition();  // 获取精灵当前的位置
         };
     keyboardListener->onKeyReleased =
-        [this](cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event *event) {
+        [=](cocos2d::EventKeyboard::KeyCode keyCode,
+            cocos2d::Event *event) mutable {
             this->handleKeyReleased(keyCode, event);
         };
-
+    CCLOG("=======");
     // 添加键盘监听器到事件分发器
     _eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener,character);
     schedule(
-        [this, character](float dt) {
+        [this](float dt) {
             // 每帧更新无输入时间
             if (!moved) {
                 idleTime += dt;
@@ -130,7 +132,6 @@ void avatarScene::move(auto &character) {
             } else {
                 idleTime = 0.0f;  // 重置无输入时间
 
-                _movetimes++;
             }
         },
         "idle_update_key");

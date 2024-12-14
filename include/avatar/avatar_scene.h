@@ -18,13 +18,16 @@ public:
     const float idleThreshold = 0.5f;  // 设定无输入的阈值
     bool moved = false;                // 记录是否发生移动
     bool init() override;
-    void move(auto &character);
-    int _movetimes = 0;
-    void handleKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode,
-                          cocos2d::Event* event, auto& character);
+    void keyboardreading();
+    cocos2d::Sprite *character;
+    direction dir;
+    const float speed = 10.0f;
+    cocos2d::Vec2 handleKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode,
+                          cocos2d::Event* event, cocos2d::Vec2 position);
     void handleKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode,
-                                        cocos2d::Event* event);
+                           cocos2d::Event* event);
     static void SetResourcePath(const std::string& path);
+    void animateRunning();
     CREATE_FUNC(avatarScene);
 };
 
