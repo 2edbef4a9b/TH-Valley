@@ -8,20 +8,30 @@ bool Map::initWithTMXFile(const std::string& tmxFile) {
         return false;
     }
 
-    tileMap = this; // Assign the current instance to tileMap
+    tileMap = this;  // Assign the current instance to tileMap
 
     // 初始化地图的其他内容
-    groundLayer = tileMap->getLayer("Back");
-    collisionLayer = tileMap->getLayer("Paths");
-    interactLayer = tileMap->getLayer("Interract");
+    mapLayer = {tileMap->getLayer("Back"),     tileMap->getLayer("Back2"),
+                tileMap->getLayer("Block"),    tileMap->getLayer("Interact"),
+                tileMap->getLayer("Building"), tileMap->getLayer("Paths"),
+                tileMap->getLayer("Front")};
     objectGroup = tileMap->getObjectGroup("Objects");
+
+    for (const auto& layer : mapLayer) {
+        if (layer == nullptr) {
+            CCLOG("Map layer '%s' not found",
+                  layer->getLayerName().c_str());
+        } else {
+            CCLOG("Map layer '%s' loaded successfully",
+                  layer->getLayerName().c_str());
+        }
+    }
 
     if (objectGroup == nullptr) {
         CCLOG("ObjectGroup 'Objects' not found");
     } else {
         CCLOG("ObjectGroup 'Objects' loaded successfully");
     }
-
     return true;
 }
 
@@ -38,18 +48,17 @@ Map* Map::create(const std::string& tmxFile) {
 }
 
 void Map::setPlayerPos(cocos2d::Vec2 pos) {
-    // 像素点坐标转换为瓦片坐标
-    cocos2d::Vec2 tileCoord = this->tileCoordFromPos(pos);
-    // 获取瓦片坐标对应的gid
-    int gid = collisionLayer->getTileGIDAt(tileCoord);
-    // 根据gid进行处理，例如判断是否可以移动到该位置
-    if (gid != 0) {
-        // 处理碰撞逻辑
-        CCLOG("Collision detected at tile: %f, %f", tileCoord.x, tileCoord.y);
+    // 判断是否发生碰撞
+    if (isCollision(pos, "Paths") && isCollision(pos, "Block") &&
+        isCollision(pos, "Building") && isCollision(pos, "Interact")) {
+        CCLOG("Collision detected, player position not updated");
     } else {
         // 更新玩家位置
-        // player->setPosition(pos); // 假设有一个player对象
+        // 假设有一个player对象
+        // player->setPosition(pos);
+        CCLOG("Player position set to: %f, %f", pos.x, pos.y);
     }
+    
 }
 
 cocos2d::Vec2 Map::tileCoordFromPos(cocos2d::Vec2 pos) {
@@ -91,14 +100,23 @@ bool Map::isCollision(cocos2d::Vec2 pos, std::string LayerName) {
     // 获取指定位置的瓦片坐标
     auto tileCoord = this->tileCoordFromPos(pos);
 
-    // 检查该位置是否有障碍物
+    // 检查该位置是否有瓦片
     int tileGid = Layer->getTileGIDAt(tileCoord);
-    if (tileGid) {
-        auto properties = this->getPropertiesForGID(tileGid).asValueMap();
-        if (properties["Collidable"].asString() == "true") {
-            CCLOG("Collision detected at tile: %f, %f", tileCoord.x,
-                  tileCoord.y);
-            return true;
+    if (tileGid != 0) {
+        // 获取瓦片的属性
+        auto properties = this->getPropertiesForGID(tileGid);
+
+        // 确保属性类型为 MAP，避免断言失败
+        if (properties.getType() == cocos2d::Value::Type::MAP) {
+            auto valueMap = properties.asValueMap();
+
+            // 检查 "Collidable" 属性是否存在且为 "true"
+            auto it = valueMap.find("Collidable");
+            if (it != valueMap.end() && it->second.asString() == "true") {
+                CCLOG("Collision detected at tile: %f, %f at Layer %s",
+                      tileCoord.x, tileCoord.y, LayerName.c_str());
+                return true;
+            }
         }
     }
     return false;
@@ -141,21 +159,21 @@ bool Map::isPortal(cocos2d::Vec2 pos, std::string ObjectLayerName) {
 }
 
 void Map::checkEventsAndTrigger(cocos2d::Vec2 tileCoord) {
-    // 获取瓦片坐标对应的gid
-    int gid = collisionLayer->getTileGIDAt(tileCoord);
-    if (gid) {
-        auto properties = this->getPropertiesForGID(gid).asValueMap();
-        if (properties["Event"].asString() == "True") {
-            // 触发事件
-            CCLOG("Event triggered at tile: %f, %f", tileCoord.x, tileCoord.y);
-            // 根据事件类型执行相应的逻辑
-            // 例如：this->triggerBattleEvent();
-        }
-    }
+    //// 获取瓦片坐标对应的gid
+    //int gid = collisionLayer->getTileGIDAt(tileCoord);
+    //if (gid) {
+    //    auto properties = this->getPropertiesForGID(gid).asValueMap();
+    //    if (properties["Event"].asString() == "True") {
+    //        // 触发事件
+    //        CCLOG("Event triggered at tile: %f, %f", tileCoord.x, tileCoord.y);
+    //        // 根据事件类型执行相应的逻辑
+    //        // 例如：this->triggerBattleEvent();
+    //    }
+    //}
 }
 
 cocos2d::Vec2 Map::getStartPos() {
-    auto object = objectGroup->getObject("StartPoint");
+    auto object = objectGroup->getObject("SpawnPoint");
     float x = object.at("x").asFloat();
     float y = object.at("y").asFloat();
     return cocos2d::Vec2(x, y);
@@ -185,7 +203,12 @@ void Map::onEnter() {
         CCLOG("Mouse Down Tile: %f, %f", tilePos.x, tilePos.y);
         CCLOG("Mouse Down: %f, %f", pos.x, pos.y);
 
-        isCollision(pos);
+        for (const auto& layer : mapLayer) {
+            if (layer != nullptr) {
+                CCLOG("Checking layer: %s", layer->getLayerName().c_str());
+                isCollision(pos, layer->getLayerName().c_str());
+            }
+        }
         isPortal(pos);
     };
 
@@ -193,8 +216,8 @@ void Map::onEnter() {
         auto mouseEvent = dynamic_cast<cocos2d::EventMouse*>(event);
         auto pos = mouseEvent->getLocationInView();
         auto tilePos = tileCoordFromPos(pos);
-        CCLOG("Mouse Move Tile: %f, %f", tilePos.x, tilePos.y);
-        CCLOG("Mouse Move: %f, %f", pos.x, pos.y);
+        //CCLOG("Mouse Move Tile: %f, %f", tilePos.x, tilePos.y);
+        //CCLOG("Mouse Move: %f, %f", pos.x, pos.y);
     };
 
     cocos2d::EventDispatcher* dispatcher = cocos2d::Director::getInstance()->getEventDispatcher();

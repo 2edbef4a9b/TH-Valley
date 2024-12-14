@@ -10,16 +10,10 @@ struct Tile {
     Tile(int x, int y, int gid) : x(x), y(y), gid(gid) {};
 };
 
-enum Property {
-
-};
-
 class Map : public cocos2d::TMXTiledMap {
 private:
     cocos2d::TMXTiledMap* tileMap;
-    cocos2d::TMXLayer* groundLayer;         // 地面层
-    cocos2d::TMXLayer* collisionLayer;      // 碰撞层
-    cocos2d::TMXLayer* interactLayer;       // 交互层
+    std::vector<cocos2d::TMXLayer*> mapLayer;
     cocos2d::TMXObjectGroup* objectGroup;   // 物品组
 
 public:
