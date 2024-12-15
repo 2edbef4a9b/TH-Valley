@@ -37,7 +37,7 @@ bool Map::initWithTMXFile(const std::string& tmxFile) {
     if (!player.empty()) {
         float x = player.at("x").asFloat();
         float y = player.at("y").asFloat();
-        playerPos = this->convertToNodeSpace(cocos2d::Vec2(x, y));
+        playerPos = cocos2d::Vec2(x, y);
     } else {
         CCLOG("Player object not found");
         playerPos = cocos2d::Vec2::ZERO;
@@ -100,8 +100,8 @@ void Map::setPlayerPos(cocos2d::Vec2 pos) {
 }
 
 cocos2d::Vec2 Map::tileCoordFromPos(cocos2d::Vec2 pos) {
-    // 考虑地图的偏移量
-    pos = this->convertToNodeSpace(pos);
+    //// 考虑地图的偏移量
+    //pos = this->convertToNodeSpace(pos);
     // 将像素坐标转换为瓦片坐标
     int x = pos.x / tileMap->getTileSize().width;
     int y =
@@ -116,9 +116,9 @@ void Map::setViewpointCenter(cocos2d::Vec2 pos) {
     auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
     int x = MAX(pos.x, visibleSize.width / 2);
     int y = MAX(pos.y, visibleSize.height / 2);
-    x = MIN(x, (mapSize.width * mapSize.width) -
+    x = MIN(x, (mapSize.width * 16) -
                    visibleSize.width / 2);
-    y = MIN(y, (mapSize.height * mapSize.height) -
+    y = MIN(y, (mapSize.height * 16) -
                    visibleSize.height / 2);
 
     // 屏幕中心点
@@ -258,8 +258,6 @@ void Map::onEnter() {
             }
         }
         isPortal(pos);
-
-       
     };
 
     listener->onMouseMove = [this](cocos2d::Event* event) {
