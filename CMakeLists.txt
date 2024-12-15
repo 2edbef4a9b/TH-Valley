@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.15)
 project(THValley)
 
 # Define an option for building tests.
-option(BUILD_TESTS "Build tests" ON)
+set(BUILD_TESTS TRUE)
 
 # Set the output directory if it isn't already set.
 if(NOT CMAKE_BINARY_DIR)
@@ -79,7 +79,7 @@ list(REMOVE_ITEM SOURCE_FILES_WITHOUT_MAIN "${CMAKE_SOURCE_DIR}/src/main.cpp")
 include(CocosBuildSet)
 add_subdirectory(${COCOS2DX_ROOT_PATH}/cocos ${ENGINE_BINARY_PATH}/cocos/core)
 
-# Conditionally find and fetch GoogleTest if BUILD_TESTS is ON.
+# Conditionally find and fetch GoogleTest if BUILD_TESTS is TRUE.
 if(BUILD_TESTS)
     # Find the GoogleTest library.
     find_package(GTest, QUIET)
@@ -105,13 +105,23 @@ if(BUILD_TESTS)
     endif()
 endif()
 
-# Copy resources to the output directory.
+# Link resources to the target.
 function(link_resources TARGET_NAME)
     set(APP_RESOURCE_DIR "$<TARGET_FILE_DIR:${TARGET_NAME}>/assets")
-    add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${RESOURCES_DIR} ${APP_RESOURCE_DIR}
-    )
+
+    if(WIN32)
+        # Copy the resources on Windows.
+        add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_directory
+            ${RESOURCES_DIR} ${APP_RESOURCE_DIR}
+        )
+    else()
+        # Create a symbolic link to the resources on Unix.
+        add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E create_symlink
+            ${RESOURCES_DIR} ${APP_RESOURCE_DIR}
+        )
+    endif()
 endfunction()
 
 # Set the application name.
