@@ -22,6 +22,17 @@ public:
     static void UpdateResourcePath();
 
 private:
+    enum class ClientState {
+        kTitleScreen,
+        kSinglePlayer,
+        kMultiPlayer,
+        kSettings,
+        kLoading,
+        kQuit,
+        kStartUp,
+        kShutDown,
+    };
+
     // Use Size struct instead of ax::Size to avoid accessing members of unions.
     struct Size {
         float width;
@@ -30,6 +41,8 @@ private:
     static constexpr Size kWindowSize{1920, 1080};
     static constexpr Size kDesignResolutionSize{1920, 1080};
     static constexpr float kInterval = 1.0F / 60;
+
+    ClientState client_state_{ClientState::kStartUp};
 };
 
 }  // namespace th_valley
