@@ -77,6 +77,12 @@ public:
     void checkEventsAndTrigger(cocos2d::Vec2 tileCoord);
 
     /**
+     * @brief 更新贴图
+     * @param cocos2d::Vec2 tileCoord  int newGID
+     */
+    void updateTileAt(cocos2d::Vec2 tileCoord, int newGID, std::string LayerName);
+
+    /**
      * @brief 监视用户操作
      */
     void onEnter();

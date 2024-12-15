@@ -190,6 +190,11 @@ cocos2d::Vec2 Map::getPos() {
     return cocos2d::Vec2(x, y);
 }
 
+void Map::updateTileAt(cocos2d::Vec2 tileCoord, int newGID, std::string LayerName) {
+    auto layer = tileMap->getLayer(LayerName);
+    layer->setTileGID(newGID, tileCoord);
+}
+
 void Map::onEnter() {
     cocos2d::TMXTiledMap::onEnter();
     CCLOG("Map onEnter");
@@ -200,16 +205,21 @@ void Map::onEnter() {
         auto mouseEvent = dynamic_cast<cocos2d::EventMouse*>(event);
         auto pos = mouseEvent->getLocationInView();
         auto tilePos = tileCoordFromPos(pos);
+
         CCLOG("Mouse Down Tile: %f, %f", tilePos.x, tilePos.y);
         CCLOG("Mouse Down: %f, %f", pos.x, pos.y);
 
         for (const auto& layer : mapLayer) {
             if (layer != nullptr) {
-                CCLOG("Checking layer: %s", layer->getLayerName().c_str());
+                int gid = layer->getTileGIDAt(tilePos);
+                CCLOG("Checking layer: %s, gid: %d",
+                      layer->getLayerName().c_str(), gid);
                 isCollision(pos, layer->getLayerName().c_str());
             }
         }
         isPortal(pos);
+
+       
     };
 
     listener->onMouseMove = [this](cocos2d::Event* event) {
