@@ -144,3 +144,93 @@ graph TD
    - 服务器的 IP 地址 `server_ip_`, 服务器的 IP 地址
    - 服务器的端口 `server_port_`, 服务器的端口
    - 服务器的状态 `server_status_`, 服务器的状态, 包括 `Offline`, `Online`, `Connecting`, `Connected`, `Disconnecting`
+
+#### UserProfile
+
+#### UserConfig
+
+#### ClientState
+
+#### Avatar
+
+#### ConnectedServer
+
+### ClientApplication 与 UniverseServer 的通信
+
+#### 通信协议
+
+#### 通信格式
+
+使用 JSON 格式进行通信, 以便于解析和处理, 包含两个 field, `type` 和 `data`, `type` 用于标识消息的类型, `data` 用于存储消息的数据.
+
+``` JSON
+{
+    "type": "message_type",
+    "data": {
+        "field1": "value1",
+        "field2": "value2",
+        ...
+    }
+}
+```
+
+客户端 -> 服务端的消息
+
+1. `ConnectRequest` 连接消息
+   - `type`: `connect_request`
+   - `data`: `{"user_name": "user_name", "user_uuid": "user_uuid"}`
+   - Note: 用户连接到服务器时发送其用户名和 UUID, 此后不再发送用户名和 UUID, 由服务端创建用于与此用户通信的 `Session`
+2. `DisconnectRequest` 断开连接消息
+   - `type`: `disconnect_request`
+   - `data`: `{}`
+3. `ActionRequest` 动作请求消息
+   - `type`: `action_request`
+   - `data`: `{"action": "action_type", "target_position": "target_position"}`
+   - Note: 客户端的动作请求, 包括玩家的移动, 攻击, 交互等, 攻击等动作也涉及到玩家的位置移动
+4. `Error` 错误消息
+   - `type`: `error`
+   - `data`: `{"error_code": "error_code", "error_message": "error_message"}`
+   - Note: 客户端的错误消息, 包括错误代码和错误信息
+5. `HeartBeat` 心跳消息
+   - `type`: `heartbeat`
+   - `data`: `{}`
+   - Note: 客户端的心跳消息, 用于保持连接, 每 1800 个 `gametick` 发送一次
+
+服务端响应客户端的消息
+
+1. `ConnectResponse` 连接响应消息
+   - `type`: `connect_response`
+   - `data`: `{"status": "status", "message": "message"}`
+   - Note: 服务端的连接响应, 包括连接状态和消息
+2. `DisconnectResponse` 断开连接响应消息
+   - `type`: `disconnect_response`
+   - `data`: `{"status": "status", "message": "message"}`
+   - Note: 服务端的断开连接响应, 包括连接状态和消息
+3. `ActionResponse` 动作响应消息
+   - `type`: `action_response`
+   - `data`: `{"action": "action_type", "revised_position": "revised_position"}`
+   - Note: 服务端的动作响应, 对玩家的目标位置进行修正, 以确保玩家的位置是合法的
+4. `Error` 错误消息 (不需要响应, 直接记录到日志, 并做出相应的处理)
+5. `HeartBeat` 心跳消息
+   - `type`: `heartbeat`
+   - `data`: `{"status": "status", "gametic": "gametic"}`
+   - Note: 服务端的心跳消息, 用于保持连接, 返回服务端的状态和当前的 `gametick` 来保持客户端的时间同步
+
+服务端 -> 客户端的消息
+
+1. `AvatarUpdate` 更新消息
+   - `type`: `update`
+   - `data`: `{"avatar_data": "avatar_data"}`
+   - Note: 服务端更新玩家的数据, 针对特定玩家发送, 更新玩家的 `health`, `hunger`, `stamina` 等数据
+2. `WorldUpdate` 更新消息
+   - `type`: `update`
+   - `data`: `{"world_data": "world_data"}`
+   - Note: 服务端更新游戏世界的数据, 针对所有玩家发送, 更新游戏世界的状态, 包括天气, 时间等
+3. `EntityUpdate` 更新消息
+   - `type`: `update`
+   - `data`: `{"entity_data": "entity_data"}`
+   - Note: 服务端更新实体的数据, 针对所有玩家发送, 更新实体的状态, 包括生物, NPC等.
+
+消息的处理
+
+1. 消息队列: 客户端和服务端均使用消息队列, 用于存储消息, 并在每个 `gametick` 处理消息
