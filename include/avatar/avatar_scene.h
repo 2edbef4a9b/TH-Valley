@@ -21,7 +21,7 @@ public:
     void keyboardreading();
     cocos2d::Sprite *character;
 
-    Avatar sandy;
+    Avatar haley;
 
     direction dir;
     const float speed = 10.0f;

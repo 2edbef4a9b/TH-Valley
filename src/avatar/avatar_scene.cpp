@@ -9,7 +9,7 @@ void avatarScene::animateRunning() {
     for (int i = 0; i < 4; i++) {
         // Define the rectangle for each frame
         cocos2d::Rect frameRect(i * 16, dir * 32, 16, 32);  
-        auto frame =cocos2d::SpriteFrame::create("avatar/sandy.png", frameRect);
+        auto frame =cocos2d::SpriteFrame::create("avatar/Haley.png", frameRect);
         if (frame) {
             animFrames.pushBack(frame);  // Add frame to the vector if it is valid
         }
@@ -36,7 +36,7 @@ bool avatarScene::init() {
     this->addChild(_map);  // Add the map to the scene
 
     // Create sprite and add it to the scene
-    character = cocos2d::Sprite::create("avatar/sandy.png");
+    character = cocos2d::Sprite::create("avatar/Haley.png");
     character->setTextureRect(
         cocos2d::Rect(0, 0, 16, 32));  // Set initial frame to the first frame
     character->setPosition(cocos2d::Vec2(240, 160));  // Set initial position
@@ -86,12 +86,8 @@ cocos2d::Vec2 avatarScene::handleKeyPressed(cocos2d::EventKeyboard::KeyCode keyC
         case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_Q:
         case cocos2d::EventKeyboard::KeyCode::KEY_Q:
             moved = false;
-
-
-
-
+            break;
         default:
-
             moved = false;  // If the pressed key is not a movement key, mark as
                             // not moved
             break;

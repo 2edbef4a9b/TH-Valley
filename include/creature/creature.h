@@ -19,15 +19,15 @@ public:
     // connect to Exist
     
     // read only:
-    constexpr double fetchblood();
-    constexpr double fetchpowerrest();
-    constexpr int fetchgrade();
-    constexpr double fetchattackzone();
+    double fetchblood();
+    double fetchpowerrest();
+    int fetchgrade();
+    double fetchattackzone();
     // rewrite:
-    constexpr void setblood(double newblood);
-    constexpr void setpowerrest(double newpowerrest);
-    constexpr void setgrade(int newgrade);
-    constexpr void setzttackzone(double newattackzone);
+    void setblood(double newblood);
+    void setpowerrest(double newpowerrest);
+    void setgrade(int newgrade);
+    void setzttackzone(double newattackzone);
 
 
     std::pair<double, double> postion_;

@@ -1,7 +1,6 @@
 #include"avatar/avatar.h"
 #include <string>
 #include "cocos2d.h"
-
 // operator override
 Avatar::Attack& Avatar::Attack::operator=(Avatar::Attack& giv) {
     if (&giv!=this) {
@@ -66,12 +65,13 @@ void Avatar::experiencegain(double exp)  {
 }
 
 // init:
-Avatar::Avatar(std::string id = "00001", int choose = 0) {
+Avatar::Avatar(std::string id , int choose) {
     wepon_=weponlist.at(choose);
     ocupation_ = ocupationlist.at(choose);
     id_=id;
     choose_ = choose;
 }
+Avatar::Avatar() {}
 
 // should be override
 void Avatar::upgradeshow() {

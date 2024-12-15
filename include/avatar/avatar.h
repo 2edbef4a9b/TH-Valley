@@ -7,7 +7,9 @@
 
 class Avatar : public Creature{
 public:
-    Avatar(std::string id = "00001",int choose = 0);
+    Avatar(std::string id, int choose);
+    Avatar();
+
     bool inattackzone(Avatar* other);
     void experiencegain(double exp) override;
     void upgradeshow();
@@ -25,7 +27,7 @@ private:
     };
 
     const Attack casterAttack = {10, 100};
-    const Attack saberAttack = {100.10};
+    const Attack saberAttack = {100,10};
     const Attack shilderAttack = {10, 10};
 
     struct Defense {
