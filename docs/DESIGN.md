@@ -213,7 +213,7 @@ graph TD
 4. `Error` 错误消息 (不需要响应, 直接记录到日志, 并做出相应的处理)
 5. `HeartBeat` 心跳消息
    - `type`: `heartbeat`
-   - `data`: `{"status": "status", "gametic": "gametic"}`
+   - `data`: `{"status": "status", "gametick": "gametick"}`
    - Note: 服务端的心跳消息, 用于保持连接, 返回服务端的状态和当前的 `gametick` 来保持客户端的时间同步
 
 服务端 -> 客户端的消息
