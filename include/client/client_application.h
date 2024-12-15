@@ -33,7 +33,7 @@ private:
     static constexpr Size kDesignResolutionSize{1920, 1080};
     static constexpr float kInterval = 1.0F / 60;
 
-    ClientController client_controller_;
+    std::shared_ptr<ClientController> client_controller_;
 };
 
 }  // namespace th_valley

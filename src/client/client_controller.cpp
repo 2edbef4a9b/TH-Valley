@@ -4,7 +4,8 @@
 #include "cocos2d.h"
 #include "frontend/title_screen.h"
 
-void th_valley::ClientController::SetClientState(ClientState client_state) {
+void th_valley::ClientController::SetClientState(
+    const ClientState client_state) {
     client_state_ = client_state;
     Update();
 }
