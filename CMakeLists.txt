@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.15)
 project(THValley)
 
 # Define an option for building tests.
-option(BUILD_TESTS "Build tests" ON)
+set(BUILD_TESTS TRUE)
 
 # Set the output directory if it isn't already set.
 if(NOT CMAKE_BINARY_DIR)
@@ -79,7 +79,7 @@ list(REMOVE_ITEM SOURCE_FILES_WITHOUT_MAIN "${CMAKE_SOURCE_DIR}/src/main.cpp")
 include(CocosBuildSet)
 add_subdirectory(${COCOS2DX_ROOT_PATH}/cocos ${ENGINE_BINARY_PATH}/cocos/core)
 
-# Conditionally find and fetch GoogleTest if BUILD_TESTS is ON.
+# Conditionally find and fetch GoogleTest if BUILD_TESTS is TRUE.
 if(BUILD_TESTS)
     # Find the GoogleTest library.
     find_package(GTest, QUIET)
@@ -105,6 +105,25 @@ if(BUILD_TESTS)
     endif()
 endif()
 
+# Link resources to the target.
+function(link_resources TARGET_NAME)
+    set(APP_RESOURCE_DIR "$<TARGET_FILE_DIR:${TARGET_NAME}>/assets")
+
+    if(WIN32)
+        # Copy the resources on Windows.
+        add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_directory
+            ${RESOURCES_DIR} ${APP_RESOURCE_DIR}
+        )
+    else()
+        # Create a symbolic link to the resources on Unix.
+        add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E create_symlink
+            ${RESOURCES_DIR} ${APP_RESOURCE_DIR}
+        )
+    endif()
+endfunction()
+
 # Set the application name.
 set(APP_NAME th_valley)
 
@@ -122,11 +141,7 @@ set_target_properties(${APP_NAME} PROPERTIES
 target_link_libraries(${APP_NAME} cocos2d)
 
 # Copy resources to the output directory.
-set(APP_RESOURCE_DIR "$<TARGET_FILE_DIR:${APP_NAME}>/assets")
-add_custom_command(TARGET ${APP_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-    ${RESOURCES_DIR} ${APP_RESOURCE_DIR}
-)
+link_resources(${APP_NAME})
 
 # Copy the dynamic-link libraries on Windows.
 if(WINDOWS)
@@ -162,9 +177,13 @@ function(add_googletest TEST_MODULE TEST_NAME)
         NAME ${TEST_NAME}
         COMMAND ${TEST_NAME}
     )
+
+    # Copy resources to the output directory.
+    link_resources(${TEST_NAME})
 endfunction()
 
 # Conditionally add the tests if BUILD_TESTS is ON.
 if(BUILD_TESTS)
     add_googletest(sample sample_application_tests)
+    add_googletest(frontend title_screen_tests)
 endif()
