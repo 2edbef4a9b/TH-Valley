@@ -2,8 +2,10 @@
 #define TITLE_SCREEN_H_
 
 #include <functional>
+#include <memory>
 #include <string_view>
 
+#include "client/client_controller.h"
 #include "cocos2d.h"
 
 namespace th_valley {
@@ -16,7 +18,11 @@ public:
     TitleScreen& operator=(const TitleScreen& other) = delete;
     TitleScreen(TitleScreen&& other) = delete;
     TitleScreen& operator=(TitleScreen&& other) = delete;
+
     bool init() override;
+
+    static cocos2d::Scene* CreateScene(
+        const std::shared_ptr<ClientController>& client_controller);
 
     CREATE_FUNC(TitleScreen);
 
@@ -37,6 +43,7 @@ private:
 
     cocos2d::Size visible_size_;
     cocos2d::Vec2 visible_origin_;
+    std::shared_ptr<ClientController> client_controller_;
 };
 
 }  // namespace th_valley

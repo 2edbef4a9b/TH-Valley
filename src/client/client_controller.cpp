@@ -2,6 +2,7 @@
 
 #include "CCPlatformMacros.h"
 #include "cocos2d.h"
+#include "frontend/title_screen.h"
 
 void th_valley::ClientController::SetClientState(ClientState client_state) {
     client_state_ = client_state;
@@ -29,8 +30,13 @@ void th_valley::ClientController::Update() {
             CCLOG("GameState Change to SinglePlayer");
             break;
         case ClientState::kStartUp:
+            SetClientState(ClientState::kTitleScreen);
+            CCLOG("GameState Change to StartUp");
             break;
         case ClientState::kTitleScreen:
+            cocos2d::Director::getInstance()->replaceScene(
+                th_valley::TitleScreen::CreateScene(
+                    std::make_shared<ClientController>()));
             CCLOG("GameState Change to TitleScreen");
             break;
         default:

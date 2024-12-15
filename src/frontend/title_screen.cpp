@@ -23,6 +23,13 @@ bool th_valley::TitleScreen::init() {
     return true;
 }
 
+cocos2d::Scene* th_valley::TitleScreen::CreateScene(
+    const std::shared_ptr<ClientController>& client_controller) {
+    auto* scene = TitleScreen::create();
+    scene->client_controller_ = client_controller;
+    return scene;
+}
+
 void th_valley::TitleScreen::AddBackground(
     const std::string_view& background_image) {
     // Load the background image
