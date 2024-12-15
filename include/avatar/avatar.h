@@ -7,9 +7,9 @@
 
 class Avatar : public Creature{
 public:
-    Avatar(std::string name, int wepon, std::string ocupation);
+    Avatar(std::string id = "00001",int choose = 0);
     bool inattackzone(Avatar* other);
-    void experiencegain(double exp);
+    void experiencegain(double exp) override;
     void upgradeshow();
     void upgrade();
     void doattack(bool isAttack);
@@ -27,8 +27,6 @@ private:
     const Attack casterAttack = {10, 100};
     const Attack saberAttack = {100.10};
     const Attack shilderAttack = {10, 10};
-
-
 
     struct Defense {
         int phsicaldefense_;
@@ -54,8 +52,8 @@ private:
     std::vector<std::string> weponlist{"wand","sword","shield"};
     std::string wepon_;
 
-  
-    std::string name_;
+    std::string id_;
+    int choose_;
     Defense defense_;
     Attack attack_;
 };

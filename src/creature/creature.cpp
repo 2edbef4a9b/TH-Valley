@@ -13,40 +13,40 @@ Creature::Exist& Creature::Exist::operator=(Exist& other) {
     return *this;
 }
 
-double Creature::fetchblood() {
+constexpr double Creature::fetchblood() {
     return exist_.blood_;
 }
 
-double Creature::fetchpowerrest() {
+constexpr double Creature::fetchpowerrest() {
     return exist_.powerrest_;
 }
 
-int Creature::fetchgrade(){
+constexpr int Creature::fetchgrade() {
     return grade_;
 }
 
-double Creature::fetchattackzone(){
+constexpr double Creature::fetchattackzone() {
     return attackzone;
 }
 
-void Creature::setblood(double newblood) {
+constexpr void Creature::setblood(double newblood) {
     exist_.blood_ = newblood;
 }
 
-void Creature::setpowerrest(double newpowerrest) {
+constexpr void Creature::setpowerrest(double newpowerrest) {
     exist_.powerrest_ = newpowerrest;
 }
 
-void Creature::setgrade(int newgrade) {
+constexpr void Creature::setgrade(int newgrade) {
     grade_ = newgrade;
 }
 
-void Creature::setzttackzone(double newattackzone){
+constexpr void Creature::setzttackzone(double newattackzone) {
     attackzone = newattackzone;
 }
 
 Creature::Creature()
-    : grade_{1}, postion_{240, 160}, exist_{0,0,0,0}{}
+    : grade_{1}, postion_{240, 160}, exist_{0, 0, 0, 0}, attackzone{100} {}
    
 
 Creature& Creature::operator=(Creature& other) {

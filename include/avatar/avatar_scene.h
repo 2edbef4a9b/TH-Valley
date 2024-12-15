@@ -1,6 +1,6 @@
 #ifndef AVATAR_SCENE_H_
 #define AVATAR_SCENE_H_
-
+#include"avatar/avatar.h"
 #include "cocos2d.h"
 
 class avatarScene : public cocos2d::Scene {
@@ -20,6 +20,9 @@ public:
     bool init() override;
     void keyboardreading();
     cocos2d::Sprite *character;
+
+    Avatar sandy;
+
     direction dir;
     const float speed = 10.0f;
     cocos2d::Vec2 handleKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode,
@@ -27,7 +30,9 @@ public:
     void handleKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode,
                            cocos2d::Event* event);
     static void SetResourcePath(const std::string& path);
+
     void animateRunning();
+
     CREATE_FUNC(avatarScene);
 };
 

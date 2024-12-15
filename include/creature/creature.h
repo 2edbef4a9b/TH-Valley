@@ -14,20 +14,20 @@ public:
     // useful function:
     void existchange();
     bool judgedeath();
-    virtual void experiencegain() = 0;
+    virtual void experiencegain(double exp) = 0;
 
     // connect to Exist
     
     // read only:
-    double fetchblood();
-    double fetchpowerrest();
-    int fetchgrade();
-    double fetchattackzone();
+    constexpr double fetchblood();
+    constexpr double fetchpowerrest();
+    constexpr int fetchgrade();
+    constexpr double fetchattackzone();
     // rewrite:
-    void setblood(double newblood);
-    void setpowerrest(double newpowerrest);
-    void setgrade(int newgrade);
-    void setzttackzone(double newattackzone);
+    constexpr void setblood(double newblood);
+    constexpr void setpowerrest(double newpowerrest);
+    constexpr void setgrade(int newgrade);
+    constexpr void setzttackzone(double newattackzone);
 
 
     std::pair<double, double> postion_;
