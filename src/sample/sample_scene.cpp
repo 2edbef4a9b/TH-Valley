@@ -7,9 +7,6 @@
 
 #include "map.h"
 
-#include <vector>
-
-#include "map.h"
 
 bool th_valley::SampleScene::init() {
     // Initialize super class first.
@@ -27,18 +24,19 @@ bool th_valley::SampleScene::init() {
 
     this->addChild(label);*/
 
-    //const auto _map = cocos2d::FastTMXTiledMap::create("maps/Farm.tmx");
-    //if (_map)
-    //    CCLOG("mapLayer found");
-
-    //_map->setPosition(cocos2d::Vec2(0, 0));
-    //_map->setVisible(true);
-
-    //this->addChild(_map);
     
-    auto _map = Map::create("maps/Farm.tmx");
+    auto _map = Map::create("assets/maps/Farm.tmx");
     if (_map) {
-        _map->setPosition(cocos2d::Vec2(0, 0));
+        auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
+        auto mapSize = _map->getContentSize();
+
+        //// 设置地图的锚点为左下角
+        //_map->setAnchorPoint(cocos2d::Vec2(0, 0));
+
+        /*_map->setPosition(
+            cocos2d::Vec2((visibleSize.width - mapSize.width) / 2,
+                          (visibleSize.height - mapSize.height) / 2));*/
+
         _map->setVisible(true);
         this->addChild(_map);
     } else

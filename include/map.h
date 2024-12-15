@@ -3,6 +3,7 @@
 
 #include "cocos2d.h"
 #include <vector>
+#include <unordered_map>
 
 struct Tile {
     int x, y;
@@ -13,8 +14,17 @@ struct Tile {
 class Map : public cocos2d::TMXTiledMap {
 private:
     cocos2d::TMXTiledMap* tileMap;
-    std::vector<cocos2d::TMXLayer*> mapLayer;
+    std::unordered_map<std::string, cocos2d::TMXLayer*> mapLayer;
     cocos2d::TMXObjectGroup* objectGroup;   // 物品组
+    cocos2d::Vec2 playerPos;          // 玩家位置
+    cocos2d::Sprite* playerSprite;
+    cocos2d::ValueMap playerObject;
+
+    // 按键状态
+    bool isKeyPressedW;
+    bool isKeyPressedA;
+    bool isKeyPressedS;
+    bool isKeyPressedD;
 
 public:
     Map() = default;
@@ -24,8 +34,17 @@ public:
     Map(Map&& other) = default;
     Map& operator=(Map&& other) = default;
 
-    bool initWithTMXFile(const std::string& tmxFile);
-
+    /**
+     * @brief 像素点坐标转换为瓦片坐标
+     * @param string tmxFile
+     * @return true: 成功加载 false: 加载失败
+     */
+    bool initWithTMXFile(const std::string& tmxFile)
+        ;
+    /**
+     * @brief 设置玩家位置
+     * @param cocos2d::Vec2 pos
+     */
     void setPlayerPos(cocos2d::Vec2 pos);
 
     /**
@@ -35,7 +54,6 @@ public:
      */
     cocos2d::Vec2 tileCoordFromPos(cocos2d::Vec2 pos);
 
-
     /**
      * @brief 判断是否有碰撞
      * @param cocos2d::Vec2 pos 像素点坐标  string LayerName 层名称
@@ -43,6 +61,7 @@ public:
      false: 无碰撞，可以移动
      */
     bool isCollision(cocos2d::Vec2 pos, std::string LayerName = "Paths");
+    bool isCollisionAtAnyLayer(cocos2d::Vec2 pos);
 
     /**
      * @brief 判断是否有传送门
@@ -53,16 +72,17 @@ public:
     bool isPortal(cocos2d::Vec2 pos, std::string ObjectLayerName = "Objects");
 
     /**
+     * @brief 切图
+     * @param string portalName 
+     false: 无
+     */
+    void triggerPortalEvent(const std::string& portalName);
+
+    /**
      * @brief 设置视角中心，主角位置更新时调用
      * @param cocos2d::Vec2 pos
      */
     void setViewpointCenter(cocos2d::Vec2 pos);
-
-    /**
-     * @brief 获取玩家起始位置
-     * @return cocos2d::Vec2
-     */
-    cocos2d::Vec2 getStartPos();
 
     /**
      * @brief 获取玩家坐标
@@ -102,9 +122,10 @@ public:
      */
     void load();
 
-    //void update(float dt);
-    static void SetResourcePath(const std::string& path);
+    void update(float delta) override;
+
     static Map* create(const std::string& tmxFile);
+
 };
 
 

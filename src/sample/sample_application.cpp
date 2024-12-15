@@ -28,8 +28,10 @@ bool th_valley::SampleApplication::applicationDidFinishLaunching() {
     glview->setFrameSize(kWindowSize.width, kWindowSize.height);
 
     // Set the design resolution size to improve resolution on high-res screens.
-    glview->setDesignResolutionSize(kDesignResolutionSize.width,
+    /*glview->setDesignResolutionSize(kDesignResolutionSize.width,
                                     kDesignResolutionSize.height,
+                                    ResolutionPolicy::NO_BORDER);*/
+    glview->setDesignResolutionSize(192 * 2, 108 * 2,
                                     ResolutionPolicy::NO_BORDER);
 
     // Set FPS. the default value is 1.0/60 if you don't call this.

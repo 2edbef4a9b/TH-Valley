@@ -1,37 +1,74 @@
 #include "map.h"
 
 bool Map::initWithTMXFile(const std::string& tmxFile) {
-    // Change the default resource root path from "Resources/" to "assets/".
-    SetResourcePath("assets");
+    
 
     if (!cocos2d::TMXTiledMap::initWithTMXFile(tmxFile)) {
         return false;
     }
 
     tileMap = this;  // Assign the current instance to tileMap
+    this->setAnchorPoint(cocos2d::Vec2(0, 0));
+    this->setPosition(cocos2d::Vec2(0, 0));
 
     // 初始化地图的其他内容
-    mapLayer = {tileMap->getLayer("Back"),     tileMap->getLayer("Back2"),
-                tileMap->getLayer("Block"),    tileMap->getLayer("Interact"),
-                tileMap->getLayer("Building"), tileMap->getLayer("Paths"),
-                tileMap->getLayer("Front")};
-    objectGroup = tileMap->getObjectGroup("Objects");
+    std::vector<std::string> layerNames = {
+        "Back", "Back2", "Block", "Interact", "Building", "Paths", "Front"};
 
-    for (const auto& layer : mapLayer) {
-        if (layer == nullptr) {
-            CCLOG("Map layer '%s' not found",
-                  layer->getLayerName().c_str());
+    for (const auto& name : layerNames) {
+        auto layer = tileMap->getLayer(name);
+        if (layer) {
+            mapLayer[name] = layer;
+            CCLOG("Map layer '%s' loaded successfully", name.c_str());
         } else {
-            CCLOG("Map layer '%s' loaded successfully",
-                  layer->getLayerName().c_str());
+            CCLOG("Map layer '%s' not found", name.c_str());
         }
     }
 
+    objectGroup = tileMap->getObjectGroup("Objects");
     if (objectGroup == nullptr) {
         CCLOG("ObjectGroup 'Objects' not found");
     } else {
         CCLOG("ObjectGroup 'Objects' loaded successfully");
     }
+
+    // 获取初始玩家位置
+    auto player = objectGroup->getObject("Player");
+    if (!player.empty()) {
+        float x = player.at("x").asFloat();
+        float y = player.at("y").asFloat();
+        playerPos = this->convertToNodeSpace(cocos2d::Vec2(x, y));
+    } else {
+        CCLOG("Player object not found");
+        playerPos = cocos2d::Vec2::ZERO;
+    }
+    CCLOG("Player position set to: %f, %f", playerPos.x, playerPos.y);
+    setViewpointCenter(playerPos);  // 更新视角中心
+
+    // 加载纹理
+    auto texture =
+        cocos2d::Director::getInstance()->getTextureCache()->addImage(
+            "assets/Sebastian.png");
+    // 定义裁剪区域（第一幅图片的位置和尺寸）
+    cocos2d::Rect frameRect(0, 0, 16, 32);
+    // 创建精灵帧
+    auto spriteFrame =
+        cocos2d::SpriteFrame::createWithTexture(texture, frameRect);
+    // 创建精灵并设置精灵帧
+    playerSprite = cocos2d::Sprite::createWithSpriteFrame(spriteFrame);
+    // 设置锚点为底部中心
+    playerSprite->setAnchorPoint(cocos2d::Vec2(0.5f, 0.0f));
+    // 设置精灵位置
+    playerSprite->setPosition(playerPos);
+    CCLOG("Player sprite created at %f %f", playerPos.x, playerPos.y);
+    CCLOG("Player sprite created at Tile: %f %f", tileCoordFromPos(playerPos).x,
+          tileCoordFromPos(playerPos).y);
+    // 将精灵添加到地图
+    this->addChild(playerSprite, 10);
+
+
+    //createMiniMap();
+
     return true;
 }
 
@@ -48,20 +85,23 @@ Map* Map::create(const std::string& tmxFile) {
 }
 
 void Map::setPlayerPos(cocos2d::Vec2 pos) {
-    // 判断是否发生碰撞
-    if (isCollision(pos, "Paths") && isCollision(pos, "Block") &&
-        isCollision(pos, "Building") && isCollision(pos, "Interact")) {
+    if (isCollisionAtAnyLayer(pos)) {
         CCLOG("Collision detected, player position not updated");
     } else {
-        // 更新玩家位置
-        // 假设有一个player对象
-        // player->setPosition(pos);
+        playerPos = pos;
         CCLOG("Player position set to: %f, %f", pos.x, pos.y);
+        CCLOG("Tile: %f, %f", tileCoordFromPos(pos).x, tileCoordFromPos(pos).y);
+
+        setViewpointCenter(pos);  // 更新视角中心
+
+        // 更新玩家精灵的位置
+        playerSprite->setPosition(playerPos);
     }
-    
 }
 
 cocos2d::Vec2 Map::tileCoordFromPos(cocos2d::Vec2 pos) {
+    // 考虑地图的偏移量
+    pos = this->convertToNodeSpace(pos);
     // 将像素坐标转换为瓦片坐标
     int x = pos.x / tileMap->getTileSize().width;
     int y =
@@ -71,12 +111,14 @@ cocos2d::Vec2 Map::tileCoordFromPos(cocos2d::Vec2 pos) {
 }
 
 void Map::setViewpointCenter(cocos2d::Vec2 pos) {
+    auto mapSize = this->getContentSize();
+
     auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
     int x = MAX(pos.x, visibleSize.width / 2);
     int y = MAX(pos.y, visibleSize.height / 2);
-    x = MIN(x, (tileMap->getMapSize().width * tileMap->getTileSize().width) -
+    x = MIN(x, (mapSize.width * mapSize.width) -
                    visibleSize.width / 2);
-    y = MIN(y, (tileMap->getMapSize().height * tileMap->getTileSize().height) -
+    y = MIN(y, (mapSize.height * mapSize.height) -
                    visibleSize.height / 2);
 
     // 屏幕中心点
@@ -122,6 +164,15 @@ bool Map::isCollision(cocos2d::Vec2 pos, std::string LayerName) {
     return false;
 }
 
+bool Map::isCollisionAtAnyLayer(cocos2d::Vec2 pos) {
+    for (const auto& pair : mapLayer) {
+        if (isCollision(pos, pair.first)) {
+            return true;
+        }
+    }
+    return false;
+}
+
 bool Map::isPortal(cocos2d::Vec2 pos, std::string ObjectLayerName) {
     auto objectGroup = this->getObjectGroup(ObjectLayerName);
     if (objectGroup == nullptr) {
@@ -140,22 +191,27 @@ bool Map::isPortal(cocos2d::Vec2 pos, std::string ObjectLayerName) {
                 // 根据具体名称完成不同的切图操作
                 std::string portalName = dict["name"].asString();
                 CCLOG("Portal %s detected.", portalName.c_str());
-                //if (portalName == "PortalA") {
-                //    // 执行 PortalA 的切图操作
-                //    CCLOG("Triggering PortalA event");
-                //    // this->triggerPortalAEvent();
-                //} else if (portalName == "PortalB") {
-                //    // 执行 PortalB 的切图操作
-                //    CCLOG("Triggering PortalB event");
-                //    // this->triggerPortalBEvent();
-                //} else {
-                //    CCLOG("Unknown portal: %s", portalName.c_str());
-                //}
+                triggerPortalEvent(portalName);
                 return true;
             }
         }
     }
     return false;
+}
+
+void Map::triggerPortalEvent(const std::string& portalName) {
+    if (portalName == "FarmToHome") {
+        CCLOG("Triggering %s event", portalName.c_str());
+        auto house = Map::create("assets/maps/FarmHouse.tmx");
+        if (house) {
+            house->setPosition(cocos2d::Vec2(800, 800));
+            house->setVisible(true);
+            this->addChild(house);
+        } else
+            CCLOG("Failed to load map maps/FarmHouse.tmx");
+    } else {
+        CCLOG("Unknown portal: %s", portalName.c_str());
+    }
 }
 
 void Map::checkEventsAndTrigger(cocos2d::Vec2 tileCoord) {
@@ -172,23 +228,7 @@ void Map::checkEventsAndTrigger(cocos2d::Vec2 tileCoord) {
     //}
 }
 
-cocos2d::Vec2 Map::getStartPos() {
-    auto object = objectGroup->getObject("SpawnPoint");
-    float x = object.at("x").asFloat();
-    float y = object.at("y").asFloat();
-    return cocos2d::Vec2(x, y);
-}
-
-cocos2d::Vec2 Map::getPos() {
-    auto object = objectGroup->getObject("Player");
-    if (object.empty()) {
-        CCLOG("Player object not found");
-        return cocos2d::Vec2::ZERO;
-    }
-    float x = object.at("x").asFloat();
-    float y = object.at("y").asFloat();
-    return cocos2d::Vec2(x, y);
-}
+cocos2d::Vec2 Map::getPos() { return playerPos; }
 
 void Map::updateTileAt(cocos2d::Vec2 tileCoord, int newGID, std::string LayerName) {
     auto layer = tileMap->getLayer(LayerName);
@@ -210,11 +250,11 @@ void Map::onEnter() {
         CCLOG("Mouse Down: %f, %f", pos.x, pos.y);
 
         for (const auto& layer : mapLayer) {
-            if (layer != nullptr) {
-                int gid = layer->getTileGIDAt(tilePos);
+            if (layer.second != nullptr) {
+                int gid = layer.second->getTileGIDAt(tilePos);
                 CCLOG("Checking layer: %s, gid: %d",
-                      layer->getLayerName().c_str(), gid);
-                isCollision(pos, layer->getLayerName().c_str());
+                      layer.first.c_str(), gid);
+                isCollision(pos, layer.first);
             }
         }
         isPortal(pos);
@@ -230,38 +270,66 @@ void Map::onEnter() {
         //CCLOG("Mouse Move: %f, %f", pos.x, pos.y);
     };
 
+    auto keyListener = cocos2d::EventListenerKeyboard::create();
+    keyListener->onKeyPressed = [this](cocos2d::EventKeyboard::KeyCode keyCode,
+                                       cocos2d::Event* event) {
+        switch (keyCode) {
+            case cocos2d::EventKeyboard::KeyCode::KEY_W:
+                isKeyPressedW = true;
+                break;
+            case cocos2d::EventKeyboard::KeyCode::KEY_S:
+                isKeyPressedS = true;
+                break;
+            case cocos2d::EventKeyboard::KeyCode::KEY_A:
+                isKeyPressedA = true;
+                break;
+            case cocos2d::EventKeyboard::KeyCode::KEY_D:
+                isKeyPressedD = true;
+                break;
+            default:
+                break;
+        }
+    };
+
+    keyListener->onKeyReleased = [this](cocos2d::EventKeyboard::KeyCode keyCode,
+                                        cocos2d::Event* event) {
+        switch (keyCode) {
+            case cocos2d::EventKeyboard::KeyCode::KEY_W:
+                isKeyPressedW = false;
+                break;
+            case cocos2d::EventKeyboard::KeyCode::KEY_S:
+                isKeyPressedS = false;
+                break;
+            case cocos2d::EventKeyboard::KeyCode::KEY_A:
+                isKeyPressedA = false;
+                break;
+            case cocos2d::EventKeyboard::KeyCode::KEY_D:
+                isKeyPressedD = false;
+                break;
+            default:
+                break;
+        }
+    };
+
+
     cocos2d::EventDispatcher* dispatcher = cocos2d::Director::getInstance()->getEventDispatcher();
     dispatcher->addEventListenerWithSceneGraphPriority(listener, this);
-}
+    dispatcher->addEventListenerWithSceneGraphPriority(keyListener, this);
 
-void Map::SetResourcePath(const std::string& path) {
-    auto* file_utils = cocos2d::FileUtils::getInstance();
-
-    // Get the current resource root absolute path.
-    std::string resource_root_path =
-        cocos2d::FileUtils::getInstance()->getDefaultResourceRootPath();
-
-    // Replace the last directory name with the new path.
-    const size_t pos =
-        resource_root_path.find_last_of('/', resource_root_path.size() - 2);
-    if (pos != std::string::npos) {
-        resource_root_path.replace(pos + 1, std::string::npos, path + "/");
-    } else {
-        resource_root_path = path + "/";
-    }
-
-    // Update the default resource root path.
-    file_utils->setDefaultResourceRootPath(resource_root_path);
+    this->scheduleUpdate();
 }
 
 void Map::createMiniMap() {
-    //// 创建一个小地图的精灵
-    //auto miniMap = cocos2d::Sprite::create();
-    //miniMap->setScale(0.1f);                        // 缩小比例
-    //miniMap->setPosition(cocos2d::Vec2(100, 100));  // 设置小地图的位置
-
-    //// 添加小地图到当前地图层
-    //this->addChild(miniMap, 100);  // 100 是 z-order，确保小地图
+    // 创建一个小地图的精灵
+    auto miniMap = cocos2d::Sprite::create();
+    miniMap->setScale(0.1f);                        // 缩小比例
+    miniMap->setPosition(cocos2d::Vec2(500, 500));  // 设置小地图的位置
+    // 创建玩家标记
+    auto playerMarker = cocos2d::Sprite::create();
+    playerMarker->setColor(cocos2d::Color3B::RED);
+    playerMarker->setScale(0.2f);
+    // 添加小地图到当前地图层
+    this->addChild(miniMap, 100);  // 100 是 z-order，确保小地图
 }
 
 void Map::save() {
@@ -281,4 +349,28 @@ void Map::load() {
     // 设置玩家位置
 
     // 设置地图偏移
+}
+
+
+
+void Map::update(float delta) {
+    cocos2d::Vec2 currentPos = getPos();
+    float moveStep = 25.0f * delta;  // 确保移动速度与帧率无关
+
+    if (isKeyPressedW) {
+        currentPos.y += moveStep;
+    }
+    if (isKeyPressedS) {
+        currentPos.y -= moveStep;
+    }
+    if (isKeyPressedA) {
+        currentPos.x -= moveStep;
+    }
+    if (isKeyPressedD) {
+        currentPos.x += moveStep;
+    }
+
+    if (isKeyPressedW || isKeyPressedS || isKeyPressedA || isKeyPressedD) {
+        setPlayerPos(currentPos);
+    }
 }
