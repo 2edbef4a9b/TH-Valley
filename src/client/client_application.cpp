@@ -1,18 +1,12 @@
 #include "client/client_application.h"
 
 #include "AudioEngine.h"
-#include "sample/sample_scene.h"
+#include "CCPlatformMacros.h"
+#include "client/client_controller.h"
 
 th_valley::ClientApplication::~ClientApplication() {
     // Release the shared instance of the audio engine.
     cocos2d::AudioEngine::end();
-}
-
-void th_valley::ClientApplication::initGLContextAttrs() {
-    // Set OpenGL context attributes:
-    // red, green, blue, alpha, depth, stencil and multisamples count.
-    GLContextAttrs gl_context_attrs{8, 8, 8, 8, 24, 8, 0};
-    cocos2d::GLView::setGLContextAttrs(gl_context_attrs);
 }
 
 bool th_valley::ClientApplication::applicationDidFinishLaunching() {
@@ -41,14 +35,15 @@ bool th_valley::ClientApplication::applicationDidFinishLaunching() {
         cocos2d::FileUtils::getInstance()->getDefaultResourceRootPath();
     CCLOG("Resource root path: %s", resource_root_path.c_str());
 
-    // Create a scene. it's an autorelease object.
-    auto *scene = SampleScene::create();
-    if (scene == nullptr) {
-        return false;
-    }
+    // Create a blank scene to start the application.
+    auto *blank_scene = cocos2d::Scene::create();
+    director->runWithScene(blank_scene);
 
-    // Run.
-    director->runWithScene(scene);
+    // TODO(2edbef4a9b): Initialize the audio engine (optional).
+    // Set the client state to start up.
+    client_controller_.SetClientState(ClientController::ClientState::kStartUp);
+
+    CCLOG("Application started successfully.");
 
     return true;
 }
@@ -63,6 +58,13 @@ void th_valley::ClientApplication::applicationWillEnterForeground() {
     cocos2d::Director::getInstance()->startAnimation();
     // Resume the audio engine when the application enters the foreground.
     cocos2d::AudioEngine::resumeAll();
+}
+
+void th_valley::ClientApplication::initGLContextAttrs() {
+    // Set OpenGL context attributes:
+    // red, green, blue, alpha, depth, stencil and multisamples count.
+    GLContextAttrs gl_context_attrs{8, 8, 8, 8, 24, 8, 0};
+    cocos2d::GLView::setGLContextAttrs(gl_context_attrs);
 }
 
 void th_valley::ClientApplication::UpdateResourcePath() {
