@@ -1,9 +1,8 @@
-#include "float_1_ui.h"
-#include "main_ui.h"
+#include "avatar_ui/fui_scene.h"
+#include "avatar_ui/mui_scene.h"
 
-USING_NS_CC;
 
-Scene* NewScene::createScene() {
+/*Scene* NewScene::createScene() {
     auto scene = Scene::create();
     auto layer = NewScene::create();
     scene->addChild(layer);
@@ -36,4 +35,5 @@ bool NewScene::init() {
 void NewScene::onCloseButtonClick(Ref* sender) {
     // 返回到主界面
     Director::getInstance()->popScene();
-}
+}*/
+

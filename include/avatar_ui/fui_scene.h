@@ -2,13 +2,11 @@
 #define FUI_SCENE_H_
 
 #include <string>
-
 #include "cocos2d.h"
 class Newscene {
-    Scene* NewScene::createScene();
-    bool NewScene::init();
-    void NewScene::onCloseButtonClick(Ref* sender);
+    cocos2d::Scene* createScene();
+    bool init();
+    void onCloseButtonClick(cocos2d::Ref* sender);
     static void SetResourcePath(const std::string& path);
-}
-
+};
 #endif  //FUI_SCENE_H_

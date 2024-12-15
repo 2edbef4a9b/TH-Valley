@@ -1,21 +1,22 @@
-#include "AudioEngine.h"
+
+/*#include "AudioEngine.h"
 #include "avatar_ui/ui_application.h"
 #include "avatar_ui/fui_scene.h"
 #include "avatar_ui/mui_scene.h"
 
-ui_application::~ui_application() {
+UiApplication::~UiApplication() {
     // Release the shared instance of the audio engine.
     cocos2d::AudioEngine::end();
 }
 
-void SampleApplication::initGLContextAttrs() {
+void UiApplication::initGLContextAttrs() {
     // Set OpenGL context attributes:
     // red, green, blue, alpha, depth, stencil and multisamples count.
     GLContextAttrs gl_context_attrs{8, 8, 8, 8, 24, 8, 0};
     cocos2d::GLView::setGLContextAttrs(gl_context_attrs);
 }
 
-bool SampleApplication::applicationDidFinishLaunching() {
+bool UiApplication::applicationDidFinishLaunching() {
     // Initialize director.
     auto *director = cocos2d::Director::getInstance();
     auto *glview = director->getOpenGLView();
@@ -34,7 +35,7 @@ bool SampleApplication::applicationDidFinishLaunching() {
     director->setAnimationInterval(1.0 / 60);
 
     // Create a scene. it's an autorelease object.
-    auto *scene = SampleScene::create();
+    auto *scene = UiApplication::create();
     if (scene == nullptr) {
         return false;
     }
@@ -45,12 +46,12 @@ bool SampleApplication::applicationDidFinishLaunching() {
     return true;
 }
 
-void SampleApplication::applicationDidEnterBackground() {
+void UiApplication::applicationDidEnterBackground() {
     // Pause the audio engine when the application enters the background.
     cocos2d::AudioEngine::pauseAll();
 }
 
-void SampleApplication::applicationWillEnterForeground() {
+void UiApplication::applicationWillEnterForeground() {
     // Resume the audio engine when the application enters the foreground.
     cocos2d::AudioEngine::resumeAll();
-}
+}*/

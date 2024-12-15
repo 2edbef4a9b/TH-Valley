@@ -1,17 +1,13 @@
-#include "float_1_ui.h"
-#include "main_ui.h"
+#include "avatar_ui/mui_scene.h"
 
-USING_NS_CC;
-
-Scene* HelloWorld::createScene() {
-    auto scene = Scene::create();
-    auto layer = HelloWorld::create();
+cocos2d::Scene* MainScene::createScene() {
+    auto scene = cocos2d::Scene::create();
+    auto layer = cocos2d::Scene::create();
     scene->addChild(layer);
     return scene;
 }
-
-bool HelloWorld::init() {
-    if (!Layer::init()) {
+/*bool MainScene::init() {
+    if (!cocos2d::Layer::init()) {
         return false;
     }
     // 更改默认资源路径
@@ -32,4 +28,5 @@ void HelloWorld::onButtonClick(Ref* sender) {
     // 打开新界面
     auto newScene = NewScene::createScene();
     Director::getInstance()->pushScene(newScene);
-}
+}*/
+

@@ -2,8 +2,7 @@
 #define UI_APPLICIATION_H_
 
 #include "cocos2d.h"
-
-class UiApplication : public cocos2d::Application {
+/*class UiApplication : public cocos2d::Application {
 public:
     UiApplication() = default;
     ~UiApplication() override;
@@ -18,5 +17,6 @@ public:
     void applicationDidEnterBackground() override;
     void applicationWillEnterForeground() override;
 };
-
+*/
 #endif  // SAMPLE_APPLICIATION_H_
+

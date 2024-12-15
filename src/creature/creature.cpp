@@ -3,8 +3,9 @@
 #include <chrono>
 #include"creature/creature.h"
 #include<math.h>
+//operator override
 
-Creature::Exist& Creature::Exist::operator=(Exist& other)
+Exist& Exist::operator=(Exist& other)
 {
     if (this != &other)
     {
@@ -15,12 +16,18 @@ Creature::Exist& Creature::Exist::operator=(Exist& other)
     }
     return *this;
 }
-Creature::Exist::Exist()
-    : blood_{1000},
-      hunger_{100},
-      thisty_{100},
-      powerrest_{100}{}
 
+Attack& Attack::operator=(Attack& giv) {
+    this->attackdamage_ = giv.attackdamage_;
+    this->spellpower_ = giv.spellpower_;
+    return *this;
+}
+
+Defense& Defense::operator=(Defense& giv) {
+    this->physicalresistance_ = giv.physicalresistance_;
+    this->spellresistance_ = giv.spellresistance_;
+    return *this;
+}
 
 
 Creature::Creature()
@@ -53,16 +60,4 @@ bool Creature::judgedeath()
     }
     return flag;
 }
-bool Creature::inattackzone(Creature* other) {
-    std::pair<int, int> other_pos(other->postion_);
-    double dir = sqrt((other_pos.first - postion_.first) *
-                          (other_pos.first - postion_.first) +
-                      (other_pos.second - postion_.second) *
-                          (other_pos.second - postion_.second));
-    bool flag = false;
-    double exp = 0.00001;
-    if (abs(dir) < exp) {
-        flag = true;
-    }
-    return flag;
-}
+

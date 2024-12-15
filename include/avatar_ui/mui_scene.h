@@ -4,13 +4,10 @@
 #include <string>
 
 #include "cocos2d.h"
-class HelloWorld
-{
-    Scene* HelloWorld::createScene();
-    bool HelloWorld::init();
-    void HelloWorld::onButtonClick(Ref* sender);
+class MainScene {
+    cocos2d::Scene* createScene();
+    bool init();
+    void onButtonClick(cocos2d::Ref* sender);
     static void SetResourcePath(const std::string& path);
-}
-
-
+};
 #endif  // MUI_SCENE_H_
