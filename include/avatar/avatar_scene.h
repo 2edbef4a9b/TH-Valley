@@ -22,16 +22,18 @@ public:
     cocos2d::Sprite *character;
 
     Avatar haley;
-
+    bool norunning = true;
     direction dir;
     const float speed = 10.0f;
-    cocos2d::Vec2 handleKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode,
-                          cocos2d::Event* event, cocos2d::Vec2 position);
+    void handleKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode,
+                          cocos2d::Event* event);
     void handleKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode,
                            cocos2d::Event* event);
     static void SetResourcePath(const std::string& path);
 
     void animateRunning();
+
+    void update(float dt);
 
     CREATE_FUNC(avatarScene);
 };

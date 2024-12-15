@@ -15,7 +15,7 @@ void avatarScene::animateRunning() {
         }
     }
     // Create animation
-    auto animation =cocos2d::Animation::createWithSpriteFrames(animFrames, float(0.1));
+    auto animation =cocos2d::Animation::createWithSpriteFrames(animFrames, float(1));
     auto animate = cocos2d::Animate::create(animation);
     character->runAction(cocos2d::RepeatForever::create(animate));  // Run the animation indefinitely
 }
@@ -47,39 +47,38 @@ bool avatarScene::init() {
 
 void avatarScene::handleKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode,
                                     cocos2d::Event *event) {
-    moved = false;  // Mark as not moved when a key is released
+
+    moved = false;  // Mark as moved
+    norunning = false;
 }
 
-cocos2d::Vec2 avatarScene::handleKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event *event,
-    cocos2d::Vec2 position) {
-    // Define the callback for key pressed
-    double a = position.x;
-    double b = position.y;
+void avatarScene::handleKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event *event) {
+    
     // Update direction and position based on key pressed
     switch (keyCode) {
         // move
         case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_A:
         case cocos2d::EventKeyboard::KeyCode::KEY_A:
             dir = Left;    // Set direction to left
-            a -= speed;    // Move left
+           
             moved = true;  // Mark as moved
             break;
         case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_D:
         case cocos2d::EventKeyboard::KeyCode::KEY_D:
             dir = Right;   // Set direction to right
-            a += speed;    // Move right
+            
             moved = true;  // Mark as moved
             break;
         case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_W:
         case cocos2d::EventKeyboard::KeyCode::KEY_W:
             dir = Up;      // Set direction to up
-            b += speed;    // Move up
+            
             moved = true;  // Mark as moved
             break;
         case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_S:
         case cocos2d::EventKeyboard::KeyCode::KEY_S:
             dir = Down;    // Set direction to down
-            b -= speed;    // Move down
+           
             moved = true;  // Mark as moved
             break;
         // attack
@@ -89,62 +88,131 @@ cocos2d::Vec2 avatarScene::handleKeyPressed(cocos2d::EventKeyboard::KeyCode keyC
             break;
         default:
             moved = false;  // If the pressed key is not a movement key, mark as
-                            // not moved
             break;
     }
-    animateRunning();            // Trigger the running animation
-    return cocos2d::Vec2(a, b);  // Return the updated position
 }
+void avatarScene::update(float dt)
+{
+    float movedistant = speed * dt;
+    cocos2d::Vec2 position = character->getPosition();  // Get the current position of the
+    
+    if (moved && dir==2) {
+        position.y += movedistant;
+    }
+    if (moved && dir == 0) {
+        position.y -= movedistant;
+    }
+    if (moved && dir == 3) {
+        position.x -= movedistant;
+    }
+    if (moved && dir == 1) {
+        position.x += movedistant;
+    }
+    animateRunning();
+    if (moved) {
+        
+        character->setPosition(position);
+        
+        idleTime += dt;  // Increment idle time
 
+    }
+    else {
+
+        if (idleTime >= idleThreshold && norunning) {
+            // Stop animation and set to idle frame
+            character->stopAllActions();
+            character->setTextureRect(cocos2d::Rect(0, 0, 16, 32));  // Set to idle frame
+        }
+        idleTime = 0.0f;
+    }
+   
+
+
+
+}
 void avatarScene::keyboardreading() {
     // Change the default resource path
     SetResourcePath("assets");
     // Create a keyboard listener
     auto keyboardListener = cocos2d::EventListenerKeyboard::create();
-    // Define the callback for key pressed
-    cocos2d::Vec2 position =
-        character->getPosition();  // Get the current position of the sprite
-    cocos2d::Vec2 positionout;
+
     keyboardListener
         ->onKeyPressed = [=](cocos2d::EventKeyboard::KeyCode keyCode,
                              cocos2d::Event *event) mutable {
-        positionout.set(this->handleKeyPressed(keyCode, event, position).x,
-                        this->handleKeyPressed(keyCode, event, position).y);
+       
+        this->handleKeyPressed(keyCode, event);
+
+        /*
+         position =character->getPosition();  // Get the current position of the
+        sprite
         CCLOG("=======");
         CCLOG("%lf,%lf", positionout.x, positionout.y);  // Log the new position
-        CCLOG("=======");
-
-        character->setPosition(positionout);  // Update the sprite's position
-        position =
-            character
-                ->getPosition();  // Refresh the current position of the sprite
+        CCLOG("=======");*/
+        
+                   // Trigger the running animation
+        
     };
     keyboardListener->onKeyReleased =
         [=](cocos2d::EventKeyboard::KeyCode keyCode,
             cocos2d::Event *event) mutable {
             this->handleKeyReleased(keyCode, event);  // Handle key release
         };
-    CCLOG("=======");
     // Add the keyboard listener to the event dispatcher
     _eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener,
                                                              character);
+    this->scheduleUpdate();
+
+   
+    /*
+
+
+
+
+
+
+
+ this->scheduleUpdate();
+
+void Map::update(float delta) {
+    cocos2d::Vec2 currentPos = getPos();
+    float moveStep = 25.0f * delta;  // 确保移动速度与帧率无关
+
+    if (isKeyPressedW) {
+        currentPos.y += moveStep;
+    }
+    if (isKeyPressedS) {
+        currentPos.y -= moveStep;
+    }
+    if (isKeyPressedA) {
+        currentPos.x -= moveStep;
+    }
+    if (isKeyPressedD) {
+        currentPos.x += moveStep;
+    }
+
+    if (isKeyPressedW || isKeyPressedS || isKeyPressedA || isKeyPressedD) {
+        setPlayerPos(currentPos);
+    }
+}
+*/
     // Schedule a function to update idle state
-    schedule(
-        [this](float dt) {
+    /*schedule(
+        [=](float dt) {
             // Update idle time if no input
             if (!moved) {
                 idleTime += dt;  // Increment idle time
                 if (idleTime >= idleThreshold) {
                     // Stop animation and set to idle frame
                     character->stopAllActions();
-                    character->setTextureRect(
-                        cocos2d::Rect(0, 0, 16, 32));  // Set to idle frame
+                    character->setTextureRect(cocos2d::Rect(0, 0, 16, 32));  // Set to idle frame
                 }
             } else {
                 idleTime = 0.0f;  // Reset idle time if moved
+                character->setPosition(positionout);  // Update the sprite's position
             }
         },
-        "idle_update_key");
+        "idle_update_key");*/
+    
 }
 
 

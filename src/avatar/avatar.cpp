@@ -68,8 +68,10 @@ void Avatar::experiencegain(double exp)  {
 Avatar::Avatar(std::string id , int choose) {
     wepon_=weponlist.at(choose);
     ocupation_ = ocupationlist.at(choose);
+
     id_=id;
     choose_ = choose;
+
 }
 Avatar::Avatar() {}
 
