@@ -44,14 +44,21 @@ void th_valley::TitleScreen::AddBackground(
 
 void th_valley::TitleScreen::AddButton(const std::string_view& text,
                                        const float pox_x, const float pos_y,
-                                       const std::function<void()>& callback) {
-    // Add the button to the scene.
-    auto* button = cocos2d::ui::Button::create("assets/gui/bar/purple.png");
-    constexpr uint8_t kButtonNormalOpacity = 100;
-    constexpr uint8_t kButtonSelectedOpacity = 160;
+                                       const std::function<void()>& callback,
+                                       const std::string_view& color) {
+    // Constants for button appearance.
+    constexpr uint8_t kButtonNormalOpacity = 160;
+    constexpr uint8_t kButtonSelectedOpacity = 200;
     constexpr uint8_t kButtonPressedOpacity = 230;
+    constexpr std::string_view kImageExtension = ".png";
+    constexpr std::string_view kImagePattern = "assets/gui/bar/";
     constexpr size_t kFontSize = 36;
     constexpr float kButtonScale = 0.05F;
+
+    // Add the button to the scene.
+    auto* button = cocos2d::ui::Button::create(std::string(kImagePattern) +
+                                               std::string(color) +
+                                               std::string(kImageExtension));
 
     // Set the zoom scale to 0 so the button doesn't zoom in when clicked.
     button->setZoomScale(kButtonScale);
@@ -130,14 +137,20 @@ void th_valley::TitleScreen::AddLabels() {
     constexpr float kLabelSpacing = 120;
 
     // Add the buttons to the scene.
-    AddButton("SinglePlayer", label_pos_x, label_pos_y,
-              []() { CCLOG("GameState Change: TitleScreen -> SinglePlayer"); });
-    AddButton("MultiPlayer", label_pos_x, label_pos_y - kLabelSpacing,
-              []() { CCLOG("GameState Change: TitleScreen -> MultiPlayer"); });
-    AddButton("Settings", label_pos_x, label_pos_y - (kLabelSpacing * 2),
-              []() { CCLOG("GameState Change: TitleScreen -> Settings"); });
-    AddButton("Exit", label_pos_x, label_pos_y - (kLabelSpacing * 3),
-              []() { CCLOG("GameState Change: TitleScreen -> Exit"); });
+    AddButton(
+        "SinglePlayer", label_pos_x, label_pos_y,
+        []() { CCLOG("GameState Change: TitleScreen -> SinglePlayer"); },
+        "purple");
+    AddButton(
+        "MultiPlayer", label_pos_x, label_pos_y - kLabelSpacing,
+        []() { CCLOG("GameState Change: TitleScreen -> MultiPlayer"); },
+        "yellow");
+    AddButton(
+        "Settings", label_pos_x, label_pos_y - (kLabelSpacing * 2),
+        []() { CCLOG("GameState Change: TitleScreen -> Settings"); }, "green");
+    AddButton(
+        "Exit", label_pos_x, label_pos_y - (kLabelSpacing * 3),
+        []() { CCLOG("GameState Change: TitleScreen -> Exit"); }, "magenta");
 }
 
 void th_valley::TitleScreen::AddTitle() {

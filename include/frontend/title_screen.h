@@ -23,7 +23,8 @@ public:
 private:
     void AddBackground(const std::string_view& background_image);
     void AddButton(const std::string_view& text, float pox_x, float pos_y,
-                   const std::function<void()>& callback);
+                   const std::function<void()>& callback,
+                   const std::string_view& color = "purple");
     void AddLabels();
     void AddTitle();
 
