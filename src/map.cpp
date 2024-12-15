@@ -85,6 +85,7 @@ Map* Map::create(const std::string& tmxFile) {
 }
 
 void Map::setPlayerPos(cocos2d::Vec2 pos) {
+
     if (isCollisionAtAnyLayer(pos)) {
         CCLOG("Collision detected, player position not updated");
     } else {
@@ -114,12 +115,10 @@ void Map::setViewpointCenter(cocos2d::Vec2 pos) {
     auto mapSize = this->getContentSize();
 
     auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
-    int x = MAX(pos.x, visibleSize.width / 2);
-    int y = MAX(pos.y, visibleSize.height / 2);
-    x = MIN(x, (mapSize.width * 16) -
-                   visibleSize.width / 2);
-    y = MIN(y, (mapSize.height * 16) -
-                   visibleSize.height / 2);
+    float x = MAX(pos.x, visibleSize.width / 2);
+    float y = MAX(pos.y, visibleSize.height / 2);
+    x = MIN(x, (mapSize.width) - visibleSize.width / 2);
+    y = MIN(y, (mapSize.height) - visibleSize.height / 2);
 
     // ÆÁÄ»ÖÐÐÄµã
     cocos2d::Vec2 centerPoint =
