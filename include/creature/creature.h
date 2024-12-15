@@ -4,39 +4,52 @@
 #include<string>
 #include "cocos2d.h"
 
-struct Attack
-{
-    double attackdamage_;
-    double spellpower_;
-};
-
-class Creature
-{
+class Creature{
 public:
+    //init:
     Creature();
     Creature& operator= (Creature& other);
     virtual ~Creature();
-    virtual void init() = 0;
-    virtual void move() = 0;
+
+    // useful function:
     void existchange();
     bool judgedeath();
-    bool inattackzone(Creature* other);
+    virtual void experiencegain() = 0;
+
+    // connect to Exist
+    
+    // read only:
+    double fetchblood();
+    double fetchpowerrest();
+    int fetchgrade();
+    double fetchattackzone();
+    // rewrite:
+    void setblood(double newblood);
+    void setpowerrest(double newpowerrest);
+    void setgrade(int newgrade);
+    void setzttackzone(double newattackzone);
+
+
+    std::pair<double, double> postion_;
+
 private:
-    class Exist {
-    private:
+
+    struct Exist {
         double blood_;
         double hunger_;
         double thisty_;
         double powerrest_;
-    public:
-        friend class Creature;
         Exist& operator=(Exist& other);
-        Exist();
     };
-    Exist exist_;
-    Attack attack_;
-    std::pair<int, int> postion_;
+
+    const Exist casterExist = {1000, 100, 100, 100};
+    const Exist saberExist = {1200, 100, 100, 100};
+    const Exist shilderExist = {2000, 100, 100, 100};
+
+
     int grade_;
+    Exist exist_;
+    double attackzone;
 };
 
 #endif  // CREATURE_H_

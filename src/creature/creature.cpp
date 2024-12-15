@@ -1,55 +1,70 @@
 #include <cstddef>
-#include <string>
 #include <chrono>
 #include"creature/creature.h"
 #include<math.h>
-//operator override
 
-Exist& Exist::operator=(Exist& other)
-{
-    if (this != &other)
-    {
+Creature::Exist& Creature::Exist::operator=(Exist& other) {
+    if (this != &other) {
         this->blood_ = other.blood_;
         this->hunger_ = other.hunger_;
         this->thisty_ = other.thisty_;
-        this->powerrest_= other.powerrest_;
+        this->powerrest_ = other.powerrest_;
     }
     return *this;
 }
 
-Attack& Attack::operator=(Attack& giv) {
-    this->attackdamage_ = giv.attackdamage_;
-    this->spellpower_ = giv.spellpower_;
-    return *this;
+double Creature::fetchblood() {
+    return exist_.blood_;
 }
 
-Defense& Defense::operator=(Defense& giv) {
-    this->physicalresistance_ = giv.physicalresistance_;
-    this->spellresistance_ = giv.spellresistance_;
-    return *this;
+double Creature::fetchpowerrest() {
+    return exist_.powerrest_;
 }
 
+int Creature::fetchgrade(){
+    return grade_;
+}
+
+double Creature::fetchattackzone(){
+    return attackzone;
+}
+
+void Creature::setblood(double newblood) {
+    exist_.blood_ = newblood;
+}
+
+void Creature::setpowerrest(double newpowerrest) {
+    exist_.powerrest_ = newpowerrest;
+}
+
+void Creature::setgrade(int newgrade) {
+    grade_ = newgrade;
+}
+
+void Creature::setzttackzone(double newattackzone){
+    attackzone = newattackzone;
+}
 
 Creature::Creature()
-    : grade_{1}, postion_{100, 200}, exist_{}, attack_{100, 100} {}
+    : grade_{1}, postion_{240, 160}, exist_{0,0,0,0}{}
    
 
 Creature& Creature::operator=(Creature& other) {
     if (this!=&other)
     {
         exist_=other.exist_;
-        attack_=other.attack_;
         postion_=other.postion_;
         grade_=other.grade_;
     }
     return *this;
 }
-Creature::~Creature(){}
+
 void Creature::existchange()
 {
     exist_.hunger_ *= 0.99;
     exist_.thisty_ *= 0.99;
 }
+
 bool Creature::judgedeath() 
 {
     bool flag=false;
@@ -60,4 +75,6 @@ bool Creature::judgedeath()
     }
     return flag;
 }
+
+Creature::~Creature() {};
 
