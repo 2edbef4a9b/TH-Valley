@@ -36,7 +36,7 @@ void th_valley::ClientController::Update() {
         case ClientState::kTitleScreen:
             cocos2d::Director::getInstance()->replaceScene(
                 th_valley::TitleScreen::CreateScene(
-                    std::make_shared<ClientController>()));
+                    std::weak_ptr<ClientController>(shared_from_this())));
             CCLOG("GameState Change to TitleScreen");
             break;
         default:

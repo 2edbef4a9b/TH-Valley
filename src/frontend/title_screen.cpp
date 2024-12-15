@@ -24,7 +24,7 @@ bool th_valley::TitleScreen::init() {
 }
 
 cocos2d::Scene* th_valley::TitleScreen::CreateScene(
-    const std::shared_ptr<ClientController>& client_controller) {
+    const std::weak_ptr<ClientController>& client_controller) {
     auto* scene = TitleScreen::create();
     scene->client_controller_ = client_controller;
     return scene;
