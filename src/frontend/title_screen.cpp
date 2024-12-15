@@ -46,7 +46,7 @@ void th_valley::TitleScreen::AddButton(const std::string_view& text,
                                        const float pox_x, const float pos_y,
                                        const std::function<void()>& callback) {
     // Add the button to the scene.
-    auto* button = cocos2d::ui::Button::create("gui/bar/purple.png");
+    auto* button = cocos2d::ui::Button::create("assets/gui/bar/purple.png");
     constexpr uint8_t kButtonNormalOpacity = 100;
     constexpr uint8_t kButtonSelectedOpacity = 160;
     constexpr uint8_t kButtonPressedOpacity = 230;
@@ -65,22 +65,23 @@ void th_valley::TitleScreen::AddButton(const std::string_view& text,
 
     // Lambda to update the button's appearance.
     auto update_button_appearance = [=](const uint8_t opacity,
-                                                       const float text_scale) {
+                                        const float text_scale) {
         button->setOpacity(opacity);
         label->setScale(text_scale);
     };
 
     // Change button texture on mouse hover.
     auto* mouse_listener = cocos2d::EventListenerMouse::create();
-    mouse_listener->onMouseMove = [=](const cocos2d::EventMouse* event) mutable {
-        if (button->getBoundingBox().containsPoint(
-                event->getLocationInView())) {
-            update_button_appearance(kButtonSelectedOpacity,
-                                     1.0F + kButtonScale);
-        } else {
-            update_button_appearance(kButtonNormalOpacity, 1.0F);
-        }
-    };
+    mouse_listener->onMouseMove =
+        [=](const cocos2d::EventMouse* event) mutable {
+            if (button->getBoundingBox().containsPoint(
+                    event->getLocationInView())) {
+                update_button_appearance(kButtonSelectedOpacity,
+                                         1.0F + kButtonScale);
+            } else {
+                update_button_appearance(kButtonNormalOpacity, 1.0F);
+            }
+        };
 
     // Add the mouse listener to the button.
     cocos2d::Director::getInstance()

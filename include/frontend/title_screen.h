@@ -27,11 +27,12 @@ private:
     void AddLabels();
     void AddTitle();
 
-    constexpr static std::string_view kFontPath = "fonts/DFHannotateW5-A.ttf";
+    constexpr static std::string_view kFontPath =
+        "assets/fonts/DFHannotateW5-A.ttf";
     constexpr static std::string_view kBackgroundImagePath =
-        "gui/title/koishi.jpg";
+        "assets/gui/title/koishi.jpg";
     constexpr static std::string_view kTitleText =
-        "Touhou Valley\n~ The Last Remote";
+        "TH Valley\n~ The Last Remote";
 
     cocos2d::Size visible_size_;
     cocos2d::Vec2 visible_origin_;

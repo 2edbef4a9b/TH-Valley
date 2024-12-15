@@ -3,7 +3,7 @@
 #include "frontend/title_screen.h"
 #include "sample/sample_application.h"
 
-class TitleScreenTestsApp : public SampleApplication {
+class TitleScreenTestsApp : public th_valley::SampleApplication {
 public:
     bool applicationDidFinishLaunching() override {
         // Initialize the director.
@@ -15,14 +15,20 @@ public:
         }
 
         // Set the window size.
-        glview->setFrameSize(1920, 1080);
+        glview->setFrameSize(kWindowSize.width, kWindowSize.height);
 
         // Improve resolution on high-res screens.
-        glview->setDesignResolutionSize(1920, 1080,
+        glview->setDesignResolutionSize(kDesignResolutionSize.width, kDesignResolutionSize.height,
                                         ResolutionPolicy::NO_BORDER);
 
         // Set FPS. The default value is 1.0/60 if you don't call this.
-        director->setAnimationInterval(1.0 / 60);
+        director->setAnimationInterval(kAnimationInterval);
+
+        // Remove the last directory name from the resource root path.
+        UpdateResourcePath();
+        const std::string resource_root_path =
+            cocos2d::FileUtils::getInstance()->getDefaultResourceRootPath();
+        CCLOG("Resource root path: %s", resource_root_path.c_str());
 
         // Create a scene. It's an autorelease object.
         auto *scene = th_valley::TitleScreen::create();
@@ -38,40 +44,9 @@ public:
 };
 
 class TitleScreenTests : public ::testing::Test {
-public:
-    static void SetResourcePath(const std::string &path) {
-        auto *file_utils = cocos2d::FileUtils::getInstance();
-
-        // Get the current resource root absolute path.
-        std::string resource_root_path =
-            cocos2d::FileUtils::getInstance()->getDefaultResourceRootPath();
-
-        // Replace the last directory name with the new path.
-        const size_t pos =
-            resource_root_path.find_last_of('/', resource_root_path.size() - 2);
-        if (pos != std::string::npos) {
-            resource_root_path.replace(pos + 1, std::string::npos, path + "/");
-        } else {
-            resource_root_path = path + "/";
-        }
-
-        // Update the default resource root path.
-        file_utils->setDefaultResourceRootPath(resource_root_path);
-    }
-
-    void SetUp() override {
-        // Change the default resource root path from "Resources/" to "assets/".
-        SetResourcePath("assets");
-    }
-
 protected:
     TitleScreenTestsApp app_;
 };
-
-TEST_F(TitleScreenTests, TitleScreen) {
-    // The test is successful if the title screen is displayed.
-    EXPECT_TRUE(app_.applicationDidFinishLaunching());
-}
 
 TEST_F(TitleScreenTests, Run) {
     // Test running the application.
