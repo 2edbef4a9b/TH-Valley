@@ -2,6 +2,7 @@
 #define SAMPLE_SCENE_H_
 
 #include "cocos2d.h"
+#include "ui/CocosGUI.h"
 
 class SampleScene : public cocos2d::Scene {
 public:
@@ -17,6 +18,17 @@ public:
     static void SetResourcePath(const std::string& path);
 
     CREATE_FUNC(SampleScene);
+};
+
+class InfoScene : public cocos2d::Scene {
+private:
+    cocos2d::ui::Button* infoButton;
+    cocos2d::ui::Button* waterButton;
+    cocos2d::ui::Button* fertilizeButton;
+    cocos2d::ui::Button* harvestButton;
+
+public:
+    bool init() override;
 };
 
 #endif  // SAMPLE_SCENE_H_

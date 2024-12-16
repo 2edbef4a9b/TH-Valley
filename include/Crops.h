@@ -3,14 +3,15 @@
 
 #include "agriculture.h"
 
-class Strawberry : public Crops {
+class Strawberry: public Crops {
 public:
     Strawberry() {
         CropName = "Strawberry";
         CropType = "Fruit";
-        CurrentGrowthStage = 1;
+        CurrentGrowthStage = 0;
         MaxGrowthStage = 3;
         GrowthDuration = {300, 300, 300};
+        GrowthStage = {"Seed", "Seedling", "Maturation", "Ripened"};
 
         GrowthSituation = {"Normal"};
         isNormal = 1;

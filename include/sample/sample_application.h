@@ -19,4 +19,6 @@ public:
     void applicationWillEnterForeground() override;
 };
 
+
+
 #endif  // SAMPLE_APPLICIATION_H_

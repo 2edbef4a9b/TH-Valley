@@ -15,10 +15,11 @@ public:
     Weather() {
         WeatherType = "Clear";
         TypeDuringTime = 0;
+        Temperature = 15;
     }
     void WeatherSet(const std::string weather);
     void WeatherShow();
-    void WeatherAutomaticUpdate();
+    void WeatherAutomaticUpdate(WorldTime Time);
 };
 
 #endif

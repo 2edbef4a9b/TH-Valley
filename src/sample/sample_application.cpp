@@ -2,6 +2,7 @@
 
 #include "AudioEngine.h"
 #include "sample/sample_scene.h"
+#include "CropsInformationScene.h"
 
 SampleApplication::~SampleApplication() {
     // Release the shared instance of the audio engine.
@@ -35,6 +36,7 @@ bool SampleApplication::applicationDidFinishLaunching() {
 
     // Create a scene. it's an autorelease object.
     auto *scene = SampleScene::create();
+    //auto *scene = InfoScene::create();
     if (scene == nullptr) {
         return false;
     }

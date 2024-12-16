@@ -6,6 +6,7 @@
 #include "weather.h"
 #include <vector>
 #include <string>
+#include <utility>
 
 struct Position {
     int x;
@@ -14,28 +15,27 @@ struct Position {
     
 class agriculture {
 protected:
-    WorldTime CurrentTime;
-    Weather CurrentWeather;
+    WorldTime *CurrentTime;
+    Weather *CurrentWeather;
 };
 
 class CropProduction: public agriculture {
-    friend class Crops;
 protected:
     int PlayerCropLevel;
     int TotalCrops;
-private:
-    std::vector<Crops> AllCrop;
 };
 
 class Crops: public CropProduction {
-protected:
+public:
     // Crops Information
     std::string CropName;
     std::string CropType;
     int CurrentGrowthStage;
     int MaxGrowthStage;
     std::vector < int > GrowthDuration;
+    std::vector<std::string> GrowthStage;
 
+    // Situation
     std::vector<std::string> GrowthSituation;
     
     bool isNormal;
@@ -61,19 +61,67 @@ protected:
 
     // position
     Position CropPosition;
-public:
-    Crops();
-    ~Crops();
-    virtual void ShowCropInfo();
-    virtual void DurationCalculate();
-    virtual void CropPlant(const Position &position);
+
+    void getTime(WorldTime *Time);
+    void getWeather(Weather *weather);
+    //virtual void ShowCropInfo();
+    //virtual void DurationCalculate();
+    //virtual void CropPlant(const Position &position);
     virtual void CropWatering();
-    virtual void CropHavest();
+    //virtual void CropHavest();
     virtual void CropFertilize();
-    virtual void CropRemove();
+    //virtual void CropRemove();
     virtual void CropAutomaticUpdate();
     virtual void UpdateSituation(const std::string &Situation, const bool &Compare, 
                                  bool &isSituation, const int &toDeath);
+};
+
+class AnimalHusbandry : public agriculture {
+protected:
+    int PlayerAnimalLevel;
+    int TotalAnimals;
+};
+
+class Animals : public AnimalHusbandry {
+public:
+    // Animal Information
+    std::string AnimalName;
+    int CurrentGrowthStage;
+    int MaxGrowthStage;
+    std::vector<int> GrowthDuration;
+    std::vector<std::string> GrowthStage;
+    std::vector<std::string> Output;
+    std::vector<int> OutputNumber;
+
+    std::vector<std::string> GrowthSituation;
+
+    bool isUnhappy;
+    bool isHungry;
+
+    int GrowthSpeed;
+
+    // Requirement
+    int Happiness; // ÐÒ¸£¶È
+    int Saturation; // ±¥Ê³¶È
+    std::vector<std::string> Food;
+
+    void Stroke();
+    void Eat(std::string EatFood);
+    void RandomMove();
+    void AnimalAutomaticUpdate();
+    void AnimalShowInfo();
+};
+
+class FarmHouse : public AnimalHusbandry {
+public:
+    int Level;
+    std::vector<std::pair<std::string, int> > FoodLeft;
+    std::vector<std::pair<std::string, int> > Output;
+
+    FarmHouse() { Level = 1; }
+    void InfoShow();
+    void addFood(std::string Foodtype, int number);
+    std::pair < std::string, int > ProductionOutput();
 };
 
 #endif

@@ -73,4 +73,5 @@ void WorldTime::TimeSet(const int NewYear, const int NewMonth, const int NewDay,
 
 void WorldTime::TimeShow() {
     CCLOG("%d %d %d %d %d %d\n", Year, Month, Day, Hour, Minute, Second);
+    CCLOG("%s\n", Season.c_str());
 }
