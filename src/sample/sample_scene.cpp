@@ -25,7 +25,7 @@ bool th_valley::SampleScene::init() {
     this->addChild(label);*/
 
     
-    auto _map = Map::create("assets/maps/Farm.tmx");
+    auto _map = Map::create("assets/maps/Town.tmx");
     if (_map) {
         auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
         auto mapSize = _map->getContentSize();

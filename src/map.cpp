@@ -13,15 +13,20 @@ bool Map::initWithTMXFile(const std::string& tmxFile) {
 
     // 初始化地图的其他内容
     std::vector<std::string> layerNames = {
-        "Back", "Back2", "Block", "Interact", "Building", "Paths", "Front"};
+        "Back", "Back2", "Block", "Interact", "Building", "Paths", "Front", "Front2"};
 
+    int zOrder = -5;  // 初始 z-order，从 0 开始
     for (const auto& name : layerNames) {
         auto layer = tileMap->getLayer(name);
         if (layer) {
+            if (name == "Front") {
+                zOrder += 5;
+            }
+            layer->setLocalZOrder(zOrder++);  // 每层递增 z-order
             mapLayer[name] = layer;
-            CCLOG("Map layer '%s' loaded successfully", name.c_str());
+            CCLOG("Layer '%s' added with z-order %d", name.c_str(), zOrder - 1);
         } else {
-            CCLOG("Map layer '%s' not found", name.c_str());
+            CCLOG("Layer '%s' not found", name.c_str());
         }
     }
 
@@ -38,11 +43,14 @@ bool Map::initWithTMXFile(const std::string& tmxFile) {
         float x = player.at("x").asFloat();
         float y = player.at("y").asFloat();
         playerPos = cocos2d::Vec2(x, y);
+        
     } else {
         CCLOG("Player object not found");
         playerPos = cocos2d::Vec2::ZERO;
     }
     CCLOG("Player position set to: %f, %f", playerPos.x, playerPos.y);
+    CCLOG("Player position set to Tile: %f, %f", tileCoordFromPos(playerPos).x,
+          tileCoordFromPos(playerPos).y);
     setViewpointCenter(playerPos);  // 更新视角中心
 
     // 加载纹理
@@ -64,10 +72,7 @@ bool Map::initWithTMXFile(const std::string& tmxFile) {
     CCLOG("Player sprite created at Tile: %f %f", tileCoordFromPos(playerPos).x,
           tileCoordFromPos(playerPos).y);
     // 将精灵添加到地图
-    this->addChild(playerSprite, 10);
-
-
-    //createMiniMap();
+    this->addChild(playerSprite, 2);
 
     return true;
 }
@@ -101,7 +106,6 @@ void Map::setPlayerPos(cocos2d::Vec2 pos) {
 }
 
 cocos2d::Vec2 Map::tileCoordFromPos(cocos2d::Vec2 pos) {
-    //// 考虑地图的偏移量
     //pos = this->convertToNodeSpace(pos);
     // 将像素坐标转换为瓦片坐标
     int x = pos.x / tileMap->getTileSize().width;
@@ -112,13 +116,13 @@ cocos2d::Vec2 Map::tileCoordFromPos(cocos2d::Vec2 pos) {
 }
 
 void Map::setViewpointCenter(cocos2d::Vec2 pos) {
-    auto mapSize = this->getContentSize();
-
+    auto mapSize = this->getMapSize();
+    auto tileSize = this->getTileSize();
     auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
     float x = MAX(pos.x, visibleSize.width / 2);
     float y = MAX(pos.y, visibleSize.height / 2);
-    x = MIN(x, (mapSize.width) - visibleSize.width / 2);
-    y = MIN(y, (mapSize.height) - visibleSize.height / 2);
+    x = MIN(x, (mapSize.width * tileSize.width) - visibleSize.width / 2);
+    y = MIN(y, (mapSize.height * tileSize.height) - visibleSize.height / 2);
 
     // 屏幕中心点
     cocos2d::Vec2 centerPoint =
@@ -131,6 +135,14 @@ void Map::setViewpointCenter(cocos2d::Vec2 pos) {
     cocos2d::Vec2 offset = centerPoint - actualPoint;
 
     CCLOG("offset: %f, %f", offset.x, offset.y);
+
+    // 如果地图小于窗口大小，则居中显示
+    if (mapSize.width * tileSize.width < visibleSize.width) {
+        offset.x = (visibleSize.width - mapSize.width * tileSize.width) / 2;
+    }
+    if (mapSize.height * tileSize.height < visibleSize.height) {
+        offset.y = (visibleSize.height - mapSize.height * tileSize.height) / 2;
+    }
 
     this->setPosition(offset);
 }
@@ -185,6 +197,8 @@ bool Map::isPortal(cocos2d::Vec2 pos, std::string ObjectLayerName) {
             auto rect = cocos2d::Rect(dict["x"].asFloat(), dict["y"].asFloat(),
                                       dict["width"].asFloat(),
                                       dict["height"].asFloat());
+            CCLOG("Checking portal at rect: %f, %f, %f, %f", rect.origin.x,
+                  rect.origin.y, rect.size.width, rect.size.height);
             if (rect.containsPoint(pos)) {
                 CCLOG("Portal detected at tile: %f, %f", pos.x, pos.y);
                 // 根据具体名称完成不同的切图操作
@@ -203,9 +217,9 @@ void Map::triggerPortalEvent(const std::string& portalName) {
         CCLOG("Triggering %s event", portalName.c_str());
         auto house = Map::create("assets/maps/FarmHouse.tmx");
         if (house) {
-            house->setPosition(cocos2d::Vec2(800, 800));
+            house->setPosition(cocos2d::Vec2(200, 200));
             house->setVisible(true);
-            this->addChild(house);
+            this->addChild(house, 12);
         } else
             CCLOG("Failed to load map maps/FarmHouse.tmx");
     } else {
@@ -232,6 +246,7 @@ cocos2d::Vec2 Map::getPos() { return playerPos; }
 void Map::updateTileAt(cocos2d::Vec2 tileCoord, int newGID, std::string LayerName) {
     auto layer = tileMap->getLayer(LayerName);
     layer->setTileGID(newGID, tileCoord);
+    CCLOG("Tile updated at %f, %f with GID: %d", tileCoord.x, tileCoord.y, newGID);
 }
 
 void Map::onEnter() {
@@ -242,7 +257,7 @@ void Map::onEnter() {
 
     listener->onMouseDown = [this](cocos2d::Event* event) {
         auto mouseEvent = dynamic_cast<cocos2d::EventMouse*>(event);
-        auto pos = mouseEvent->getLocationInView();
+        auto pos = this->convertToNodeSpace(mouseEvent->getLocationInView());
         auto tilePos = tileCoordFromPos(pos);
 
         CCLOG("Mouse Down Tile: %f, %f", tilePos.x, tilePos.y);
@@ -261,7 +276,7 @@ void Map::onEnter() {
 
     listener->onMouseMove = [this](cocos2d::Event* event) {
         auto mouseEvent = dynamic_cast<cocos2d::EventMouse*>(event);
-        auto pos = mouseEvent->getLocationInView();
+        auto pos = this->convertToNodeSpace(mouseEvent->getLocationInView());
         auto tilePos = tileCoordFromPos(pos);
         //CCLOG("Mouse Move Tile: %f, %f", tilePos.x, tilePos.y);
         //CCLOG("Mouse Move: %f, %f", pos.x, pos.y);
@@ -352,7 +367,7 @@ void Map::load() {
 
 void Map::update(float delta) {
     cocos2d::Vec2 currentPos = getPos();
-    float moveStep = 25.0f * delta;  // 确保移动速度与帧率无关
+    float moveStep = 100.0f * delta;  // 确保移动速度与帧率无关
 
     if (isKeyPressedW) {
         currentPos.y += moveStep;
