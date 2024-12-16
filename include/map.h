@@ -26,7 +26,6 @@ protected:
     bool isKeyPressedA;
     bool isKeyPressedS;
     bool isKeyPressedD;
-
 public:
     Map() = default;
     ~Map() override = default;
