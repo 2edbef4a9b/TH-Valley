@@ -22,7 +22,6 @@ public:
     cocos2d::Sprite *character;
 
     Avatar haley;
-    bool norunning = true;
     direction dir;
     const float speed = 10.0f;
     void handleKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode,
