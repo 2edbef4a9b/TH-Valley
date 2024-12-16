@@ -90,6 +90,14 @@ Map* Map::create(const std::string& tmxFile) {
 }
 
 void Map::setPlayerPos(cocos2d::Vec2 pos) {
+    auto mapSize = this->getMapSize();
+    auto tileSize = this->getTileSize();
+    float mapWidth = mapSize.width * tileSize.width;
+    float mapHeight = mapSize.height * tileSize.height;
+
+    // 边界检查，确保人物位置在地图范围内
+    pos.x = std::max(0.0f, std::min(pos.x, mapWidth));
+    pos.y = std::max(0.0f, std::min(pos.y, mapHeight));
 
     if (isCollisionAtAnyLayer(pos)) {
         CCLOG("Collision detected, player position not updated");

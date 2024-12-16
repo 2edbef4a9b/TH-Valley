@@ -12,7 +12,7 @@ struct Tile {
 };
 
 class Map : public cocos2d::TMXTiledMap {
-private:
+protected:
     cocos2d::TMXTiledMap* tileMap;
     std::unordered_map<std::string, cocos2d::TMXLayer*> mapLayer;
     cocos2d::TMXObjectGroup* objectGroup;   // ÎïÆ·×é
@@ -25,7 +25,6 @@ private:
     bool isKeyPressedA;
     bool isKeyPressedS;
     bool isKeyPressedD;
-
 public:
     Map() = default;
     ~Map() override = default;

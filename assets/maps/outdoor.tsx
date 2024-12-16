@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tileset name="outdoor" tilewidth="16" tileheight="16" tilecount="2400" columns="30">
  <image source="outdoor.png" width="480" height="1280"/>
+ <tile id="112">
+  <properties>
+   <property name="Collidable" value="true"/>
+  </properties>
+ </tile>
+ <tile id="113">
+  <properties>
+   <property name="Collidable" value="true"/>
+  </properties>
+ </tile>
+ <tile id="114">
+  <properties>
+   <property name="Collidable" value="true"/>
+  </properties>
+ </tile>
  <tile id="117">
   <properties>
    <property name="Collidable" value="false"/>
@@ -14,6 +29,21 @@
  <tile id="119">
   <properties>
    <property name="Collidable" value="false"/>
+  </properties>
+ </tile>
+ <tile id="142">
+  <properties>
+   <property name="Collidable" value="true"/>
+  </properties>
+ </tile>
+ <tile id="143">
+  <properties>
+   <property name="Collidable" value="true"/>
+  </properties>
+ </tile>
+ <tile id="144">
+  <properties>
+   <property name="Collidable" value="true"/>
   </properties>
  </tile>
  <tile id="146">
@@ -87,6 +117,51 @@
   </properties>
  </tile>
  <tile id="229">
+  <properties>
+   <property name="Collidable" value="true"/>
+  </properties>
+ </tile>
+ <tile id="320">
+  <properties>
+   <property name="Collidable" value="true"/>
+  </properties>
+ </tile>
+ <tile id="321">
+  <properties>
+   <property name="Collidable" value="true"/>
+  </properties>
+ </tile>
+ <tile id="349">
+  <properties>
+   <property name="Collidable" value="true"/>
+  </properties>
+ </tile>
+ <tile id="488">
+  <properties>
+   <property name="Collidable" value="true"/>
+  </properties>
+ </tile>
+ <tile id="489">
+  <properties>
+   <property name="Collidable" value="true"/>
+  </properties>
+ </tile>
+ <tile id="490">
+  <properties>
+   <property name="Collidable" value="true"/>
+  </properties>
+ </tile>
+ <tile id="491">
+  <properties>
+   <property name="Collidable" value="true"/>
+  </properties>
+ </tile>
+ <tile id="521">
+  <properties>
+   <property name="Collidable" value="true"/>
+  </properties>
+ </tile>
+ <tile id="551">
   <properties>
    <property name="Collidable" value="true"/>
   </properties>
