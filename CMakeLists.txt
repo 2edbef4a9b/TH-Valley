@@ -188,6 +188,7 @@ function(add_googletest TEST_MODULE TEST_NAME)
         gtest
         gtest_main
         gmock
+        gmock_main
         cocos2d
         ${Boost_LIBRARIES}
     )
@@ -207,4 +208,5 @@ if(BUILD_TESTS)
     add_googletest(sample sample_application_tests)
     add_googletest(frontend title_screen_tests)
     add_googletest(utility logger_tests)
+    add_googletest(server session_tests)
 endif()
