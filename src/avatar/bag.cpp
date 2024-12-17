@@ -52,6 +52,17 @@ void Bag::reduce(std::string key) {
     CCLOG("notfind");
 }
 void Bag::openbag() {
+
+
+
+
+
+
+
+
+
+
+
     CCLOG("open");
 }
 Bag::Bag() :currentnum(0),maxnum(100){}

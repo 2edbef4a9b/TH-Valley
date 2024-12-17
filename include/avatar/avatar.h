@@ -13,7 +13,7 @@ public:
 
     bool inattackzone(Avatar* other);
     void experiencegain(double exp) override;
-    void upgradeshow();
+
     void upgrade();
     void doattack(bool isAttack,int dir) override;
 

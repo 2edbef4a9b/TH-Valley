@@ -75,15 +75,7 @@ Avatar::Avatar(std::string id , int choose) {
 }
 Avatar::Avatar() {}
 
-// should be override
-void Avatar::upgradeshow() {
 
-
-
-
-
-    CCLOG("upgrade!");
-}
 
 
 void Avatar::upgrade()
@@ -94,7 +86,6 @@ void Avatar::upgrade()
     experiencelist.at(0) = fetchgrade();
     attack_ = attack_ + Attack{100, 100};
     defense_ = defense_ + Defense{100, 100};
-    upgradeshow();
 }
 
 // should be override

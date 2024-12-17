@@ -27,7 +27,7 @@ bool avatarApplication::applicationDidFinishLaunching() {
     glview->setFrameSize(1980, 1080);
 
     // Set the design resolution size to improve resolution on high-res screens.
-    glview->setDesignResolutionSize(192*2, 108*2, ResolutionPolicy::NO_BORDER);
+    glview->setDesignResolutionSize(192*4, 108*4, ResolutionPolicy::NO_BORDER);
 
     // Set FPS. the default value is 1.0/60 if you don't call this.
     director->setAnimationInterval(1.0 / 60);

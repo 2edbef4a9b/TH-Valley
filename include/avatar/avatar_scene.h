@@ -22,17 +22,20 @@ public:
     cocos2d::Sprite *character;
     bool isattack = false;
     Creature*Haley= new Avatar;
-    void blinkTo(cocos2d::Vec2 position);
+    void cutting(cocos2d::Vec2 position);
+    void mining(cocos2d::Vec2 position);
+    void fishing(cocos2d::Vec2 position);
+    void cultivating(cocos2d::Vec2 position);
     direction dir;
-    const float speed = 10.0f;
+    const float speed = 40.0f;
     void handleKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode,
                           cocos2d::Event* event);
     void handleKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode,
                            cocos2d::Event* event);
     static void SetResourcePath(const std::string& path);
 
-    void animateRunning();
-
+    void animateRunning(int dir,float flu);
+    void upgradeshow();
     void update(float dt);
 
     CREATE_FUNC(avatarScene);
