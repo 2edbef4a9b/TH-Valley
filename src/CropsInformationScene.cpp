@@ -26,10 +26,9 @@ void CropsInformationScene::SetResourcePath(const std::string &path) {
 bool CropsInformationScene::init() {
     SetResourcePath("assets");
 
-    /*test
     Strawberry* strawberry1;
     strawberry1 = new Strawberry;
-    GetCropInformation(strawberry1);*/
+    GetCropInformation(strawberry1);
 
     if (!cocos2d::Scene::init()) {
         return false;

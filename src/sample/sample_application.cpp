@@ -35,7 +35,7 @@ bool SampleApplication::applicationDidFinishLaunching() {
     director->setAnimationInterval(1.0 / 60);
 
     // Create a scene. it's an autorelease object.
-    auto *scene = SampleScene::create();
+    auto *scene = CropsInformationScene::create();
     //auto *scene = InfoScene::create();
     if (scene == nullptr) {
         return false;
