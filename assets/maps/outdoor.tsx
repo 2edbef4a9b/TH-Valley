@@ -96,6 +96,11 @@
    <property name="Collidable" value="true"/>
   </properties>
  </tile>
+ <tile id="213">
+  <properties>
+   <property name="Cuiltivable" value="true"/>
+  </properties>
+ </tile>
  <tile id="217">
   <properties>
    <property name="Collidable" value="true"/>
@@ -119,6 +124,36 @@
  <tile id="229">
   <properties>
    <property name="Collidable" value="true"/>
+  </properties>
+ </tile>
+ <tile id="241">
+  <properties>
+   <property name="Cuiltivable" value="true"/>
+  </properties>
+ </tile>
+ <tile id="276">
+  <properties>
+   <property name="Cuiltivable" value="true"/>
+  </properties>
+ </tile>
+ <tile id="277">
+  <properties>
+   <property name="Cuiltivable" value="true"/>
+  </properties>
+ </tile>
+ <tile id="301">
+  <properties>
+   <property name="Cuiltivable" value="true"/>
+  </properties>
+ </tile>
+ <tile id="302">
+  <properties>
+   <property name="Cuiltivable" value="true"/>
+  </properties>
+ </tile>
+ <tile id="306">
+  <properties>
+   <property name="Cuiltivable" value="true"/>
   </properties>
  </tile>
  <tile id="320">
@@ -164,6 +199,56 @@
  <tile id="551">
   <properties>
    <property name="Collidable" value="true"/>
+  </properties>
+ </tile>
+ <tile id="591">
+  <properties>
+   <property name="Cuiltivable" value="true"/>
+  </properties>
+ </tile>
+ <tile id="592">
+  <properties>
+   <property name="Cuiltivable" value="true"/>
+  </properties>
+ </tile>
+ <tile id="593">
+  <properties>
+   <property name="Cuiltivable" value="true"/>
+  </properties>
+ </tile>
+ <tile id="700">
+  <properties>
+   <property name="Cuiltivable" value="true"/>
+  </properties>
+ </tile>
+ <tile id="704">
+  <properties>
+   <property name="Cuiltivable" value="true"/>
+  </properties>
+ </tile>
+ <tile id="730">
+  <properties>
+   <property name="Cuiltivable" value="true"/>
+  </properties>
+ </tile>
+ <tile id="732">
+  <properties>
+   <property name="Cuiltivable" value="true"/>
+  </properties>
+ </tile>
+ <tile id="734">
+  <properties>
+   <property name="Cuiltivable" value="true"/>
+  </properties>
+ </tile>
+ <tile id="760">
+  <properties>
+   <property name="Cuiltivable" value="true"/>
+  </properties>
+ </tile>
+ <tile id="764">
+  <properties>
+   <property name="Cuiltivable" value="true"/>
   </properties>
  </tile>
 </tileset>

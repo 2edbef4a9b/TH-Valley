@@ -178,6 +178,15 @@ bool Map::isCollision(cocos2d::Vec2 pos, std::string LayerName) {
                       tileCoord.x, tileCoord.y, LayerName.c_str());
                 return true;
             }
+
+
+            //auto it2 = valueMap.find("Cultivable");
+            //if (it2 != valueMap.end() && it2->second.asString() == "true") {
+            //    CCLOG("LAND detected at tile: %f, %f at Layer %s",
+            //          tileCoord.x, tileCoord.y, LayerName.c_str());
+            //    updateTileAt(tileCoord, 557, LayerName);
+            //}
+
         }
     }
     return false;

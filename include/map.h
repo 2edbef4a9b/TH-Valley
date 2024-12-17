@@ -97,7 +97,7 @@ public:
 
     /**
      * @brief ¸üÐÂÌùÍ¼
-     * @param cocos2d::Vec2 tileCoord  int newGID
+     * @param cocos2d::Vec2 tileCoord; int newGID; string LayerName
      */
     void updateTileAt(cocos2d::Vec2 tileCoord, int newGID, std::string LayerName);
 

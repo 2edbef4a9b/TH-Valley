@@ -25,7 +25,7 @@ bool th_valley::SampleScene::init() {
     this->addChild(label);*/
 
     
-    auto _map = Map::create("assets/maps/Ranch.tmx");
+    auto _map = Map::create("assets/maps/Farm.tmx");
     if (_map) {
         auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
         auto mapSize = _map->getContentSize();
@@ -41,6 +41,8 @@ bool th_valley::SampleScene::init() {
         this->addChild(_map);
     } else
         CCLOG("Failed to load map maps/Farm.tmx");
+
+
     
     return true;
 }

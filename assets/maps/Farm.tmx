@@ -32,6 +32,11 @@
     <property name="Collidable" value="true"/>
    </properties>
   </tile>
+  <tile id="153">
+   <properties>
+    <property name="Cultivable" value="true"/>
+   </properties>
+  </tile>
   <tile id="157">
    <properties>
     <property name="Collidable" value="true"/>
@@ -50,6 +55,11 @@
   <tile id="169">
    <properties>
     <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="176">
+   <properties>
+    <property name="Cultivable" value="true"/>
    </properties>
   </tile>
   <tile id="183">
@@ -72,6 +82,16 @@
     <property name="Collidable" value="true"/>
    </properties>
   </tile>
+  <tile id="206">
+   <properties>
+    <property name="Cultivable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="207">
+   <properties>
+    <property name="Cultivable" value="true"/>
+   </properties>
+  </tile>
   <tile id="208">
    <properties>
     <property name="Collidable" value="true"/>
@@ -85,6 +105,21 @@
   <tile id="211">
    <properties>
     <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="226">
+   <properties>
+    <property name="Cultivable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="227">
+   <properties>
+    <property name="Cultivable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="231">
+   <properties>
+    <property name="Cultivable" value="true"/>
    </properties>
   </tile>
   <tile id="233">
@@ -372,6 +407,11 @@
     <property name="Collidable" value="true"/>
    </properties>
   </tile>
+  <tile id="433">
+   <properties>
+    <property name="Cultivable" value="true"/>
+   </properties>
+  </tile>
   <tile id="436">
    <properties>
     <property name="Collidable" value="true"/>
@@ -450,6 +490,21 @@
   <tile id="470">
    <properties>
     <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="471">
+   <properties>
+    <property name="Cultivable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="472">
+   <properties>
+    <property name="Cultivable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="473">
+   <properties>
+    <property name="Cultivable" value="true"/>
    </properties>
   </tile>
   <tile id="490">
@@ -580,6 +635,41 @@
   <tile id="548">
    <properties>
     <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="560">
+   <properties>
+    <property name="Cultivable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="564">
+   <properties>
+    <property name="Cultivable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="585">
+   <properties>
+    <property name="Cultivable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="587">
+   <properties>
+    <property name="Cultivable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="589">
+   <properties>
+    <property name="Cultivable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="610">
+   <properties>
+    <property name="Cultivable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="614">
+   <properties>
+    <property name="Cultivable" value="true"/>
    </properties>
   </tile>
   <tile id="708">
