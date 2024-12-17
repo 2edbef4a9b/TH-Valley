@@ -7,6 +7,7 @@
 #include <vector>
 #include <string>
 #include <utility>
+#include <map>
 
 struct Position {
     int x;
@@ -19,13 +20,7 @@ protected:
     Weather *CurrentWeather;
 };
 
-class CropProduction: public agriculture {
-protected:
-    int PlayerCropLevel;
-    int TotalCrops;
-};
-
-class Crops: public CropProduction {
+class Crops: public agriculture {
 public:
     // Crops Information
     std::string CropName;
@@ -76,13 +71,23 @@ public:
                                  bool &isSituation, const int &toDeath);
 };
 
-class AnimalHusbandry : public agriculture {
-protected:
-    int PlayerAnimalLevel;
-    int TotalAnimals;
+class CropProduction : public agriculture {
+public:
+    int PlayerCropLevel;
+    int TotalCrops;
+    int TotalPlant;
+    std::vector<Crops *> AllCrops;
+    std::map <Position, Crops*> CropPosition;
+
+    CropProduction() {
+        PlayerCropLevel = 1;
+        TotalCrops = 0;
+        TotalPlant = 0;
+    }
+    void CropProductionAutoUpdate();
 };
 
-class Animals : public AnimalHusbandry {
+class Animals : public agriculture {
 public:
     // Animal Information
     std::string AnimalName;
@@ -92,8 +97,6 @@ public:
     std::vector<std::string> GrowthStage;
     std::vector<std::string> Output;
     std::vector<int> OutputNumber;
-
-    std::vector<std::string> GrowthSituation;
 
     bool isUnhappy;
     bool isHungry;
@@ -105,23 +108,33 @@ public:
     int Saturation; // ±¥Ê³¶È
     std::vector<std::string> Food;
 
-    void Stroke();
-    void Eat(std::string EatFood);
-    void RandomMove();
-    void AnimalAutomaticUpdate();
-    void AnimalShowInfo();
+    Position position;
+
+    virtual void Stroke();
+    virtual bool Eat(std::string EatFood);
+    virtual void RandomMove();
+    virtual void AnimalAutomaticUpdate();
+
+    virtual void AnimalShowInfo();
 };
 
-class FarmHouse : public AnimalHusbandry {
+class FarmHouse : public agriculture {
 public:
+    int TotalAnimals;
     int Level;
     std::vector<std::pair<std::string, int> > FoodLeft;
     std::vector<std::pair<std::string, int> > Output;
-
-    FarmHouse() { Level = 1; }
+    std::vector<Animals *> AllAnimals;
+    std::map<Position, Animals *> AnimalPosition;
+    
+    FarmHouse() {
+        Level = 1;
+        TotalAnimals = 0;
+    }
     void InfoShow();
-    void addFood(std::string Foodtype, int number);
-    std::pair < std::string, int > ProductionOutput();
+    void addFood(const std::string FoodType, const int number);
+    std::pair<std::string, int> ProductionOutput();
+    void FarmHouseAutomaticUpdate();
 };
 
 #endif

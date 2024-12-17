@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <random>
+#include <utility>
 
 void Crops::UpdateSituation(const std::string &Situation, const bool &Compare,
                             bool &isSituation, const int &toDeath) {
@@ -119,3 +120,114 @@ void Crops::getTime(WorldTime *Time) { CurrentTime = Time; }
 
 void Crops::getWeather(Weather *weather) { CurrentWeather = weather; }
 
+void CropProduction::CropProductionAutoUpdate() {
+    for (int i = 0; i < TotalCrops; i++) {
+        Crops *Crop = AllCrops[i];
+        Crop->CropAutomaticUpdate();
+    }
+
+    // Level Update
+    if (TotalPlant >= 5) PlayerCropLevel = 2;
+    if (TotalPlant >= 20) PlayerCropLevel = 3;
+    if (TotalPlant >= 70) PlayerCropLevel = 4;
+    if (TotalPlant >= 500) PlayerCropLevel = 5;
+}
+
+void Animals::Stroke() { Happiness += 1000; }
+
+bool Animals::Eat(std::string Eatfood) {
+    for (int i = 0; i < Food.size(); i++) {
+        if (Food[i] == Eatfood) {
+            Saturation += 1000;
+            return true;
+        }
+    }
+    return false;
+}
+
+void Animals::AnimalAutomaticUpdate() {
+    // Happiness Update
+    Happiness -= 1;
+    Happiness = std::max(0, Happiness);
+    if (Happiness == 0)
+        isUnhappy = 1;
+    else
+        isUnhappy = 0;
+
+    // Hunger Update
+    Saturation -= 1;
+    Saturation = std::max(0, Saturation);
+    if (Saturation == 0)
+        isHungry = 1;
+    else
+        isHungry = 0;
+
+    // Growth Update
+    if (CurrentGrowthStage < MaxGrowthStage) {
+        GrowthDuration[CurrentGrowthStage] -= GrowthSpeed;
+        if (GrowthDuration[CurrentGrowthStage] == 0) {
+            CurrentGrowthStage += 1;
+        }
+    }
+}
+
+void FarmHouse::addFood(const std::string FoodType, const int number) {
+    int isExist = 0;
+    for (int i = 0; i < FoodLeft.size(); i++) {
+        if (FoodLeft[i].first == FoodType) {
+            FoodLeft[i].second += number;
+            isExist = 1;
+            break;
+        }
+    }
+    if (!isExist) {
+        std::pair<std::string, int> newPair;
+        newPair.first = FoodType;
+        newPair.second = number;
+        FoodLeft.push_back(newPair);
+    }
+}
+
+void FarmHouse::FarmHouseAutomaticUpdate() {
+    for (int i = 0; i < TotalAnimals; i++) {
+        Animals *Animal = AllAnimals[i];
+        // Animal Update
+        Animal->AnimalAutomaticUpdate();
+
+        // Animal Eat Left Food
+        if (Animal->Saturation <= 5 && !FoodLeft.empty()) {
+            std::vector<std::pair<std::string, int> >::iterator it;
+            for (it = FoodLeft.begin(); it != FoodLeft.end(); it++)
+                if (Animal->Eat(it->first)) {
+                    it->second--;
+                    if (it->second == 0) FoodLeft.erase(it);
+                    break;
+                }
+        }
+
+        // Animal Output
+        if (!Animal->isHungry && !Animal->isUnhappy &&
+            Animal->CurrentGrowthStage == Animal->MaxGrowthStage) {
+            for (int i = 0; i < Animal->Output.size(); i++) {
+                bool isExist = 0;
+                for (int j = 0; j < Output.size(); j++) {
+                    if (Output[j].first == Animal->Output[i]) {
+                        isExist = 1;
+                        Output[j].second += Animal->OutputNumber[i];
+                        break;
+                    }
+                }
+                if (!isExist) {
+                    std::pair<std::string, int> newPair;
+                    newPair.first = Animal->Output[i];
+                    newPair.second = Animal->OutputNumber[i];
+                    Output.push_back(newPair);
+                }
+            }
+        }
+    }
+
+    // Level Update
+    if (TotalAnimals >= 10) Level = 2;
+    if (TotalAnimals >= 20) Level = 3;
+}
