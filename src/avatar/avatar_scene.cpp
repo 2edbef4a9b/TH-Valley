@@ -15,7 +15,7 @@ void avatarScene::animateRunning() {
         }
     }
     // Create animation
-    auto animation =cocos2d::Animation::createWithSpriteFrames(animFrames, float(0.08));
+    auto animation =cocos2d::Animation::createWithSpriteFrames(animFrames, float(0.06));
     auto animate = cocos2d::Animate::create(animation);
     character->runAction(cocos2d::RepeatForever::create(animate));  // Run the animation indefinitely
 }
@@ -44,10 +44,10 @@ bool avatarScene::init() {
     return true;  // Ensure to return true to indicate successful initialization
 }
 
-void avatarScene::handleKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode,
-                                    cocos2d::Event *event) {
+void avatarScene::handleKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode,cocos2d::Event *event) {
 
-    moved = false;  // Mark as moved
+    moved = false;  
+    isattack = false;
     character->stopAllActions();
     character->setTextureRect(cocos2d::Rect(0, dir * 32, 16, 32));  // Set to idle frame
 }
@@ -80,7 +80,10 @@ void avatarScene::handleKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, coco
         // attack
         case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_Q:
         case cocos2d::EventKeyboard::KeyCode::KEY_Q:
-            haley.doattack(1);
+            if (1) {
+                isattack = true;
+            }
+            Haley->doattack(isattack,dir);
             moved = false;
             break;
         default:
@@ -112,11 +115,52 @@ void avatarScene::update(float dt)
         CCLOG("=======");
         CCLOG("%lf,%lf", position.x, position.y);  // Log the new position
         CCLOG("=======");
+        
         if (1) {
+            (Haley->postion_).first = position.x;
+            (Haley->postion_).second = position.y;
             character->setPosition(position);
         }
     }
+    if (isattack) {
+        CCLOG("=======");
+        CCLOG("linkstart");
+        CCLOG("=======");
+        position.x+=0.0001f;
+        position.y+=0.0001f;
+        blinkTo(position);
+        CCLOG("=======");
+        CCLOG("%lf,%lf", position.x, position.y);  // Log the new position
+        CCLOG("=======");
+        position.x -= 0.0001f;
+        position.y -= 0.0001f;
+        blinkTo(position);
+        CCLOG("=======");
+        CCLOG("%lf,%lf", position.x, position.y);  // Log the new position
+        CCLOG("=======");
+        CCLOG("=======");
+        CCLOG("linkover");
+        CCLOG("=======");
+        isattack = false;
+    }
+
 }
+// 闪现函数
+void avatarScene::blinkTo(cocos2d::Vec2 position) {
+    // 可以添加闪现特效，例如淡出淡入
+    
+    auto fadeOut = cocos2d::FadeOut::create(0.1f);  // 0.1秒淡出
+    auto fadeIn = cocos2d::FadeIn::create(0.1f);    // 0.1秒淡入
+    // 先淡出，然后移动到目标位置，最后淡入
+    this->runAction(cocos2d::Sequence::create(fadeOut, cocos2d::CallFunc::create([this, position]() {
+            this->setPosition(position);
+        }),
+        fadeIn, nullptr));
+    /*    auto worldPosition = this->getParent()->convertToNodeSpace(targetScreenPosition);
+    this->setPosition(worldPosition);*/
+}
+
+
 void avatarScene::keyboardreading() {
     // Change the default resource path
     SetResourcePath("assets");

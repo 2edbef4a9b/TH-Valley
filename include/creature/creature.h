@@ -28,7 +28,7 @@ public:
     void setpowerrest(double newpowerrest);
     void setgrade(int newgrade);
     void setzttackzone(double newattackzone);
-
+    virtual void doattack(bool isattack,int dir) = 0;
 
     std::pair<double, double> postion_;
 

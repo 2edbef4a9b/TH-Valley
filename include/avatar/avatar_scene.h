@@ -20,8 +20,9 @@ public:
     bool init() override;
     void keyboardreading();
     cocos2d::Sprite *character;
-
-    Avatar haley;
+    bool isattack = false;
+    Creature*Haley= new Avatar;
+    void blinkTo(cocos2d::Vec2 position);
     direction dir;
     const float speed = 10.0f;
     void handleKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode,

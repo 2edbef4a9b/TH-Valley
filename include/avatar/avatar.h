@@ -4,6 +4,7 @@
 #include <string>
 #include "cocos2d.h"
 #include"creature/creature.h"
+#include"avatar/bag.h"
 
 class Avatar : public Creature{
 public:
@@ -14,7 +15,7 @@ public:
     void experiencegain(double exp) override;
     void upgradeshow();
     void upgrade();
-    void doattack(bool isAttack);
+    void doattack(bool isAttack,int dir) override;
 
 private:
 
@@ -42,9 +43,7 @@ private:
     const Defense saberDefense = {100, 10};
     const Defense shilderDefense = {100, 100};
 
-
-    // now grade (i=0)
-    // when you on grade i,you need experience.at(i) to upgrade to i+1(i>=1)
+   
     std::vector<double> experiencelist{1,100, 100, 200, 300, 300,500, 500, 500, 900};
     double experience;
 
@@ -58,6 +57,9 @@ private:
     int choose_;
     Defense defense_;
     Attack attack_;
+    Bag mybag;
+
+
 };
 
 #endif  // AVATAR_H_

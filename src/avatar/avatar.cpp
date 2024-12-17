@@ -77,6 +77,11 @@ Avatar::Avatar() {}
 
 // should be override
 void Avatar::upgradeshow() {
+
+
+
+
+
     CCLOG("upgrade!");
 }
 
@@ -93,7 +98,8 @@ void Avatar::upgrade()
 }
 
 // should be override
-void Avatar::doattack(bool isAttack){
+void Avatar::doattack(bool isAttack,int dir){
+    
     CCLOG("ckeck the attack");
 }
 
