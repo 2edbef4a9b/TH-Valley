@@ -3,6 +3,7 @@
 #include "AudioEngine.h"
 #include "sample/sample_scene.h"
 #include "CropsInformationScene.h"
+#include "Crops.h"
 
 SampleApplication::~SampleApplication() {
     // Release the shared instance of the audio engine.
