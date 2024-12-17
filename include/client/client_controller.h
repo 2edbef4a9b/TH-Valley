@@ -18,6 +18,7 @@ public:
         kTitleScreen,
     };
 
+    static ClientController& GetInstance();
     void SetClientState(ClientState client_state);
 
 private:

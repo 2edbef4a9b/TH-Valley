@@ -21,9 +21,6 @@ public:
 
     bool init() override;
 
-    static cocos2d::Scene* CreateScene(
-        const std::weak_ptr<ClientController>& client_controller);
-
     CREATE_FUNC(TitleScreen);
 
 private:
@@ -43,7 +40,6 @@ private:
 
     cocos2d::Size visible_size_;
     cocos2d::Vec2 visible_origin_;
-    std::weak_ptr<ClientController> client_controller_;
 };
 
 }  // namespace th_valley

@@ -4,6 +4,11 @@
 #include "cocos2d.h"
 #include "frontend/title_screen.h"
 
+th_valley::ClientController& th_valley::ClientController::GetInstance() {
+    static ClientController instance;
+    return instance;
+}
+
 void th_valley::ClientController::SetClientState(
     const ClientState client_state) {
     client_state_ = client_state;
@@ -36,8 +41,7 @@ void th_valley::ClientController::Update() {
             break;
         case ClientState::kTitleScreen:
             cocos2d::Director::getInstance()->replaceScene(
-                th_valley::TitleScreen::CreateScene(
-                    std::weak_ptr<ClientController>(shared_from_this())));
+                th_valley::TitleScreen::create());
             CCLOG("GameState Change to TitleScreen");
             break;
         default:

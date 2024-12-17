@@ -41,8 +41,8 @@ bool th_valley::ClientApplication::applicationDidFinishLaunching() {
 
     // TODO(2edbef4a9b): Initialize the audio engine (optional).
     // Set the client state to start up.
-    client_controller_ = std::make_shared<ClientController>();
-    client_controller_->SetClientState(ClientController::ClientState::kStartUp);
+    ClientController::GetInstance().SetClientState(
+        ClientController::ClientState::kStartUp);
 
     CCLOG("Application started successfully.");
 
