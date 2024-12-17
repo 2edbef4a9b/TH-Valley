@@ -8,9 +8,6 @@ root = true
 indent_style = space
 indent_size = 4
 
-# Use LF for line endings (Unix-style).
-end_of_line = LF
-
 # Insert a final newline at the end of the file.
 insert_final_newline = true
 

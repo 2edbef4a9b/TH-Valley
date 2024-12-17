@@ -1,6 +1,6 @@
 [submodule "externals/cocos2d-x"]
-	path = externals/cocos2d-x
-	url = https://github.com/cocos2d/cocos2d-x.git
+    path = externals/cocos2d-x
+    url = https://github.com/cocos2d/cocos2d-x.git
 [submodule "externals/googletest"]
-	path = externals/googletest
-	url = https://github.com/google/googletest.git
+    path = externals/googletest
+    url = https://github.com/google/googletest.git
