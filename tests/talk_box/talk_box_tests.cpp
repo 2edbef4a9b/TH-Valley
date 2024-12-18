@@ -135,11 +135,18 @@ public:
         auto *scene = th_valley::SampleScene::create();
         if (scene == nullptr) {
             return false;
-        }
+        } 
 
-        std::vector<DialogueEntry> dialogEntries = inputJson("assets/dialogue/npc.json"); 
 
-        scene->addChild(TalkBox::createWithEntries(dialogEntries), 100);
+        //scene->addChild(
+        //    TalkBox::createWithEntries(inputJson("assets/dialogue/npc.json"),
+        //                               "npc", "assets/Portraits/Abigail.png"),
+        //    100);
+        scene->addChild(
+            TalkBox::createWithEntries(inputJson("assets/dialogue/Sebastian.json"),
+                                       "Sebastian", "assets/Portraits/Sebastian.png"),
+            100);
+
 
         // Run.
         director->runWithScene(scene);

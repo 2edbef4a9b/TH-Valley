@@ -2,9 +2,11 @@
 
 USING_NS_CC;
 
-TalkBox* TalkBox::createWithEntries(const std::vector<DialogueEntry>& entries) {
+TalkBox* TalkBox::createWithEntries(const std::vector<DialogueEntry>& entries,
+                                    const std::string& npcName,
+                                    const std::string& npcAvatarPath) {
     TalkBox* ret = new (std::nothrow) TalkBox();
-    if (ret && ret->initWithEntries(entries)) {
+    if (ret && ret->initWithEntries(entries, npcName, npcAvatarPath)) {
         ret->autorelease();
         return ret;
     }
@@ -12,7 +14,9 @@ TalkBox* TalkBox::createWithEntries(const std::vector<DialogueEntry>& entries) {
     return nullptr;
 }
 
-bool TalkBox::initWithEntries(const std::vector<DialogueEntry>& entries) {
+bool TalkBox::initWithEntries(const std::vector<DialogueEntry>& entries,
+                              const std::string& npcName,
+                              const std::string& npcAvatarPath) {
     if (!Layer::init()) {
         return false;
     }
@@ -22,6 +26,8 @@ bool TalkBox::initWithEntries(const std::vector<DialogueEntry>& entries) {
 
     dialogEntries_ = entries;
     currentMessageIndex_ = 0;
+    npcName_ = npcName;
+    npcAvatarPath_ = npcAvatarPath;
 
     // 加载对话框背景
     background_ = Sprite::create("assets/talk_box/textBox.png");
@@ -65,6 +71,23 @@ bool TalkBox::initWithEntries(const std::vector<DialogueEntry>& entries) {
                            closeButton_->getContentSize().height * 0.01f));
     closeButtonBackground_->setVisible(false);
     this->addChild(closeButtonBackground_, 1);
+
+    // 添加NPC名称标签
+    npcNameLabel_ = Label::createWithTTF(npcName_, std::string(kFontPath), 18);
+    npcNameLabel_->setTextColor(Color4B::BLACK);
+    npcNameLabel_->setAnchorPoint(Vec2(0.5f, 0));
+    npcNameLabel_->setPosition(
+        background_->getPosition() +
+        1.6f * Vec2(background_->getContentSize().width / 2 - 58,
+                    1));  // 设置位置为对话框右下角
+    this->addChild(npcNameLabel_, 5);
+
+    // 添加NPC头像
+    npcAvatar_ = Sprite::create(npcAvatarPath_, Rect(0, 0, 60, 60));
+    npcAvatar_->setAnchorPoint(Vec2(0.5f, 0));
+    npcAvatar_->setScale(1.6f);
+    npcAvatar_->setPosition(npcNameLabel_->getPosition() + Vec2(0, 10 + npcNameLabel_->getContentSize().height));  // 设置位置为对话框左侧
+    this->addChild(npcAvatar_, 5);
 
     gameStates_["hasReceivedGift"] = false;
 

@@ -28,15 +28,17 @@ public:
     TalkBox(TalkBox&& other) = delete;
     TalkBox& operator=(TalkBox&& other) = delete;
 
-    bool initWithEntries(const std::vector<DialogueEntry>& entries);
-    static TalkBox* createWithEntries(const std::vector<DialogueEntry>& entries);                
+    bool initWithEntries(const std::vector<DialogueEntry>& entries,
+                         const std::string& npcName,
+                         const std::string& npcAvatarPath);
+    static TalkBox* createWithEntries(const std::vector<DialogueEntry>& entries,
+                                      const std::string& npcName,
+                                      const std::string& npcAvatarPath);                
     void onEnter();
     void onExit(); 
 
     void showDialog();
     void hideDialog();
-
-
 
     void showNextMessage();
     void showOptions(const std::vector<std::string>& options);
@@ -67,7 +69,12 @@ private:
 
     cocos2d::Sprite* closeButton_;
     cocos2d::LayerColor* closeButtonBackground_;
-    
+
+    cocos2d::Label* npcNameLabel_;
+    cocos2d::Sprite* npcAvatar_;
+    std::string npcName_;
+    std::string npcAvatarPath_;
+
     std::vector<DialogueEntry> dialogEntries_;
     int currentMessageIndex_;
 
