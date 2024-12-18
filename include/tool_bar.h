@@ -21,7 +21,7 @@ struct ItemSprite {
 };
 
 
-class ToolBar : public cocos2d::Scene {
+class ToolBar : public cocos2d::Layer {
 public:
     ToolBar() = default;
     ~ToolBar() override = default;

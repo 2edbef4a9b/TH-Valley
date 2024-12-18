@@ -2,6 +2,7 @@
 
 #include "tool_bar.h"
 #include "sample/sample_application.h"
+#include "sample/sample_scene.h"
 
 class ToolBarTestsApp : public th_valley::SampleApplication {
 public:
@@ -21,8 +22,8 @@ public:
         //glview->setDesignResolutionSize(kDesignResolutionSize.width,
         //                                kDesignResolutionSize.height,
         //                                ResolutionPolicy::NO_BORDER);
-        glview->setDesignResolutionSize(192 * 3,
-                                        108 * 3,
+        glview->setDesignResolutionSize(192 * 2,
+                                        108 * 2,
                                         ResolutionPolicy::NO_BORDER);
 
         // Set FPS. The default value is 1.0/60 if you don't call this.
@@ -35,11 +36,12 @@ public:
         CCLOG("Resource root path: %s", resource_root_path.c_str());
 
         // Create a scene. It's an autorelease object.
-        auto *scene = ToolBar::create();
+        auto *scene = th_valley::SampleScene::create();
         if (scene == nullptr) {
             return false;
         }
 
+        scene->addChild(ToolBar::create(), 20);
         // Run.
         director->runWithScene(scene);
 
