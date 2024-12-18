@@ -7,21 +7,28 @@
 #include"avatar/bag.h"
 #include"avatar/illustratedguide.h"
 
+
+enum wave {
+    Mon = 10,
+    Tues = -10,
+    Wens = 20,
+    Thurs = -5,
+    Fri = -20,
+    Sat = 50,
+    Sun = 60
+};
 class NPC : public Creature{
 
 public:
     NPC();
-    float trading(wave day, quilitylist quility);
-    void conversation(cocos2d::Sprite *character);
-    float buying(wave day, quilitylist quility,float giving);
+    float price(wave day, std::string good);
+    void showgoods();
+    float buying(wave day, std::string good, float giving);
+    int data(wave day);
 
 private :
-    std::unordered_map<std::string, int> market;
-    enum quilitylist { high = 1000, low = 500, lowest = 200, perfect = 10000 };
-    enum wave { Mon = 10, Tues = -10, Wednes = 20, Thurs = -5 ,Fri = -20,Sat = 50,sun = 60};
-    float price(wave day, quilitylist quility);
+    std::unordered_map<std::string, float> *market;
     Bag NPCbag;
-    Illustratedguide sellinggood;
 };
 
 #endif  // NPC_H_

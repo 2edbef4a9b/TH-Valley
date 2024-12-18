@@ -5,6 +5,7 @@
 #include "cocos2d.h"
 #include"creature/creature.h"
 #include"avatar/bag.h"
+#include <unordered_map>
 
 class Avatar : public Creature{
 public:
