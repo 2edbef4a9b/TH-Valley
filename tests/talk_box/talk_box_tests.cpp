@@ -118,7 +118,7 @@ public:
         // glview->setDesignResolutionSize(kDesignResolutionSize.width,
         //                                kDesignResolutionSize.height,
         //                                ResolutionPolicy::NO_BORDER);
-        glview->setDesignResolutionSize(192 * 3, 108 * 3,
+        glview->setDesignResolutionSize(192 * 4, 108 * 4,
                                         ResolutionPolicy::NO_BORDER);
 
         // Set FPS. The default value is 1.0/60 if you don't call this.
@@ -146,6 +146,8 @@ public:
             TalkBox::createWithEntries(inputJson("assets/dialogue/Sebastian.json"),
                                        "Sebastian", "assets/Portraits/Sebastian.png"),
             100);
+
+        scene->addChild(ToolBar::create(), 200);
 
 
         // Run.

@@ -79,17 +79,17 @@ bool TalkBox::initWithEntries(const std::vector<DialogueEntry>& entries,
     npcNameLabel_->setPosition(
         background_->getPosition() +
         1.6f * Vec2(background_->getContentSize().width / 2 - 58,
-                    1));  // 设置位置为对话框右下角
+                    1));  
     this->addChild(npcNameLabel_, 5);
 
     // 添加NPC头像
     npcAvatar_ = Sprite::create(npcAvatarPath_, Rect(0, 0, 60, 60));
     npcAvatar_->setAnchorPoint(Vec2(0.5f, 0));
     npcAvatar_->setScale(1.6f);
-    npcAvatar_->setPosition(npcNameLabel_->getPosition() + Vec2(0, 10 + npcNameLabel_->getContentSize().height));  // 设置位置为对话框左侧
+    npcAvatar_->setPosition(npcNameLabel_->getPosition() + Vec2(0, 10 + npcNameLabel_->getContentSize().height)); 
     this->addChild(npcAvatar_, 5);
 
-    gameStates_["hasReceivedGift"] = false;
+    gameStates_["hasReceivedGift"] = true;
 
     return true;
 }
