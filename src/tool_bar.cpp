@@ -35,10 +35,11 @@ void ToolBar::addToolLable() {
     auto boxSize = background_->getContentSize().width / 10.0;
     for (int i = 0; i < 10; ++i) {
         auto toolLabel = Label::createWithTTF(
-            std::to_string(i + 1), std::string(kFontPath).c_str(), 6);
+            std::to_string(i + 1), std::string(kFontPath).c_str(), 30);
         if (i == 9) toolLabel->setString("0");
-        toolLabel->setTextColor(Color4B::BLACK);
-        toolLabel->setAnchorPoint(Vec2(0, 1));  // Set anchor point to top-left
+        toolLabel->setScale(0.2);
+        toolLabel->setTextColor(Color4B::GRAY);
+        toolLabel->setAnchorPoint(Vec2(0, 1.5));  // Set anchor point to top-left
         toolLabel->setPosition(
             Vec2(4 + visible_size_.width / 2 - background_->getContentSize().width / 2 +
                  i * boxSize, background_->getContentSize().height));
@@ -88,7 +89,8 @@ void ToolBar::loadTools() {
         if (item->quantity != 1) {
             auto toolCount =
                 Label::createWithTTF(std::to_string(item->quantity),
-                                     std::string(kFontPath).c_str(), 8);
+                                     std::string(kFontPath).c_str(), 40);
+            toolCount->setScale(0.2);
             toolCount->setTextColor(Color4B::BLACK);
             toolCount->setAnchorPoint(
                 Vec2(1, 0));  // Set anchor point to bottom-right
