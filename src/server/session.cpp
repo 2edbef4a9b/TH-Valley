@@ -1,7 +1,9 @@
 #include "server/session.h"
 
 #include <boost/asio.hpp>
+#include <boost/asio/io_context.hpp>
 #include <boost/uuid/uuid.hpp>
+#include <boost/uuid/uuid_generators.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
 #include "utility/logger.h"
@@ -10,9 +12,10 @@ namespace th_valley {
 
 boost::uuids::uuid Session::GetUUID() const { return uuid_; }
 
-Session::Session(boost::asio::ip::tcp::socket socket,
-                 const boost::uuids::uuid uuid)
-    : socket_(std::move(socket)), uuid_(uuid) {}
+boost::asio::ip::tcp::socket &Session::GetSocket() { return socket_; }
+
+Session::Session(boost::asio::ip::tcp::socket socket)
+    : socket_(std::move(socket)) {}
 
 void Session::Start() {
     Logger::GetInstance().LogInfo("Session started with UUID: " +
@@ -87,6 +90,21 @@ void Session::DoWrite(const std::string_view message_sv) {
                 self->Terminate();
             }
         });
+}
+
+void Session::HandleInitMessage(const std::string_view message_sv) {
+    // Process the message and send a response.
+    try {
+        uuid_ = boost::uuids::string_generator()(std::string(message_sv));
+        Logger::GetInstance().LogInfo("Received UUID: " +
+                                      boost::uuids::to_string(uuid_));
+        DoRead();  // Start reading from the client socket.
+        DoWrite("UUID received.");
+    } catch (const std::exception &exception) {
+        Logger::GetInstance().LogError("Error parsing UUID: " +
+                                       std::string(exception.what()));
+        Terminate();
+    }
 }
 
 }  // namespace th_valley
