@@ -4,6 +4,9 @@
 #include "cocos2d.h"
 #include <vector>
 #include <unordered_map>
+#include <map>
+#include "agriculture.h"
+#include "position.h"
 
 struct Tile {
     int x, y;
@@ -11,6 +14,7 @@ struct Tile {
     Tile(int x, int y, int gid) : x(x), y(y), gid(gid) {};
 };
 
+class Crops;
 class Map : public cocos2d::TMXTiledMap {
 protected:
     cocos2d::TMXTiledMap* tileMap;
@@ -26,6 +30,9 @@ protected:
     bool isKeyPressedS;
     bool isKeyPressedD;
 public:
+    std::map<Position, Crops*> CropPosition;
+    std::vector<Crops*> MapCrops;
+    std::vector<Animals*> MapAnimals;
     Map() = default;
     ~Map() override = default;
     Map(const Map& other) = default;
@@ -52,7 +59,7 @@ public:
      * @return cocos2d::Vec2
      */
     cocos2d::Vec2 tileCoordFromPos(cocos2d::Vec2 pos);
-
+    cocos2d::Vec2 PosFromtileCoord(Position pos);
     /**
      * @brief ÅÐ¶ÏÊÇ·ñÓÐÅö×²
      * @param cocos2d::Vec2 pos ÏñËØµã×ø±ê  string LayerName ²ãÃû³Æ
@@ -125,6 +132,9 @@ public:
 
     static Map* create(const std::string& tmxFile);
 
+    void CropPlant(const Position &PlantPosition, Crops* Crop);
+
+    void ShowCropInformation(Crops *Crop, const Position &InfoPosition, int &priority);
 };
 
 

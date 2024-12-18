@@ -8,12 +8,10 @@
 #include <string>
 #include <utility>
 #include <map>
+#include "map.h"
+#include "position.h"
 
-struct Position {
-    int x;
-    int y;
-};
-    
+class Map;
 class agriculture {
 protected:
     WorldTime *CurrentTime;
@@ -55,13 +53,13 @@ public:
     std::vector <std::string> SoilRequirement;// Player can only plant on these types of soil 
 
     // position
-    Position CropPosition;
+    // Map *CurrentMap;
+    Position position;
 
     void getTime(WorldTime *Time);
     void getWeather(Weather *weather);
     //virtual void ShowCropInfo();
     //virtual void DurationCalculate();
-    //virtual void CropPlant(const Position &position);
     virtual void CropWatering();
     //virtual void CropHavest();
     virtual void CropFertilize();
@@ -77,13 +75,14 @@ public:
     int TotalCrops;
     int TotalPlant;
     std::vector<Crops *> AllCrops;
-    std::map <Position, Crops*> CropPosition;
 
     CropProduction() {
         PlayerCropLevel = 1;
         TotalCrops = 0;
         TotalPlant = 0;
     }
+    virtual bool CropPlant(const cocos2d::Vec2 &position, Crops *Crop,
+                           Map *PlantMap);
     void CropProductionAutoUpdate();
 };
 
