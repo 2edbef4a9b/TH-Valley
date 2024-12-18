@@ -8,6 +8,8 @@
 
 namespace th_valley {
 
+boost::uuids::uuid Session::GetUUID() const { return uuid_; }
+
 Session::Session(boost::asio::ip::tcp::socket socket,
                  const boost::uuids::uuid uuid)
     : socket_(std::move(socket)), uuid_(uuid) {}
@@ -15,7 +17,7 @@ Session::Session(boost::asio::ip::tcp::socket socket,
 void Session::Start() {
     Logger::GetInstance().LogInfo("Session started with UUID: " +
                                   boost::uuids::to_string(uuid_));
-    Read();  // Start reading from the client socket.
+    DoRead();  // Start reading from the client socket.
 }
 
 void Session::Terminate() {
@@ -42,7 +44,8 @@ void Session::Terminate() {
         Logger::GetInstance().LogError("Socket is already closed.");
     }
 }
-void Session::Read() {
+
+void Session::DoRead() {
     // Start an asynchronous read operation.
     boost::asio::async_read_until(
         socket_, buffer_, '\n',
@@ -56,7 +59,7 @@ void Session::Read() {
                 Logger::GetInstance().LogInfo("Received: " + line);
 
                 // After processing, continue reading.
-                self->Read();
+                self->DoRead();
             } else {
                 Logger::GetInstance().LogError("Error reading from socket: " +
                                                error_code.message());
@@ -65,14 +68,14 @@ void Session::Read() {
         });
 }
 
-void Session::Write(const std::string_view message) {
+void Session::DoWrite(const std::string_view message_sv) {
     // Convert the message to a string and append a newline for the protocol.
-    std::string msg(message);
-    msg += '\n';
+    std::string message(message_sv);
+    message += '\n';
 
     // Start an asynchronous write operation.
     boost::asio::async_write(
-        socket_, boost::asio::buffer(msg),
+        socket_, boost::asio::buffer(message),
         [self = shared_from_this()](const boost::system::error_code &error_code,
                                     const std::size_t length) {
             if (!error_code) {

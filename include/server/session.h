@@ -12,12 +12,13 @@ class Session : public std::enable_shared_from_this<Session> {
 public:
     Session(boost::asio::ip::tcp::socket socket, boost::uuids::uuid uuid);
 
+    boost::uuids::uuid GetUUID() const;
     void Start();
     void Terminate();
-    void Read();
-    void Write(std::string_view message);
 
 private:
+    void DoRead();
+    void DoWrite(std::string_view message_sv);
     boost::asio::ip::tcp::socket socket_;
     boost::uuids::uuid uuid_;
     boost::asio::streambuf buffer_;
