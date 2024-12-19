@@ -7,10 +7,10 @@
 enum direction { Down = 0, Right = 1, Up = 2, Left = 3 };
 
 
-class avatarScene : public cocos2d::Scene {
+class avatarScene {
 public:
     avatarScene() = default;
-    ~avatarScene() override = default;
+    ~avatarScene()  = default;
     avatarScene(const avatarScene& other) = default;
     avatarScene& operator=(const avatarScene& other) = default;
     avatarScene(avatarScene&& other) = default;
@@ -28,7 +28,7 @@ public:
     cocos2d::Sprite* Haley;
     bool moved = false;
     bool isattack = false;  // 记录是否发生移动
-    bool init() override;
+    bool init();
 
     cocos2d::TMXTiledMap* map_;
 
@@ -40,12 +40,9 @@ public:
 
     static void SetResourcePath(const std::string& path);
 
-    CREATE_FUNC(avatarScene);
+    //CREATE_FUNC(avatarScene);
 
     direction dir;
-
-    
-
 };
 
 #endif  // AVATAR_SCENE_H_

@@ -1,11 +1,11 @@
 #include "sample/sample_scene.h"
 #include <cstddef>
 #include <string>
+#include "avatar/avatar.h"
 
 #include <vector>
 
 #include "map.h"
-
 
 bool th_valley::SampleScene::init() {
     // Initialize super class first.
@@ -23,13 +23,20 @@ bool th_valley::SampleScene::init() {
 
     this->addChild(label);*/
 
-    
-    auto _map = Map::create("assets/maps/Farm.tmx");
+    Haley = cocos2d::Sprite::create("assets/avatar/Haley.png");
+    Haley->setTextureRect(cocos2d::Rect(0, 0, 16, 32));  // Set initial frame to the first frame
+    auto _map = Map::create("assets/maps/Farm.tmx", Haley);
+
+
+    // Create sprite and add it to the scene
+    //Haley->setPosition(cocos2d::Vec2(240, 160));  // Set initial position
+    //this->addChild(Haley);
+    //_map->playerSprite = Haley;
+
     if (_map) {
         auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
         auto mapSize = _map->getContentSize();
 
-        //// ���õ�ͼ��ê��Ϊ���½�
         //_map->setAnchorPoint(cocos2d::Vec2(0, 0));
 
         /*_map->setPosition(
@@ -38,10 +45,9 @@ bool th_valley::SampleScene::init() {
 
         _map->setVisible(true);
         this->addChild(_map);
+        keyboardreading();  // Start reading keyboard input
     } else
         CCLOG("Failed to load map maps/Farm.tmx");
 
-
-    
-    return true;
+    return true;  // Ensure to return true to indicate successful initialization
 }

@@ -38,7 +38,7 @@ void Map::CropPlant(const Position& PlantPosition, Crops* Crop) {
     CCLOG("Can be planted");
 
     auto CropPicture =
-        cocos2d::Sprite::create("assets/TileSheets/crops.png",
+        cocos2d::Sprite::create("assets/Crops/crops.png",
                                 Crop->frameRect[Crop->CurrentGrowthStage]);
 
     // Picture Position Calculate

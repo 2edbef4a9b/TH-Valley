@@ -20,17 +20,16 @@ class Map : public cocos2d::TMXTiledMap {
 protected:
     cocos2d::TMXTiledMap* tileMap;
     std::unordered_map<std::string, cocos2d::TMXLayer*> mapLayer;
-    cocos2d::TMXObjectGroup* objectGroup;   // ��Ʒ��
-    cocos2d::Vec2 playerPos;          // ���λ��
-    cocos2d::Sprite* playerSprite;
+    cocos2d::TMXObjectGroup* objectGroup;  
+    cocos2d::Vec2 playerPos;   
     cocos2d::ValueMap playerObject;
 
-    // ����״̬
     bool isKeyPressedW;
     bool isKeyPressedA;
     bool isKeyPressedS;
     bool isKeyPressedD;
 public:
+    cocos2d::Sprite* playerSprite;
     std::map<Position, Crops*> CropPosition;
     std::map<Position, cocos2d::Sprite*> SpritePosition;
     std::vector<Crops*> MapCrops;
@@ -47,7 +46,7 @@ public:
      * @param string tmxFile
      * @return true: �ɹ����� false: ����ʧ��
      */
-    bool initWithTMXFile(const std::string& tmxFile)
+    bool initWithTMXFile(const std::string& tmxFile, cocos2d::Sprite* Haley)
         ;
     /**
      * @brief �������λ��
@@ -135,7 +134,7 @@ public:
 
     void update(float delta) override;
 
-    static Map* create(const std::string& tmxFile);
+    static Map* create(const std::string& tmxFile, cocos2d::Sprite* PlayerSprite);
 
     // Crop option
     void CropPlant(const Position &PlantPosition, Crops* Crop);
