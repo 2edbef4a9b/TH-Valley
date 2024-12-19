@@ -348,8 +348,11 @@ void Map::onEnter() {
         PlantTilePos.y = tilePos.y;
 
         // take a Strawberry as an example
-        Strawberry* exampleStrawberry;
-        exampleStrawberry = new Strawberry;
+        /*Strawberry* exampleStrawberry;
+        exampleStrawberry = new Strawberry;*/
+
+        Potato* exampleStrawberry;
+        exampleStrawberry = new Potato;
 
         CropPlant(PlantTilePos, exampleStrawberry);
 

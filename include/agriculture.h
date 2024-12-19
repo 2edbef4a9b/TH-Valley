@@ -57,6 +57,9 @@ public:
     // Map *CurrentMap;
     Position position;
 
+    // Output
+    int output;
+
     void getTime(WorldTime *Time);
     void getWeather(Weather *weather);
     //virtual void ShowCropInfo();

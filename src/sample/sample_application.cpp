@@ -2,7 +2,6 @@
 
 #include "AudioEngine.h"
 #include "sample/sample_scene.h"
-#include "CropsInformationScene.h"
 #include "Crops.h"
 
 th_valley::SampleApplication::~SampleApplication() {
