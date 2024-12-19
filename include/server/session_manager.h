@@ -10,15 +10,18 @@
 
 namespace th_valley {
 
-class SessionManager {
+class Session;
+
+class SessionManager : public std::enable_shared_from_this<SessionManager> {
 public:
     explicit SessionManager(boost::asio::ip::tcp::acceptor& acceptor);
-
-    void StartAccept();
 
     void AddSession(const boost::uuids::uuid& uuid,
                     const std::shared_ptr<Session>& session);
     void RemoveSession(const boost::uuids::uuid& uuid);
+    void StartAccept();
+    void UpdateSessionUUID(const boost::uuids::uuid& old_uuid,
+                           const boost::uuids::uuid& new_uuid);
 
 private:
     boost::asio::ip::tcp::acceptor acceptor_;
