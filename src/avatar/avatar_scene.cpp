@@ -364,6 +364,46 @@ void avatarScene::fishing(cocos2d::Vec2 tarpos) {
     Scene[5]->runAction(sequence);  // 运行动作序列
 }
 
+void avatarScene::attacking(cocos2d::Vec2 tarpos){
+    // 动作序列：淡入，停留，淡出
+    cocos2d::Sprite *Scene[6];
+    int count = 0;
+    Scene[0] = cocos2d::Sprite::create("tool/tools.png",
+                                       cocos2d::Rect(0, 295, 35, 31));
+    Scene[1] = cocos2d::Sprite::create("tool/tools.png",
+                                       cocos2d::Rect(55, 295, 35, 31));
+    Scene[2] = cocos2d::Sprite::create("tool/tools.png",
+                                       cocos2d::Rect(102, 295, 35, 31));
+    Scene[3] = cocos2d::Sprite::create("tool/tools.png",
+                                       cocos2d::Rect(160, 295, 35, 31));
+    Scene[4] = cocos2d::Sprite::create("tool/tools.png",
+                                       cocos2d::Rect(210, 295, 35, 31));
+    Scene[5] = cocos2d::Sprite::create("tool/tools.png",
+                                       cocos2d::Rect(256, 295, 35, 31));
+
+    for (int i = 0; i < 5; ++i) {
+        Scene[i]->setPosition(
+            cocos2d::Vec2(tarpos.x - 2, tarpos.y));  // 设置位置
+        Scene[i]->setOpacity(0);                     // 初始透明度为0
+        this->addChild(Scene[i]);
+
+        auto fadeIn = cocos2d::FadeIn::create(0.1f);    // 0.5秒淡入
+        auto delay = cocos2d::DelayTime::create(0.8f);  // 停留1秒
+        auto fadeOut = cocos2d::FadeOut::create(0.1f);  // 0.5秒淡出
+
+        // 增加基于索引的延迟
+        auto sequence = cocos2d::Sequence::create(
+            cocos2d::DelayTime::create(i * 0.8f), fadeIn, delay, fadeOut,
+            cocos2d::CallFunc::create([scenePtr = Scene[i]]() {
+                if (scenePtr) {
+                    scenePtr->removeFromParent();  // 动作完成后移除
+                }
+            }),
+            nullptr);
+
+        Scene[i]->runAction(sequence);  // 运行动作序列
+    }
+}
 
 
 

@@ -49,17 +49,18 @@ Attribute::Attribute(const Exist e, const Attack a, const Defense d) {
     defense_ = d;
 }
 
-void Attribute::MakeUMap() {
+bool Attribute::MakeUMap() {
 
     Attribute attCaster(casterExist, casterAttack, casterDefense);
-    ChooseOpucation.insert(make_pair(ocupationlist.at(0), &attCaster));
-
+    ChooseOpucation.insert(make_pair(ocupationlist.at(0), attCaster));
+    chooseId.insert(make_pair(ocupationlist.at(0),0));
     Attribute attSaber(saberExist, saberAttack, saberDefense);
-    ChooseOpucation.insert(make_pair(ocupationlist.at(1), &attSaber));
-
+    ChooseOpucation.insert(make_pair(ocupationlist.at(1), attSaber));
+    chooseId.insert(make_pair(ocupationlist.at(1), 1));
     Attribute attShilder(shilderExist, shilderAttack, shilderDefense);
-    ChooseOpucation.insert(make_pair(ocupationlist.at(2), &attShilder));
-
+    ChooseOpucation.insert(make_pair(ocupationlist.at(2), attShilder));
+    chooseId.insert(make_pair(ocupationlist.at(2), 2));
+    return true;
 }
 
 
@@ -91,10 +92,11 @@ void Avatar::experiencegain(double exp)  {
     else
     {
         experience += exp;
-        if (experience >= experiencelist.at(int(experiencelist.at(0)))) {
+        if (experience >=
+            attribute.experiencelist.at(int(attribute.experiencelist.at(0)))) {
 
             if (grade_ < 10) {
-                experience -= experiencelist.at(int(experiencelist.at(0)));
+                experience -= attribute.experiencelist.at(int(attribute.experiencelist.at(0)));
             }
         }
     }
@@ -102,10 +104,14 @@ void Avatar::experiencegain(double exp)  {
 
 // init:
 Avatar::Avatar(std::string id) {
-    wepon_=weponlist.at(choose);
-    ocupation_ = ocupationlist.at(choose);
-
-    id_=id;
+    bool flag = attribute.MakeUMap();
+    if (flag) {
+        wepon_ = attribute.weponlist.at(attribute.chooseId[id]);
+        ocupation_ = id;
+        attribute = attribute.ChooseOpucation.at(id);
+        CCLOG("init successfully");
+    }
+    CCLOG("init unseccessfully");
 
 }
 Avatar::Avatar() {}
@@ -117,16 +123,12 @@ void Avatar::upgrade()
     attribute.exist_.blood_ += 1000.0f;
     attribute.exist_.powerrest_ += 100.0f;
     grade_ += 1;
-    experiencelist.at(0) = grade_;
+    attribute.experiencelist.at(0) = grade_;
     attribute.attack_ = attribute.attack_ + Attack{100, 100};
     attribute.defense_ = attribute.defense_ + Defense{100, 100};
 }
 
-// should be override
-void Avatar::doattack(bool isAttack,int dir){
-    
-    CCLOG("ckeck the attack");
-}
+
 
 
 

@@ -21,6 +21,7 @@ public:
     void mining(cocos2d::Vec2 position);
     void fishing(cocos2d::Vec2 position);
     void cultivating(cocos2d::Vec2 position);
+    void attacking(cocos2d::Vec2 position);
     void upgradeshow();
     void update(float dt);
 

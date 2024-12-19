@@ -6,6 +6,11 @@
 #include "cocos2d.h"
 #include"avatar/bag.h"
 
+
+
+
+
+
 struct Exist {
     double blood_;
     double hunger_;
@@ -17,6 +22,8 @@ struct Exist {
 const Exist casterExist = {1000, 100, 100, 100};
 const Exist saberExist = {1200, 100, 100, 100};
 const Exist shilderExist = {2000, 100, 100, 100};
+
+
 
 
 
@@ -34,6 +41,7 @@ const Attack shilderAttack = {10, 10};
 
 
 
+
 struct Defense {
     int phsicaldefense_;
     int spelldefense_;
@@ -48,23 +56,24 @@ const Defense shilderDefense = {100, 100};
 
 
 
-std::vector<std::string> ocupationlist{"caster", "saber", "shilder"};
-std::vector<std::string> weponlist{"wand", "sword", "shield"};
-std::vector<double> experiencelist{1,   100, 100, 200, 300,
-                                   300, 500, 500, 500, 900};
+
 
 
 
 
 struct Attribute {
     Attribute();
-    void MakeUMap();
+    bool MakeUMap();
     Attribute(const Exist e,const Attack a,const Defense d);
-    int id;
-    std::unordered_map<std::string, Attribute*> ChooseOpucation;
+    std::unordered_map<std::string, Attribute> ChooseOpucation;
+    std::unordered_map<std::string, int> chooseId;
     Exist exist_;
     Attack attack_;
     Defense defense_;
+    std::vector<std::string> ocupationlist{"caster", "saber", "shilder"};
+    std::vector<std::string> weponlist{"wand", "sword", "shield"};
+    std::vector<double> experiencelist{1,   100, 100, 200, 300,
+                                       300, 500, 500, 500, 900};
 
 };
 
@@ -79,7 +88,7 @@ public:
     void experiencegain(double exp) ;
 
     void upgrade();
-    void doattack(bool isAttack,int dir) ;
+    
 
     
 
@@ -87,13 +96,11 @@ public:
     void existchange();
     bool judgedeath();
    
-    
+
     
 
     std::pair<double, double> postion_;
-
-private:
-  
+ 
     double experience;
     std::string ocupation_;
     std::string wepon_;
