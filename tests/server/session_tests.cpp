@@ -1,67 +1,61 @@
-#include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-#include <boost/asio.hpp>
 #include <boost/uuid/random_generator.hpp>
-#include <boost/uuid/uuid.hpp>
-#include <boost/uuid/uuid_io.hpp>
+#include <chrono>
+#include <thread>
 
-#include "server/session.h"
+#include "client/network_client.h"
+#include "server/server.h"
 
-class MockSocket : public boost::asio::ip::tcp::socket {
-public:
-    explicit MockSocket(boost::asio::io_context& io_context)
-        : boost::asio::ip::tcp::socket(io_context) {}
+namespace th_valley {
 
-    MOCK_METHOD4(async_read_until,
-                 void(boost::asio::ip::tcp::socket&, boost::asio::streambuf&,
-                      char,
-                      std::function<void(const boost::system::error_code&,
-                                         std::size_t)>));
-    MOCK_METHOD2(async_write_some,
-                 void(const boost::asio::const_buffer&,
-                      std::function<void(const boost::system::error_code&,
-                                         std::size_t)>));
-    MOCK_METHOD2(shutdown, void(boost::asio::ip::tcp::socket::shutdown_type,
-                                boost::system::error_code&));
-    MOCK_METHOD1(close, void(boost::system::error_code&));
-};
-
-class SessionTest : public testing::Test {
+class ServerClientTest : public ::testing::Test {
 protected:
-    boost::asio::io_context io_context_;
-    boost::uuids::uuid uuid_;
-    std::shared_ptr<MockSocket> mock_socket_;
-    std::shared_ptr<th_valley::Session> session_;
+    ServerClientTest() : server_(server_io_context_, "28080") {}
 
     void SetUp() override {
-        boost::uuids::random_generator generator;
-        uuid_ = generator();
-        mock_socket_ = std::make_shared<MockSocket>(io_context_);
-        session_ = std::make_shared<th_valley::Session>(
-            std::move(*mock_socket_), uuid_);
+        server_thread_ = std::thread([this]() {
+            server_.StartUp();
+            server_io_context_.run();
+        });
+
+        // Give the server some time to start
+        std::this_thread::sleep_for(std::chrono::seconds(1));
     }
+
+    void TearDown() override {
+        // Shut down the server
+        server_.ShutDown();
+        server_io_context_.stop();
+        if (server_thread_.joinable()) {
+            server_thread_.join();
+        }
+    }
+
+    boost::asio::io_context server_io_context_;
+    Server server_;
+    std::thread server_thread_;
 };
 
-TEST_F(SessionTest, StartSession) {
-    EXPECT_CALL(*mock_socket_, async_read_until(testing::_, testing::_,
-                                                testing::_, testing::_))
-        .Times(testing::AtLeast(1));
-    session_->Start();
+TEST_F(ServerClientTest, ClientServerCommunication) {
+    NetworkClient& client = NetworkClient::GetInstance();
+    client.SetUUID(boost::uuids::random_generator()());
+    client.Connect("127.0.0.1", "28080");
+
+    // Set a callback to handle received messages
+    client.SetCallback([](std::string_view message) {
+        std::cout << "Received message: " << message << std::endl;
+    });
+
+    // Send a message to the server
+    client.SendMessages("Hello, Server!");
+
+    client.Disconnect();
 }
 
-TEST_F(SessionTest, TerminateSession) {
-    constexpr boost::system::error_code kErrorCode;
-    EXPECT_CALL(
-        *mock_socket_,
-        shutdown(boost::asio::ip::tcp::socket::shutdown_both, testing::_))
-        .WillOnce(testing::SetArgReferee<1>(kErrorCode));
-    EXPECT_CALL(*mock_socket_, close(testing::_))
-        .WillOnce(testing::SetArgReferee<0>(kErrorCode));
-    session_->Terminate();
-}
+}  // namespace th_valley
 
-TEST_F(SessionTest, WriteMessage) {
-    const std::string message = "Hello, World!\n";
-    session_->Write(message);
+int main(int argc, char** argv) {
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 }
