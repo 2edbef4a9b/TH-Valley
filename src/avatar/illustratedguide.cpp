@@ -11,10 +11,15 @@ void Illustratedguide::loadguide(){
     static const std::unordered_map<std::string, std::string> guidelist(
         {{"Axe", "Cuts trees and wood"},
          {"Hoe", "Loosens soil and weeds"},
-         {"Seed", "Reproduces plants"},
-         {"Fruit", "Mature product of plants."},
+         {"StrawberrySeed", "Reproduces Strawberriess"},
+         {"PotatoSeed", "Reproduces Potatoes"},
+         {"CarrotSeed", "Reproduces Carrots"},
+         {"Strawberry", "Mature product of Strawberrys."},
+         {"Potato", "Mature product of Potatos."},
+         {"Carrot", "Mature product of Carrots."},
          {"Gift", "Item expressing feelings."},
-         {"Animal", "living organisms that move, eat, and reproduce"}});
+         {"Pig", "animal sample1"},
+         {"Chicken", "IKUN"}});
     return guidelist;
 }
 
