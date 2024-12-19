@@ -7,9 +7,6 @@ namespace th_valley {
 
 class ClientApplication final : private cocos2d::Application {
 public:
-    ClientApplication() = default;
-    ~ClientApplication() override;
-
     ClientApplication(const ClientApplication& other) = delete;
     ClientApplication& operator=(const ClientApplication& other) = delete;
     ClientApplication(ClientApplication&& other) = delete;
@@ -23,6 +20,9 @@ public:
     static void UpdateResourcePath();
 
 private:
+    ClientApplication() = default;
+    ~ClientApplication() override;
+
     // Use Size struct instead of ax::Size to avoid accessing members of unions.
     struct Size {
         float width;

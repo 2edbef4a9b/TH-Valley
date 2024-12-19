@@ -1,11 +1,9 @@
 #ifndef CLIENT_CONTROLLER_H_
 #define CLIENT_CONTROLLER_H_
 
-#include <memory>
-
 namespace th_valley {
 
-class ClientController : public std::enable_shared_from_this<ClientController> {
+class ClientController {
 public:
     enum class ClientState {
         kLoading,
@@ -18,10 +16,19 @@ public:
         kTitleScreen,
     };
 
-    static ClientController& GetInstance();
+    ClientController(const ClientController& other) = delete;
+    ClientController& operator=(const ClientController& other) = delete;
+    ClientController(ClientController&& other) = delete;
+    ClientController& operator=(ClientController&& other) = delete;
+
     void SetClientState(ClientState client_state);
 
+    static ClientController& GetInstance();
+
 private:
+    ClientController() = default;
+    ~ClientController() = default;
+
     void Update();
 
     ClientState client_state_{ClientState::kStartUp};
