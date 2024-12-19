@@ -3,7 +3,7 @@
 #include <string>
 #include <unordered_map>
 #include"cocos2d.h"
-#include"creature/creature.h"
+#include"avatar/avatar.h"
 #include"avatar/bag.h"
 #include"avatar/illustratedguide.h"
 
@@ -17,7 +17,7 @@ enum wave {
     Sat = 50,
     Sun = 60
 };
-class NPC : public Creature{
+class NPC : public Avatar{
 
 public:
     NPC();

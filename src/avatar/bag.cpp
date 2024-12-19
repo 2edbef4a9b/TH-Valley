@@ -9,7 +9,7 @@ bool Bag::isfull() const{
     return currentnum == maxnum;
 }
 
-void Bag::addobj(std::string key, ItemSprite* additem) {
+void Bag::addobj(std::string key,  ItemSprite* additem) {
     if (isfull()){
         CCLOG("bag is full,please check the bag");
     }

@@ -1,10 +1,11 @@
 #include <string>
 #include <unordered_map>
-#include"cocos2d.h"
-#include"creature/creature.h"
-#include <random>
-#include"avatar/npc.h"
 #include<math.h>
+#include <random>
+
+#include"avatar/npc.h"
+#include"cocos2d.h"
+
 
 int NPC::data(wave day) {
     int data = 0;
@@ -32,13 +33,11 @@ int NPC::data(wave day) {
     return data;
 }
 NPC::NPC() {
-    NPCbag.addobj(
-        "Axe",
-        &ItemSprite("Axe", 10, perfect,
-                    cocos2d::Sprite::create(
-                        "avatar/tool.png",
-                        cocos2d::Rect(0 + 5 * 16, 32 + 4 * 32, 16, 16))));
-    NPCbag.addobj(
+
+    ItemSprite itemA("Axe", 10, perfect,cocos2d::Sprite::create("avatar/tool.png", cocos2d::Rect(0 + 5 * 16, 32 + 4 * 32, 16, 16)));
+    NPCbag.addobj("Axe",&itemA);
+
+    /*NPCbag.addobj(
         "weedA",
         &ItemSprite("weedA", 400, low,
                     cocos2d::Sprite::create(
@@ -81,7 +80,7 @@ NPC::NPC() {
 
     market[5].insert(std::make_pair("Hoe", price(Sat, "Hoe")));
 
-    market[6].insert(std::make_pair("weedB", price(Sun, "weedB")));
+    market[6].insert(std::make_pair("weedB", price(Sun, "weedB")));*/
 }
 
 float NPC::buying(wave day, std::string good, float giving) {
@@ -114,7 +113,7 @@ float NPC::price(wave day, std::string good) {
     std::random_device rd;   // 获取随机数种子
     std::mt19937 gen(rd());  // 使用梅森旋转算法生成随机数
     std::uniform_int_distribution<> dis(1, 100);  // 定义随机数范围为1到100
-    float wavepoint = dis(gen) /100; 
+    float wavepoint = float(dis(gen)) / 100; 
     float price = wavepoint * day + (NPCbag.myfind(good))->quantity;
     return price;
 }

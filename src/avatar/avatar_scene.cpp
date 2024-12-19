@@ -17,7 +17,8 @@ void avatarScene::animateRunning(int dir,float flu) {
     // Create animation
     auto animation =cocos2d::Animation::createWithSpriteFrames(animFrames, flu);
     auto animate = cocos2d::Animate::create(animation);
-    character->runAction(cocos2d::RepeatForever::create(animate));  // Run the animation indefinitely
+    Haley->runAction(cocos2d::RepeatForever::create(
+        animate));  // Run the animation indefinitely
 }
 
 bool avatarScene::init() {
@@ -36,50 +37,54 @@ bool avatarScene::init() {
     this->addChild(_map);  
 
     // Create sprite and add it to the scene
-    character = cocos2d::Sprite::create("avatar/Haley.png");
-    character->setTextureRect(cocos2d::Rect(0, 0, 16, 32));  // Set initial frame to the first frame
-    character->setPosition(cocos2d::Vec2(240, 160));  // Set initial position
-    this->addChild(character);
+    Haley = cocos2d::Sprite::create("avatar/Haley.png");
+    Haley->setTextureRect(
+        cocos2d::Rect(0, 0, 16, 32));  // Set initial frame to the first frame
+    Haley->setPosition(cocos2d::Vec2(240, 160));  // Set initial position
+    this->addChild(Haley);
     keyboardreading();  // Start reading keyboard input
     return true;  // Ensure to return true to indicate successful initialization
 }
 
 void avatarScene::handleKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode,cocos2d::Event *event) {
-
-    moved = false;  
+    //B *bPtr = dynamic_cast<B *>(p);  // 安全地将 C* 转换为 B*
+    Avatar *Haley_ = dynamic_cast<Avatar *>(Haley);
+   moved = false;  
     isattack = false;
-    character->stopAllActions();
-    character->setTextureRect(cocos2d::Rect(0, dir * 32, 16, 32));  // Set to idle frame
+    Haley->stopAllActions();
+    Haley->setTextureRect(
+        cocos2d::Rect(0, dir * 32, 16, 32));  // Set to idle frame
 }
 
 void avatarScene::handleKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event *event) {
-    cocos2d::Vec2 tarpos = character->getPosition();
+    Avatar *Haley_ = dynamic_cast<Avatar *>(Haley);
+    cocos2d::Vec2 tarpos = Haley->getPosition();
     switch (keyCode) {
         // move
         case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_A:
         case cocos2d::EventKeyboard::KeyCode::KEY_A:
-            dir = Left;    // Set direction to left
-            moved = true;  // Mark as moved
+            dir = Left;  // Set direction to left
+           moved = true;  // Mark as moved
             break;
         case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_D:
         case cocos2d::EventKeyboard::KeyCode::KEY_D:
-            dir = Right;   // Set direction to right  
+            dir = Right;  // Set direction to right  
             moved = true;  // Mark as moved
             break;
         case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_W:
         case cocos2d::EventKeyboard::KeyCode::KEY_W:
-            dir = Up;      // Set direction to up
+            dir = Up;  // Set direction to up
             moved = true;  // Mark as moved
             break;
         case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_S:
         case cocos2d::EventKeyboard::KeyCode::KEY_S:
-            dir = Down;    // Set direction to down
+            dir = Down;  // Set direction to down
             moved = true;  // Mark as moved
             break;
         // cutting
         case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_E:
         case cocos2d::EventKeyboard::KeyCode::KEY_E: 
-            if (dir == Up){
+            if (dir == Up) {
                 tarpos.y += 8;
             }
             if (dir == Down) {
@@ -121,7 +126,7 @@ void avatarScene::handleKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, coco
         // fishing
         case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_F:
         case cocos2d::EventKeyboard::KeyCode::KEY_F:
-            if (dir==Right) {
+            if (dir == Right) {
                 tarpos.x += 4;
                 CCLOG("=======");
                 CCLOG("fishing");
@@ -158,19 +163,21 @@ void avatarScene::handleKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, coco
             moved = false;
             break;
         default:
-            moved = false;  // If the pressed key is not a movement key, mark as
+            moved =false;  
             break;
     }
     if (moved) {
-        animateRunning(dir,0.06);
+        animateRunning(dir, 0.06);
     }
 }
 void avatarScene::update(float dt)
 {
+    const float speed = 40.0f;
     float movedistant = speed * dt;
-    cocos2d::Vec2 position = character->getPosition();  // Get the current position of the
-    
-    if (moved && dir==2) {
+    cocos2d::Vec2 position =
+        Haley->getPosition();  // Get the current position of the
+    Avatar *Haley_ = dynamic_cast<Avatar *>(Haley);
+    if (moved && dir == 2) {
         position.y += movedistant;
     }
     if (moved && dir == 0) {
@@ -187,30 +194,30 @@ void avatarScene::update(float dt)
         CCLOG("%lf,%lf", position.x, position.y);  // Log the new position
         CCLOG("=======");
         if (1) {
-            (Haley->postion_).first = position.x;
-            (Haley->postion_).second = position.y;
-            character->setPosition(position);
+            Haley->setPosition(position);
         }
     }
 
 }
-
 // 砍树函数
 void avatarScene::cutting(cocos2d::Vec2 tarpos) {
     // 动作序列：淡入，停留，淡出
-    cocos2d::Sprite *tempavatar = cocos2d::Sprite::create("tool/tools.png", cocos2d::Rect(242, 156, 11, 22));
-    if (dir==Up){
-        tempavatar = cocos2d::Sprite::create("tool/tools.png",cocos2d::Rect(291, 156, 12, 25));
-    }
-    else if (dir == Left) {
-        tempavatar = cocos2d::Sprite::create("tool/tools.png",cocos2d::Rect(302, 156, 19, 19));
+   
+    cocos2d::Sprite *tempavatar = cocos2d::Sprite::create(
+        "tool/tools.png", cocos2d::Rect(242, 156, 11, 22));
+    if (dir == Up) {
+        tempavatar = cocos2d::Sprite::create("tool/tools.png",
+                                             cocos2d::Rect(291, 156, 12, 25));
+    } else if (dir == Left) {
+        tempavatar = cocos2d::Sprite::create("tool/tools.png",
+                                             cocos2d::Rect(302, 156, 19, 19));
         tempavatar->setScaleX(-1);
-    }
-    else if (dir == Right) {
-        tempavatar = cocos2d::Sprite::create("tool/tools.png",cocos2d::Rect(302, 156, 19, 19));
+    } else if (dir == Right) {
+        tempavatar = cocos2d::Sprite::create("tool/tools.png",
+                                             cocos2d::Rect(302, 156, 19, 19));
     }
     tempavatar->setPosition(cocos2d::Vec2(tarpos.x, tarpos.y));  // 设置位置
-    tempavatar->setOpacity(0);                    // 初始透明度为0
+    tempavatar->setOpacity(0);  // 初始透明度为0
     this->addChild(tempavatar);
     auto fadeIn = cocos2d::FadeIn::create(0.05f);    // 0.5秒淡入
     auto delay = cocos2d::DelayTime::create(0.08f);  // 停留1秒
@@ -227,16 +234,21 @@ void avatarScene::cutting(cocos2d::Vec2 tarpos) {
 
 // 耕地函数
 void avatarScene::cultivating(cocos2d::Vec2 tarpos) {
+
+
     // 动作序列：淡入，停留，淡出
     cocos2d::Sprite *tempavatar = cocos2d::Sprite::create(
         "tool/tools.png", cocos2d::Rect(242, 156 - 125, 11, 22));
     if (dir == Up) {
-        tempavatar = cocos2d::Sprite::create("tool/tools.png",cocos2d::Rect(291, 156-125, 12, 25));
+        tempavatar = cocos2d::Sprite::create(
+            "tool/tools.png", cocos2d::Rect(291, 156 - 125, 12, 25));
     } else if (dir == Left) {
-        tempavatar = cocos2d::Sprite::create("tool/tools.png", cocos2d::Rect(302, 156 - 125, 19, 19));
+        tempavatar = cocos2d::Sprite::create(
+            "tool/tools.png", cocos2d::Rect(302, 156 - 125, 19, 19));
         tempavatar->setScaleX(-1);
     } else if (dir == Right) {
-        tempavatar = cocos2d::Sprite::create("tool/tools.png", cocos2d::Rect(302, 156 - 125, 19, 19));
+        tempavatar = cocos2d::Sprite::create(
+            "tool/tools.png", cocos2d::Rect(302, 156 - 125, 19, 19));
     }
     tempavatar->setPosition(cocos2d::Vec2(tarpos.x, tarpos.y));  // 设置位置
     tempavatar->setOpacity(0);  // 初始透明度为0
@@ -256,19 +268,21 @@ void avatarScene::cultivating(cocos2d::Vec2 tarpos) {
 
 // 挖矿函数
 void avatarScene::mining(cocos2d::Vec2 tarpos) {
+    
+
     // 动作序列：淡入，停留，淡出
     cocos2d::Sprite *tempavatar = cocos2d::Sprite::create(
-        "tool/tools.png", cocos2d::Rect(242, 156-67, 11, 22));
+        "tool/tools.png", cocos2d::Rect(242, 156 - 67, 11, 22));
     if (dir == Up) {
-        tempavatar = cocos2d::Sprite::create("tool/tools.png",
-                                             cocos2d::Rect(291, 156-67, 12, 25));
+        tempavatar = cocos2d::Sprite::create(
+            "tool/tools.png", cocos2d::Rect(291, 156 - 67, 12, 25));
     } else if (dir == Left) {
-        tempavatar = cocos2d::Sprite::create("tool/tools.png",
-                                             cocos2d::Rect(302, 156-67, 19, 19));
+        tempavatar = cocos2d::Sprite::create(
+            "tool/tools.png", cocos2d::Rect(302, 156 - 67, 19, 19));
         tempavatar->setScaleX(-1);
     } else if (dir == Right) {
-        tempavatar = cocos2d::Sprite::create("tool/tools.png",
-                                             cocos2d::Rect(302, 156-67, 19, 19));
+        tempavatar = cocos2d::Sprite::create(
+            "tool/tools.png", cocos2d::Rect(302, 156 - 67, 19, 19));
     }
     tempavatar->setPosition(cocos2d::Vec2(tarpos.x, tarpos.y));  // 设置位置
     tempavatar->setOpacity(0);  // 初始透明度为0
@@ -288,19 +302,28 @@ void avatarScene::mining(cocos2d::Vec2 tarpos) {
 
 // 钓鱼函数
 void avatarScene::fishing(cocos2d::Vec2 tarpos) {
+
+
     // 动作序列：淡入，停留，淡出
     cocos2d::Sprite *Scene[6];
     int count = 0;
-    Scene[0] = cocos2d::Sprite::create("tool/tools.png", cocos2d::Rect(0, 295, 35, 31));
-    Scene[1] = cocos2d::Sprite::create("tool/tools.png", cocos2d::Rect(55, 295, 35, 31));
-    Scene[2] = cocos2d::Sprite::create("tool/tools.png", cocos2d::Rect(102, 295, 35, 31));
-    Scene[3] = cocos2d::Sprite::create("tool/tools.png", cocos2d::Rect(160, 295, 35, 31));
-    Scene[4] = cocos2d::Sprite::create("tool/tools.png", cocos2d::Rect(210, 295, 35, 31));
-    Scene[5] = cocos2d::Sprite::create("tool/tools.png", cocos2d::Rect(256, 295, 35, 31));
+    Scene[0] = cocos2d::Sprite::create("tool/tools.png",
+                                       cocos2d::Rect(0, 295, 35, 31));
+    Scene[1] = cocos2d::Sprite::create("tool/tools.png",
+                                       cocos2d::Rect(55, 295, 35, 31));
+    Scene[2] = cocos2d::Sprite::create("tool/tools.png",
+                                       cocos2d::Rect(102, 295, 35, 31));
+    Scene[3] = cocos2d::Sprite::create("tool/tools.png",
+                                       cocos2d::Rect(160, 295, 35, 31));
+    Scene[4] = cocos2d::Sprite::create("tool/tools.png",
+                                       cocos2d::Rect(210, 295, 35, 31));
+    Scene[5] = cocos2d::Sprite::create("tool/tools.png",
+                                       cocos2d::Rect(256, 295, 35, 31));
 
     for (int i = 0; i < 5; ++i) {
-        Scene[i]->setPosition(cocos2d::Vec2(tarpos.x-2, tarpos.y));  // 设置位置
-        Scene[i]->setOpacity(0);  // 初始透明度为0
+        Scene[i]->setPosition(
+            cocos2d::Vec2(tarpos.x - 2, tarpos.y));  // 设置位置
+        Scene[i]->setOpacity(0);                     // 初始透明度为0
         this->addChild(Scene[i]);
 
         auto fadeIn = cocos2d::FadeIn::create(0.1f);    // 0.5秒淡入
@@ -309,7 +332,7 @@ void avatarScene::fishing(cocos2d::Vec2 tarpos) {
 
         // 增加基于索引的延迟
         auto sequence = cocos2d::Sequence::create(
-            cocos2d::DelayTime::create(i * 0.8f),fadeIn, delay, fadeOut,
+            cocos2d::DelayTime::create(i * 0.8f), fadeIn, delay, fadeOut,
             cocos2d::CallFunc::create([scenePtr = Scene[i]]() {
                 if (scenePtr) {
                     scenePtr->removeFromParent();  // 动作完成后移除
@@ -319,8 +342,9 @@ void avatarScene::fishing(cocos2d::Vec2 tarpos) {
 
         Scene[i]->runAction(sequence);  // 运行动作序列
     }
-    Scene[5]->setPosition(cocos2d::Vec2(tarpos.x-5, tarpos.y+3.5));  // 设置位置
-    Scene[5]->setOpacity(0);  // 初始透明度为0
+    Scene[5]->setPosition(
+        cocos2d::Vec2(tarpos.x - 5, tarpos.y + 3.5));  // 设置位置
+    Scene[5]->setOpacity(0);                           // 初始透明度为0
     this->addChild(Scene[5]);
 
     auto fadeIn = cocos2d::FadeIn::create(0.1f);    // 0.5秒淡入
@@ -329,7 +353,7 @@ void avatarScene::fishing(cocos2d::Vec2 tarpos) {
 
     // 增加基于索引的延迟
     auto sequence = cocos2d::Sequence::create(
-        cocos2d::DelayTime::create(5 * 0.8f),  fadeIn, delay, fadeOut,
+        cocos2d::DelayTime::create(5 * 0.8f), fadeIn, delay, fadeOut,
         cocos2d::CallFunc::create([scenePtr = Scene[5]]() {
             if (scenePtr) {
                 scenePtr->removeFromParent();  // 动作完成后移除
@@ -338,12 +362,8 @@ void avatarScene::fishing(cocos2d::Vec2 tarpos) {
         nullptr);
 
     Scene[5]->runAction(sequence);  // 运行动作序列
-
-
-
-
-
 }
+
 
 
 
@@ -362,7 +382,7 @@ void avatarScene::keyboardreading() {
     };
     // Add the keyboard listener to the event dispatcher
     _eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener,
-                                                             character);
+                                                             Haley);
     this->scheduleUpdate();  
 }
 
@@ -391,7 +411,7 @@ void avatarScene::SetResourcePath(const std::string &path) {
 // should be override
 void avatarScene::upgradeshow() {
     // 创建 "UPGRADE" 字样
-    cocos2d::Vec2 curpos = character->getPosition();
+    cocos2d::Vec2 curpos = Haley->getPosition();
    
     constexpr size_t kFontSize = 12;
     auto *upgradeLabel = cocos2d::Label::createWithTTF("Upgrade!~", "fonts/DFHannotateW5-A.ttf", kFontSize);

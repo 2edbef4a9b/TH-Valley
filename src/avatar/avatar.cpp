@@ -1,8 +1,9 @@
-#include"avatar/avatar.h"
 #include <string>
 #include "cocos2d.h"
+#include"avatar/avatar_application.h"
+#include"avatar/avatar.h"
 // operator override
-Avatar::Attack& Avatar::Attack::operator=(Avatar::Attack& giv) {
+Attack& Attack::operator=(Attack& giv) {
     if (&giv!=this) {
         this->attackdamage_ = giv.attackdamage_;
         this->spellpower_ = giv.spellpower_;
@@ -10,13 +11,13 @@ Avatar::Attack& Avatar::Attack::operator=(Avatar::Attack& giv) {
     return *this;
 }
 
-Avatar::Attack& Avatar::Attack::operator+(const Avatar::Attack& giv) {
+Attack& Attack::operator+(const Attack& giv) {
     this->attackdamage_ += giv.attackdamage_;
     this->spellpower_ += giv.spellpower_;
     return *this;
 }
 
-Avatar::Defense& Avatar::Defense::operator=( Avatar::Defense& giv) {
+Defense& Defense::operator = (Defense& giv) {
     if (&giv != this) {
         this->phsicaldefense_ = giv.phsicaldefense_;
         this->spelldefense_ = giv.spelldefense_;
@@ -24,7 +25,7 @@ Avatar::Defense& Avatar::Defense::operator=( Avatar::Defense& giv) {
     return *this;
 }
 
-Avatar::Defense& Avatar::Defense::operator+(const Avatar::Defense& giv) {
+Defense& Defense::operator + (const Defense& giv) {
     this->phsicaldefense_ += giv.phsicaldefense_;
     this->spelldefense_ += giv.spelldefense_;
     return *this;
@@ -37,18 +38,15 @@ bool Avatar::inattackzone(Avatar* other) {
                           (other_pos.first - postion_.first) +
                       (other_pos.second - postion_.second) *
                           (other_pos.second - postion_.second));
-
-//double angle = (other_pos.second - postion_.second) /(other_pos.first - postion_.first)
-
     bool flag = false;
-    if (dir < fetchattackzone()) {
+    if (dir < attackzone) {
         flag = true;
     }
     return flag;
 }
 
 void Avatar::experiencegain(double exp)  {
-    if (fetchgrade()==10)
+    if (grade_==10)
     {
         return;
     }
@@ -57,7 +55,7 @@ void Avatar::experiencegain(double exp)  {
         experience += exp;
         if (experience >= experiencelist.at(int(experiencelist.at(0)))) {
 
-            if (fetchgrade() < 10) {
+            if (grade_ < 10) {
                 experience -= experiencelist.at(int(experiencelist.at(0)));
             }
         }
@@ -77,13 +75,12 @@ Avatar::Avatar() {}
 
 
 
-
 void Avatar::upgrade()
 {
-    setblood(fetchblood()+1000.0);
-    setpowerrest(fetchpowerrest() + 100.0);
-    setgrade(fetchgrade() + 1);
-    experiencelist.at(0) = fetchgrade();
+    exist_.blood_ += 1000.0f;
+    exist_.powerrest_ += 100.0f;
+    grade_ += 1;
+    experiencelist.at(0) = grade_;
     attack_ = attack_ + Attack{100, 100};
     defense_ = defense_ + Defense{100, 100};
 }
@@ -97,5 +94,29 @@ void Avatar::doattack(bool isAttack,int dir){
 
 
 
+Exist& Exist::operator=(Exist& other) {
+    if (this != &other) {
+        this->blood_ = other.blood_;
+        this->hunger_ = other.hunger_;
+        this->thisty_ = other.thisty_;
+        this->powerrest_ = other.powerrest_;
+    }
+    return *this;
+}
+
+
+void Avatar::existchange() {
+    exist_.hunger_ *= 0.99;
+    exist_.thisty_ *= 0.99;
+}
+
+bool Avatar::judgedeath() {
+    bool flag = false;
+    double exp = 0.00001;
+    if (abs(exist_.blood_) < exp) {
+        flag = true;
+    }
+    return flag;
+}
 
 

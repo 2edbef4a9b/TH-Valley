@@ -25,7 +25,7 @@ class Bag {
 public:
     bool isempty() const;
     bool isfull() const;
-    void addobj(std::string key, ItemSprite* additem);
+    void addobj(std::string key,  ItemSprite* additem);
     ItemSprite* myfind(std::string key);
     void reduce(std::string key);
     void openbag();
