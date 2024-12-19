@@ -78,10 +78,10 @@ void NetworkClient::Disconnect() {
 
 void NetworkClient::SendMessages(const std::string_view message_sv) {
     std::string message(message_sv);
-    Logger::GetInstance().LogInfo("Client: Sending message: {} to server.",
-                                  message);
+    std::string sent_message = message + "\n";
+    Logger::GetInstance().LogInfo("Client: Sending message: {}.", message);
     boost::asio::async_write(
-        socket_, boost::asio::buffer(message + "\n", message.size()) + 1,
+        socket_, boost::asio::buffer(sent_message, sent_message.size()),
         [this, message](const boost::system::error_code& error_code,
                         std::size_t /*length*/) -> void {
             if (error_code) {
