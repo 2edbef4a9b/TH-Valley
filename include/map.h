@@ -15,6 +15,7 @@ struct Tile {
 };
 
 class Crops;
+class Animals;
 class Map : public cocos2d::TMXTiledMap {
 protected:
     cocos2d::TMXTiledMap* tileMap;
@@ -31,6 +32,7 @@ protected:
     bool isKeyPressedD;
 public:
     std::map<Position, Crops*> CropPosition;
+    std::map<Position, cocos2d::Sprite*> SpritePosition;
     std::vector<Crops*> MapCrops;
     std::vector<Animals*> MapAnimals;
     Map() = default;
@@ -56,7 +58,7 @@ public:
     /**
      * @brief 像素点坐标转换为瓦片坐标
      * @param cocos2d::Vec2 pos
-     * @return cocos2d::Vec2
+     * @return cocos2d::Vec2 
      */
     cocos2d::Vec2 tileCoordFromPos(cocos2d::Vec2 pos);
     cocos2d::Vec2 PosFromtileCoord(Position pos);
@@ -107,6 +109,9 @@ public:
      * @param cocos2d::Vec2 tileCoord; int newGID; string LayerName
      */
     void updateTileAt(cocos2d::Vec2 tileCoord, int newGID, std::string LayerName);
+    int getTileID(cocos2d::Vec2 tileCoord, std::string LayerName);
+    bool PropertyCheck(int gid, std::string property);
+    int getTileID(std::string Properties);
 
     /**
      * @brief 监视用户操作
@@ -132,8 +137,10 @@ public:
 
     static Map* create(const std::string& tmxFile);
 
+    // Crop option
     void CropPlant(const Position &PlantPosition, Crops* Crop);
-
+    void CropRemove(const Position& RemovePosition);
+    void CropUpdate(const Position& UpdatePosition);
     void ShowCropInformation(Crops *Crop, const Position &InfoPosition, int &priority);
 };
 

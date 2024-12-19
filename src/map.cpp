@@ -130,11 +130,10 @@ cocos2d::Vec2 Map::PosFromtileCoord(Position PlantPosition) {
     cocos2d::Vec2 PicturePosition;
     PicturePosition.x = PlantPosition.x * tileMap->getTileSize().width;
     PicturePosition.y =
-        (tileMap->getMapSize().height * tileMap->getTileSize().height -
-         PlantPosition.y) -
+        (tileMap->getMapSize().height * tileMap->getTileSize().height) -
         PlantPosition.y * tileMap->getTileSize().height;
     PicturePosition.x += tileMap->getTileSize().width / 2;
-    PicturePosition.y += tileMap->getTileSize().height / 2;
+    PicturePosition.y -= tileMap->getTileSize().height / 2;
     return PicturePosition;
 }
 
@@ -281,6 +280,39 @@ void Map::updateTileAt(cocos2d::Vec2 tileCoord, int newGID, std::string LayerNam
     CCLOG("Tile updated at %f, %f with GID: %d", tileCoord.x, tileCoord.y, newGID);
 }
 
+int Map::getTileID(cocos2d::Vec2 tileCoord, std::string LayerName) {
+    auto layer = tileMap->getLayer(LayerName);
+    int gid = layer->getTileGIDAt(tileCoord);
+    if (gid == 0) {
+        CCLOG("No tile at this position\n");
+        return 0;
+    }
+    return gid;
+}
+
+bool Map::PropertyCheck(int gid, std::string property) {
+    cocos2d::Value properties = tileMap->getPropertiesForGID(gid);
+    if (properties.isNull()) {
+        CCLOG("There is no properties\n");
+        return false;
+    } else {
+        cocos2d::ValueMap propertyMap = properties.asValueMap();
+        auto it = propertyMap.find(property);
+        if (it != propertyMap.end()) {
+            bool isCorrect = it->second.asBool();
+            if (isCorrect) {
+                CCLOG("%s is true\n", property.c_str());
+                return true;
+            } else {
+                CCLOG("%s is false\n", property.c_str());
+                return false;
+            }
+        }
+        CCLOG("Not find property: %s\n", property.c_str());
+        return false;
+    }
+}
+
 void Map::onEnter() {
     cocos2d::TMXTiledMap::onEnter();
     CCLOG("Map onEnter");
@@ -305,13 +337,18 @@ void Map::onEnter() {
         }
 
         // Plant
-        // if (Seed in Hand): 
+        // if (Seed in Hand):
+        int gid = getTileID(tilePos, "Back");
+        if (PropertyCheck(gid, "Cultivable")) {
+            updateTileAt(tilePos, 557, "Back");
+        }
+
         Position PlantTilePos;
         PlantTilePos.x = tilePos.x;
         PlantTilePos.y = tilePos.y;
 
         // take a Strawberry as an example
-        Strawberry *exampleStrawberry;
+        Strawberry* exampleStrawberry;
         exampleStrawberry = new Strawberry;
 
         CropPlant(PlantTilePos, exampleStrawberry);
@@ -430,214 +467,4 @@ void Map::update(float delta) {
     if (isKeyPressedW || isKeyPressedS || isKeyPressedA || isKeyPressedD) {
         setPlayerPos(currentPos);
     }
-}
-
-void Map::CropPlant(const Position& PlantPosition, Crops* Crop) {
-    // Position check
-    static int priority = 3;
-    auto PlayerTilePos = tileCoordFromPos(playerPos);
-    if (fabs(PlayerTilePos.x - PlantPosition.x) > 1 ||
-        fabs(PlayerTilePos.y - PlantPosition.y) > 1) {
-        CCLOG("Too far to plant");
-        return;
-    }
-
-    // Planted Check
-    if (CropPosition[PlantPosition]) {
-        CCLOG("This tile has been planted");
-        ShowCropInformation(CropPosition[PlantPosition], PlantPosition, priority);
-        return;
-    }
-
-    CCLOG("Can be planted");
-
-    auto CropPicture = cocos2d::Sprite::create("assets/TileSheets/crops.png",
-                                               cocos2d::Rect(1, 593, 13, 14));
-
-    // Picture Position Calculate
-    cocos2d::Vec2 PicturePosition;
-    PicturePosition = PosFromtileCoord(PlantPosition);
-
-    CCLOG("Size: %f %f\n", tileMap->getTileSize().width,
-          tileMap->getTileSize().height);
-    CCLOG("PicturePosition: %f %f\n", PicturePosition.x, PicturePosition.y);
-    CCLOG("PlantPosition: %f %f\n", PlantPosition.x, PlantPosition.y);
-    CropPicture->setPosition(PicturePosition);
-
-    CropPosition[PlantPosition] = Crop;
-    MapCrops.push_back(Crop);
-
-    this->addChild(CropPicture, 1);
-}
-
-void Map::ShowCropInformation(Crops* Crop, const Position& InfoPosition, int& priority) {
-    // Turn Tile position to scene position
-    cocos2d::Vec2 PicturePosition = PosFromtileCoord(InfoPosition);
-
-    // infoBox Define
-    auto infoBox = cocos2d::Sprite::create("assets/testpng/boardgameborder.png");
-    infoBox->setPosition(cocos2d::Vec2(PicturePosition.x, PicturePosition.y + 40));
-    infoBox->setScale(0.64);
-    this->addChild(infoBox, priority);
-
-    // Title Define
-    size_t kFontSize = 50;
-    auto* InfoTitle = cocos2d::Label::createWithTTF(
-        Crop->CropName, "assets/fonts/DFHannotateW5-A.ttf", kFontSize);
-    InfoTitle->setScale(0.1);
-    InfoTitle->setPosition(cocos2d::Vec2(PicturePosition.x - 20, PicturePosition.y + 50));
-    this->addChild(InfoTitle, ++priority);
-
-    
-    // Button Define
-    auto HavestButton = cocos2d::ui::Button::create("assets/testpng/button.png",
-                                                    "assets/testpng/buttonpress.png");
-    auto WaterButton = cocos2d::ui::Button::create("assets/testpng/button.png",
-                                                   "assets/testpng/buttonpress.png");
-    auto FertilizeButton = cocos2d::ui::Button::create(
-        "assets/testpng/button.png", "assets/testpng/buttonpress.png");
-    auto CloseButton = cocos2d::ui::Button::create("assets/testpng/button.png",
-                                                   "assets/testpng/buttonpress.png");
-
-    // Stage Define
-    kFontSize = 50;
-    std::string output;
-    if (Crop->GrowthSituation[0] != "Death")
-        output = "Stage: " + Crop->GrowthStage[Crop->CurrentGrowthStage];
-    auto* Stage = cocos2d::Label::createWithTTF(
-        output, "assets/fonts/DFHannotateW5-A.ttf", kFontSize);
-    Stage->setScale(0.1);
-    Stage->setPosition(
-        cocos2d::Vec2(PicturePosition.x + 20, PicturePosition.y + 50));
-    Stage->setTextColor(cocos2d::Color4B::GRAY);
-    this->addChild(Stage, priority);
-    
-    // DeathInfo Define
-    kFontSize = 50;
-    auto* DeathInfo = cocos2d::Label::createWithTTF(
-        "Death", "assets/fonts/DFHannotateW5-A.ttf", kFontSize);
-    DeathInfo->setScale(0.1);
-    DeathInfo->setPosition(
-        cocos2d::Vec2(PicturePosition.x + 20, PicturePosition.y + 40));
-    DeathInfo->setTextColor(cocos2d::Color4B::RED);
-    this->addChild(DeathInfo, priority);
-
-    // Situation Define
-    kFontSize = 50;
-    output = Crop->GrowthSituation[0] + "\n";
-    for (int i = 1; i < Crop->GrowthSituation.size(); i++) {
-        output = output + Crop->GrowthSituation[i] + "\n";
-    }
-    auto* Situation = cocos2d::Label::createWithTTF(
-        output, "assets/fonts/DFHannotateW5-A.ttf", kFontSize);
-    Situation->setScale(0.1);
-    Situation->setPosition(
-        cocos2d::Vec2(PicturePosition.x + 20, PicturePosition.y + 35));
-    Situation->setTextColor(cocos2d::Color4B::ORANGE);
-    this->addChild(Situation, priority);
-
-    // Print Special Situation
-    if (Crop->GrowthSituation[0] != "Death") {
-        DeathInfo->setVisible(false);
-    }
-    if (Crop->GrowthSituation[0] == "Normal" ||
-        Crop->GrowthSituation[0] == "Death") {
-            Situation->setVisible(false);
-    }
-
-    // HavestButton
-    HavestButton->setScale(0.15);
-    HavestButton->setPosition(
-        cocos2d::Vec2(PicturePosition.x - 20, PicturePosition.y + 43));
-    std::string Title;
-    if (Crop->CurrentGrowthStage == Crop->MaxGrowthStage)
-        Title = "Harvest";
-    else
-        Title = "Remove";
-    HavestButton->setTitleText(Title);
-    HavestButton->setTitleFontName("assets/fonts/DFHannotateW5-A.ttf");
-    HavestButton->setTitleColor(cocos2d::Color3B::BLACK);
-    HavestButton->setColor(cocos2d::Color3B::WHITE);
-    HavestButton->setTitleFontSize(40);
-    HavestButton->addClickEventListener(
-        [this, HavestButton, WaterButton, FertilizeButton, CloseButton, infoBox,
-         InfoTitle, Stage, DeathInfo, Situation, Crop](cocos2d::Ref* sender) {
-            HavestButton->setVisible(false);
-            WaterButton->setVisible(false);
-            FertilizeButton->setVisible(false);
-            infoBox->setVisible(false);
-            InfoTitle->setVisible(false);
-            Stage->setVisible(false);
-            CloseButton->setVisible(false);
-            if (Crop->GrowthSituation[0] == "Death") {
-                DeathInfo->setVisible(false);
-            }
-            if (Crop->GrowthSituation[0] != "Normal") {
-                Situation->setVisible(false);
-            }
-            // Here Do Harvest
-        });
-    this->addChild(HavestButton, priority);
-
-    // WaterButton
-    WaterButton->setScale(0.15);
-    WaterButton->setPosition(
-        cocos2d::Vec2(PicturePosition.x - 20, PicturePosition.y + 35));
-    WaterButton->setTitleText("Water");
-    WaterButton->setTitleFontName("assets/fonts/DFHannotateW5-A.ttf");
-    WaterButton->setTitleColor(cocos2d::Color3B::BLACK);
-    WaterButton->setColor(cocos2d::Color3B::WHITE);
-    WaterButton->setTitleFontSize(40);
-    WaterButton->addClickEventListener(
-        [this, WaterButton, infoBox, InfoTitle, Crop](cocos2d::Ref* sender) {
-            Crop->CropWatering();
-        });
-    this->addChild(WaterButton, priority);
-    if (Crop->GrowthSituation[0] == "Death") WaterButton->setVisible(false);
-
-    // FertilizeButton
-    FertilizeButton->setScale(0.15);
-    FertilizeButton->setPosition(
-        cocos2d::Vec2(PicturePosition.x - 20, PicturePosition.y + 27));
-    FertilizeButton->setTitleText("Fertilize");
-    FertilizeButton->setTitleFontName("assets/fonts/DFHannotateW5-A.ttf");
-    FertilizeButton->setTitleColor(cocos2d::Color3B::BLACK);
-    FertilizeButton->setColor(cocos2d::Color3B::WHITE);
-    FertilizeButton->setTitleFontSize(37);
-    FertilizeButton->addClickEventListener(
-        [this, infoBox, InfoTitle, Crop](cocos2d::Ref* sender) {
-            Crop->CropFertilize();
-        });
-    this->addChild(FertilizeButton, priority);
-    if (Crop->GrowthSituation[0] == "Death") FertilizeButton->setVisible(false);
-
-    // Close Button
-    CloseButton->setScale(0.15);
-    CloseButton->setPosition(
-        cocos2d::Vec2(PicturePosition.x + 20, PicturePosition.y + 24));
-    CloseButton->setTitleText("Confirm");
-    CloseButton->setTitleFontName("assets/fonts/DFHannotateW5-A.ttf");
-    CloseButton->setTitleColor(cocos2d::Color3B::BLACK);
-    CloseButton->setColor(cocos2d::Color3B::WHITE);
-    CloseButton->setTitleFontSize(40);
-    // When Click the "Confirm", infoBox and the information in it turn off
-    CloseButton->addClickEventListener(
-        [this, HavestButton, WaterButton, FertilizeButton, CloseButton, infoBox,
-         InfoTitle, Stage, DeathInfo, Situation, Crop](cocos2d::Ref* sender) {
-            HavestButton->setVisible(false);
-            WaterButton->setVisible(false);
-            FertilizeButton->setVisible(false);
-            infoBox->setVisible(false);
-            InfoTitle->setVisible(false);
-            Stage->setVisible(false);
-            CloseButton->setVisible(false);
-            if (Crop->GrowthSituation[0] == "Death") {
-                DeathInfo->setVisible(false);
-            }
-            if (Crop->GrowthSituation[0] != "Normal") {
-                Situation->setVisible(false);
-            }
-            // Here Do Harvest
-        });
-    this->addChild(CloseButton, priority++);
 }

@@ -27,6 +27,7 @@ public:
     int MaxGrowthStage;
     std::vector < int > GrowthDuration;
     std::vector<std::string> GrowthStage;
+    std::vector<cocos2d::Rect> frameRect;
 
     // Situation
     std::vector<std::string> GrowthSituation;
@@ -81,8 +82,6 @@ public:
         TotalCrops = 0;
         TotalPlant = 0;
     }
-    virtual bool CropPlant(const cocos2d::Vec2 &position, Crops *Crop,
-                           Map *PlantMap);
     void CropProductionAutoUpdate();
 };
 

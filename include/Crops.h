@@ -12,6 +12,11 @@ public:
         MaxGrowthStage = 3;
         GrowthDuration = {300, 300, 300};
         GrowthStage = {"Seed", "Seedling", "Maturation", "Ripened"};
+        frameRect.resize(4);
+        frameRect[0].setRect(1, 593, 13, 14);
+        frameRect[1].setRect(36, 597, 8, 8);
+        frameRect[2].setRect(81, 587, 16, 19);
+        frameRect[3].setRect(97, 587, 16, 19);
 
         GrowthSituation = {"Normal"};
         isNormal = 1;
@@ -31,7 +36,7 @@ public:
         WaterRequirement = 0;
         MaxWaterRequirement = 500;
         FertilizerDuration = 0;
-        SoilRequirement = {"ArableLand"};
+        SoilRequirement = {"Arable"};
         SeasonRequirement = {"Spring"};
     }
 };

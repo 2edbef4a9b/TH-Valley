@@ -121,50 +121,6 @@ void Crops::getTime(WorldTime *Time) { CurrentTime = Time; }
 
 void Crops::getWeather(Weather *weather) { CurrentWeather = weather; }
 
-bool CropProduction::CropPlant(const cocos2d::Vec2 &position, Crops* Crop, Map* CurrentMap) {
-
-    bool PlantCheck = 0;
-
-    auto Layer = CurrentMap->getLayer("Back");
-
-    // 获取指定位置的瓦片坐标
-    auto tileCoord = CurrentMap->tileCoordFromPos(position);
-
-    // 检查该位置是否有瓦片
-    int tileGid = Layer->getTileGIDAt(tileCoord);
-
-    if (tileGid != 0) {
-        // 获取瓦片的属性
-        auto properties = CurrentMap->getPropertiesForGID(tileGid);
-
-        // 确保属性类型为 MAP，避免断言失败
-        if (properties.getType() == cocos2d::Value::Type::MAP) {
-            auto valueMap = properties.asValueMap();
-
-            // 检查 "Arable" 属性是否存在且为 "true"
-            auto it = valueMap.find("Arable");
-
-            // position
-            Position NewPos;
-            NewPos.x = position.x;
-            NewPos.y = position.y;
-
-            if (it != valueMap.end() && it->second.asString() == "true" && CurrentMap->CropPosition[NewPos]) {
-                PlantCheck = 1;
-            }
-
-            if (!PlantCheck) return false;
-
-            CurrentMap->CropPosition[NewPos] = Crop;
-            TotalPlant++;
-            TotalCrops++;
-            return true;
-        }
-        return false;
-    }
-    return false;
-}
-
 void CropProduction::CropProductionAutoUpdate() {
     for (int i = 0; i < TotalCrops; i++) {
         Crops *Crop = AllCrops[i];
