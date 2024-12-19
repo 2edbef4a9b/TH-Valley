@@ -47,7 +47,7 @@ set(INCLUDE_DIR)
 # Cocos2d-x configuration.
 # Set the COCOS2DX_ROOT_PATH with the environment variable.
 if(DEFINED ENV{COCOS_X_ROOT})
-    set(COCOS2DX_ROOT_PATH $ENV{COCOS_X_ROOT})
+    cmake_path(CONVERT $ENV{COCOS_X_ROOT} TO_CMAKE_PATH_LIST COCOS2DX_ROOT_PATH)
 else()
     message(FATAL_ERROR "Environment variable COCOS_X_ROOT is not set.")
 endif()
