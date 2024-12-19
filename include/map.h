@@ -20,12 +20,12 @@ class Map : public cocos2d::TMXTiledMap {
 protected:
     cocos2d::TMXTiledMap* tileMap;
     std::unordered_map<std::string, cocos2d::TMXLayer*> mapLayer;
-    cocos2d::TMXObjectGroup* objectGroup;   // ÎïÆ·×é
-    cocos2d::Vec2 playerPos;          // Íæ¼ÒÎ»ÖÃ
+    cocos2d::TMXObjectGroup* objectGroup;   // ï¿½ï¿½Æ·ï¿½ï¿½
+    cocos2d::Vec2 playerPos;          // ï¿½ï¿½ï¿½Î»ï¿½ï¿½
     cocos2d::Sprite* playerSprite;
     cocos2d::ValueMap playerObject;
 
-    // °´¼ü×´Ì¬
+    // ï¿½ï¿½ï¿½ï¿½×´Ì¬
     bool isKeyPressedW;
     bool isKeyPressedA;
     bool isKeyPressedS;
@@ -43,69 +43,69 @@ public:
     Map& operator=(Map&& other) = default;
 
     /**
-     * @brief ÏñËØµã×ø±ê×ª»»ÎªÍßÆ¬×ø±ê
+     * @brief ï¿½ï¿½ï¿½Øµï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½Îªï¿½ï¿½Æ¬ï¿½ï¿½ï¿½ï¿½
      * @param string tmxFile
-     * @return true: ³É¹¦¼ÓÔØ false: ¼ÓÔØÊ§°Ü
+     * @return true: ï¿½É¹ï¿½ï¿½ï¿½ï¿½ï¿½ false: ï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½
      */
     bool initWithTMXFile(const std::string& tmxFile)
         ;
     /**
-     * @brief ÉèÖÃÍæ¼ÒÎ»ÖÃ
+     * @brief ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½
      * @param cocos2d::Vec2 pos
      */
     void setPlayerPos(cocos2d::Vec2 pos);
 
     /**
-     * @brief ÏñËØµã×ø±ê×ª»»ÎªÍßÆ¬×ø±ê
+     * @brief ï¿½ï¿½ï¿½Øµï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½Îªï¿½ï¿½Æ¬ï¿½ï¿½ï¿½ï¿½
      * @param cocos2d::Vec2 pos
      * @return cocos2d::Vec2 
      */
     cocos2d::Vec2 tileCoordFromPos(cocos2d::Vec2 pos);
     cocos2d::Vec2 PosFromtileCoord(Position pos);
     /**
-     * @brief ÅÐ¶ÏÊÇ·ñÓÐÅö×²
-     * @param cocos2d::Vec2 pos ÏñËØµã×ø±ê  string LayerName ²ãÃû³Æ
-     * @return true: ÓÐÅö×²£¬²»¿ÉÒÔÒÆ¶¯
-     false: ÎÞÅö×²£¬¿ÉÒÔÒÆ¶¯
+     * @brief ï¿½Ð¶ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½×²
+     * @param cocos2d::Vec2 pos ï¿½ï¿½ï¿½Øµï¿½ï¿½ï¿½ï¿½ï¿½  string LayerName ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+     * @return true: ï¿½ï¿½ï¿½ï¿½×²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¶ï¿½
+     false: ï¿½ï¿½ï¿½ï¿½×²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¶ï¿½
      */
     bool isCollision(cocos2d::Vec2 pos, std::string LayerName = "Paths");
     bool isCollisionAtAnyLayer(cocos2d::Vec2 pos);
 
     /**
-     * @brief ÅÐ¶ÏÊÇ·ñÓÐ´«ËÍÃÅ
-     * @param cocos2d::Vec2 pos ÏñËØµã×ø±ê  string ObjectLayerName ²ãÃû³Æ
-     * @return true: ÓÐ´«ËÍÃÅ£¬Ö´ÐÐ´«ËÍ²Ù×÷
-     false: ÎÞ
+     * @brief ï¿½Ð¶ï¿½ï¿½Ç·ï¿½ï¿½Ð´ï¿½ï¿½ï¿½ï¿½ï¿½
+     * @param cocos2d::Vec2 pos ï¿½ï¿½ï¿½Øµï¿½ï¿½ï¿½ï¿½ï¿½  string ObjectLayerName ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+     * @return true: ï¿½Ð´ï¿½ï¿½ï¿½ï¿½Å£ï¿½Ö´ï¿½Ð´ï¿½ï¿½Í²ï¿½ï¿½ï¿½
+     false: ï¿½ï¿½
      */
     bool isPortal(cocos2d::Vec2 pos, std::string ObjectLayerName = "Objects");
 
     /**
-     * @brief ÇÐÍ¼
+     * @brief ï¿½ï¿½Í¼
      * @param string portalName 
-     false: ÎÞ
+     false: ï¿½ï¿½
      */
     void triggerPortalEvent(const std::string& portalName);
 
     /**
-     * @brief ÉèÖÃÊÓ½ÇÖÐÐÄ£¬Ö÷½ÇÎ»ÖÃ¸üÐÂÊ±µ÷ÓÃ
+     * @brief ï¿½ï¿½ï¿½ï¿½ï¿½Ó½ï¿½ï¿½ï¿½ï¿½Ä£ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½Ã¸ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½
      * @param cocos2d::Vec2 pos
      */
     void setViewpointCenter(cocos2d::Vec2 pos);
 
     /**
-     * @brief »ñÈ¡Íæ¼Ò×ø±ê
+     * @brief ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
      * @return cocos2d::Vec2
      */
     cocos2d::Vec2 getPos();
 
     /**
-     * @brief ¼ì²â»î¶¯²¢´¥·¢
+     * @brief ï¿½ï¿½ï¿½î¶¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
      * @param cocos2d::Vec2 tileCoord
      */
     void checkEventsAndTrigger(cocos2d::Vec2 tileCoord);
 
     /**
-     * @brief ¸üÐÂÌùÍ¼
+     * @brief ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼
      * @param cocos2d::Vec2 tileCoord; int newGID; string LayerName
      */
     void updateTileAt(cocos2d::Vec2 tileCoord, int newGID, std::string LayerName);
@@ -114,22 +114,22 @@ public:
     int getTileID(std::string Properties);
 
     /**
-     * @brief ¼àÊÓÓÃ»§²Ù×÷
+     * @brief ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½
      */
     void onEnter();
 
     /**
-     * @brief ´´½¨Ð¡µØÍ¼
+     * @brief ï¿½ï¿½ï¿½ï¿½Ð¡ï¿½ï¿½Í¼
      */
     void createMiniMap();
 
     /**
-     * @brief ±£´æµØÍ¼
+     * @brief ï¿½ï¿½ï¿½ï¿½ï¿½Í¼
      */
     void save();
 
     /**
-     * @brief ¼ÓÔØµØÍ¼
+     * @brief ï¿½ï¿½ï¿½Øµï¿½Í¼
      */
     void load();
 

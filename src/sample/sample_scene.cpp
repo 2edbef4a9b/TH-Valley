@@ -1,5 +1,4 @@
 #include "sample/sample_scene.h"
-
 #include <cstddef>
 #include <string>
 

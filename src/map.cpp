@@ -14,18 +14,18 @@ bool Map::initWithTMXFile(const std::string& tmxFile) {
     this->setAnchorPoint(cocos2d::Vec2(0, 0));
     this->setPosition(cocos2d::Vec2(0, 0));
 
-    // ³õÊ¼»¯µØÍ¼µÄÆäËûÄÚÈÝ
+    // ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     std::vector<std::string> layerNames = {
         "Back", "Back2", "Block", "Interact", "Building", "Paths", "Front", "Front2"};
 
-    int zOrder = -5;  // ³õÊ¼ z-order£¬´Ó 0 ¿ªÊ¼
+    int zOrder = -5;  // ï¿½ï¿½Ê¼ z-orderï¿½ï¿½ï¿½ï¿½ 0 ï¿½ï¿½Ê¼
     for (const auto& name : layerNames) {
         auto layer = tileMap->getLayer(name);
         if (layer) {
             if (name == "Front") {
                 zOrder += 5;
             }
-            layer->setLocalZOrder(zOrder++);  // Ã¿²ãµÝÔö z-order
+            layer->setLocalZOrder(zOrder++);  // Ã¿ï¿½ï¿½ï¿½ï¿½ï¿½ z-order
             mapLayer[name] = layer;
             CCLOG("Layer '%s' added with z-order %d", name.c_str(), zOrder - 1);
         } else {
@@ -40,7 +40,7 @@ bool Map::initWithTMXFile(const std::string& tmxFile) {
         CCLOG("ObjectGroup 'Objects' loaded successfully");
     }
 
-    // »ñÈ¡³õÊ¼Íæ¼ÒÎ»ÖÃ
+    // ï¿½ï¿½È¡ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½Î»ï¿½ï¿½
     auto player = objectGroup->getObject("Player");
     if (!player.empty()) {
         float x = player.at("x").asFloat();
@@ -54,27 +54,27 @@ bool Map::initWithTMXFile(const std::string& tmxFile) {
     CCLOG("Player position set to: %f, %f", playerPos.x, playerPos.y);
     CCLOG("Player position set to Tile: %f, %f", tileCoordFromPos(playerPos).x,
           tileCoordFromPos(playerPos).y);
-    setViewpointCenter(playerPos);  // ¸üÐÂÊÓ½ÇÖÐÐÄ
+    setViewpointCenter(playerPos);  // ï¿½ï¿½ï¿½ï¿½ï¿½Ó½ï¿½ï¿½ï¿½ï¿½ï¿½
 
-    // ¼ÓÔØÎÆÀí
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     auto texture =
         cocos2d::Director::getInstance()->getTextureCache()->addImage(
             "assets/Sebastian.png");
-    // ¶¨Òå²Ã¼ôÇøÓò£¨µÚÒ»·ùÍ¼Æ¬µÄÎ»ÖÃºÍ³ß´ç£©
+    // ï¿½ï¿½ï¿½ï¿½Ã¼ï¿½ï¿½ï¿½ï¿½ò£¨µï¿½Ò»ï¿½ï¿½Í¼Æ¬ï¿½ï¿½Î»ï¿½ÃºÍ³ß´ç£©
     cocos2d::Rect frameRect(0, 0, 16, 32);
-    // ´´½¨¾«ÁéÖ¡
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¡
     auto spriteFrame =
         cocos2d::SpriteFrame::createWithTexture(texture, frameRect);
-    // ´´½¨¾«Áé²¢ÉèÖÃ¾«ÁéÖ¡
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½é²¢ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ï¿½Ö¡
     playerSprite = cocos2d::Sprite::createWithSpriteFrame(spriteFrame);
-    // ÉèÖÃÃªµãÎªµ×²¿ÖÐÐÄ
+    // ï¿½ï¿½ï¿½ï¿½Ãªï¿½ï¿½Îªï¿½×²ï¿½ï¿½ï¿½ï¿½ï¿½
     playerSprite->setAnchorPoint(cocos2d::Vec2(0.5f, 0.0f));
-    // ÉèÖÃ¾«ÁéÎ»ÖÃ
+    // ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ï¿½Î»ï¿½ï¿½
     playerSprite->setPosition(playerPos);
     CCLOG("Player sprite created at %f %f", playerPos.x, playerPos.y);
     CCLOG("Player sprite created at Tile: %f %f", tileCoordFromPos(playerPos).x,
           tileCoordFromPos(playerPos).y);
-    // ½«¾«ÁéÌí¼Óµ½µØÍ¼
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Óµï¿½ï¿½ï¿½Í¼
     this->addChild(playerSprite, 2);
 
     return true;
@@ -98,7 +98,7 @@ void Map::setPlayerPos(cocos2d::Vec2 pos) {
     float mapWidth = mapSize.width * tileSize.width;
     float mapHeight = mapSize.height * tileSize.height;
 
-    // ±ß½ç¼ì²é£¬È·±£ÈËÎïÎ»ÖÃÔÚµØÍ¼·¶Î§ÄÚ
+    // ï¿½ß½ï¿½ï¿½é£¬È·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½Úµï¿½Í¼ï¿½ï¿½Î§ï¿½ï¿½
     pos.x = std::max(0.0f, std::min(pos.x, mapWidth));
     pos.y = std::max(0.0f, std::min(pos.y, mapHeight));
 
@@ -109,16 +109,16 @@ void Map::setPlayerPos(cocos2d::Vec2 pos) {
         CCLOG("Player position set to: %f, %f", pos.x, pos.y);
         CCLOG("Tile: %f, %f", tileCoordFromPos(pos).x, tileCoordFromPos(pos).y);
 
-        setViewpointCenter(pos);  // ¸üÐÂÊÓ½ÇÖÐÐÄ
+        setViewpointCenter(pos);  // ï¿½ï¿½ï¿½ï¿½ï¿½Ó½ï¿½ï¿½ï¿½ï¿½ï¿½
 
-        // ¸üÐÂÍæ¼Ò¾«ÁéµÄÎ»ÖÃ
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò¾ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½
         playerSprite->setPosition(playerPos);
     }
 }
 
 cocos2d::Vec2 Map::tileCoordFromPos(cocos2d::Vec2 pos) {
     //pos = this->convertToNodeSpace(pos);
-    // ½«ÏñËØ×ø±ê×ª»»ÎªÍßÆ¬×ø±ê
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½Îªï¿½ï¿½Æ¬ï¿½ï¿½ï¿½ï¿½
     int x = pos.x / tileMap->getTileSize().width;
     int y =
         (tileMap->getMapSize().height * tileMap->getTileSize().height - pos.y) /
@@ -146,19 +146,19 @@ void Map::setViewpointCenter(cocos2d::Vec2 pos) {
     x = MIN(x, (mapSize.width * tileSize.width) - visibleSize.width / 2);
     y = MIN(y, (mapSize.height * tileSize.height) - visibleSize.height / 2);
 
-    // ÆÁÄ»ÖÐÐÄµã
+    // ï¿½ï¿½Ä»ï¿½ï¿½ï¿½Äµï¿½
     cocos2d::Vec2 centerPoint =
         cocos2d::Vec2(visibleSize.width / 2, visibleSize.height / 2);
-    // Ê¹¾«Áé´¦ÓÚÆÁÄ»ÖÐÐÄ£¬ÒÆ¶¯µØÍ¼Ä¿±êÎ»ÖÃ
+    // Ê¹ï¿½ï¿½ï¿½é´¦ï¿½ï¿½ï¿½ï¿½Ä»ï¿½ï¿½ï¿½Ä£ï¿½ï¿½Æ¶ï¿½ï¿½ï¿½Í¼Ä¿ï¿½ï¿½Î»ï¿½ï¿½
     cocos2d::Vec2 actualPoint = cocos2d::Vec2(x, y);
     CCLOG("actualPoint: %f, %f", actualPoint.x, actualPoint.y);
 
-    // µØÍ¼ÒÆ¶¯Æ«ÒÆÁ¿
+    // ï¿½ï¿½Í¼ï¿½Æ¶ï¿½Æ«ï¿½ï¿½ï¿½ï¿½
     cocos2d::Vec2 offset = centerPoint - actualPoint;
 
     CCLOG("offset: %f, %f", offset.x, offset.y);
 
-    // Èç¹ûµØÍ¼Ð¡ÓÚ´°¿Ú´óÐ¡£¬Ôò¾ÓÖÐÏÔÊ¾
+    // ï¿½ï¿½ï¿½ï¿½ï¿½Í¼Ð¡ï¿½Ú´ï¿½ï¿½Ú´ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾
     if (mapSize.width * tileSize.width < visibleSize.width) {
         offset.x = (visibleSize.width - mapSize.width * tileSize.width) / 2;
     }
@@ -172,20 +172,20 @@ void Map::setViewpointCenter(cocos2d::Vec2 pos) {
 bool Map::isCollision(cocos2d::Vec2 pos, std::string LayerName) {
     auto Layer = this->getLayer(LayerName);
 
-    // »ñÈ¡Ö¸¶¨Î»ÖÃµÄÍßÆ¬×ø±ê
+    // ï¿½ï¿½È¡Ö¸ï¿½ï¿½Î»ï¿½Ãµï¿½ï¿½ï¿½Æ¬ï¿½ï¿½ï¿½ï¿½
     auto tileCoord = this->tileCoordFromPos(pos);
 
-    // ¼ì²é¸ÃÎ»ÖÃÊÇ·ñÓÐÍßÆ¬
+    // ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½Æ¬
     int tileGid = Layer->getTileGIDAt(tileCoord);
     if (tileGid != 0) {
-        // »ñÈ¡ÍßÆ¬µÄÊôÐÔ
+        // ï¿½ï¿½È¡ï¿½ï¿½Æ¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         auto properties = this->getPropertiesForGID(tileGid);
 
-        // È·±£ÊôÐÔÀàÐÍÎª MAP£¬±ÜÃâ¶ÏÑÔÊ§°Ü
+        // È·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îª MAPï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½
         if (properties.getType() == cocos2d::Value::Type::MAP) {
             auto valueMap = properties.asValueMap();
 
-            // ¼ì²é "Collidable" ÊôÐÔÊÇ·ñ´æÔÚÇÒÎª "true"
+            // ï¿½ï¿½ï¿½ "Collidable" ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îª "true"
             auto it = valueMap.find("Collidable");
             if (it != valueMap.end() && it->second.asString() == "true") {
                 CCLOG("Collision detected at tile: %f, %f at Layer %s",
@@ -232,7 +232,7 @@ bool Map::isPortal(cocos2d::Vec2 pos, std::string ObjectLayerName) {
                   rect.origin.y, rect.size.width, rect.size.height);
             if (rect.containsPoint(pos)) {
                 CCLOG("Portal detected at tile: %f, %f", pos.x, pos.y);
-                // ¸ù¾Ý¾ßÌåÃû³ÆÍê³É²»Í¬µÄÇÐÍ¼²Ù×÷
+                // ï¿½ï¿½ï¿½Ý¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É²ï¿½Í¬ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½
                 std::string portalName = dict["name"].asString();
                 CCLOG("Portal %s detected.", portalName.c_str());
                 triggerPortalEvent(portalName);
@@ -259,15 +259,15 @@ void Map::triggerPortalEvent(const std::string& portalName) {
 }
 
 void Map::checkEventsAndTrigger(cocos2d::Vec2 tileCoord) {
-    //// »ñÈ¡ÍßÆ¬×ø±ê¶ÔÓ¦µÄgid
+    //// ï¿½ï¿½È¡ï¿½ï¿½Æ¬ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½gid
     //int gid = collisionLayer->getTileGIDAt(tileCoord);
     //if (gid) {
     //    auto properties = this->getPropertiesForGID(gid).asValueMap();
     //    if (properties["Event"].asString() == "True") {
-    //        // ´¥·¢ÊÂ¼þ
+    //        // ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½
     //        CCLOG("Event triggered at tile: %f, %f", tileCoord.x, tileCoord.y);
-    //        // ¸ù¾ÝÊÂ¼þÀàÐÍÖ´ÐÐÏàÓ¦µÄÂß¼­
-    //        // ÀýÈç£ºthis->triggerBattleEvent();
+    //        // ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ß¼ï¿½
+    //        // ï¿½ï¿½ï¿½ç£ºthis->triggerBattleEvent();
     //    }
     //}
 }
@@ -417,42 +417,42 @@ void Map::onEnter() {
 }
 
 void Map::createMiniMap() {
-    // ´´½¨Ò»¸öÐ¡µØÍ¼µÄ¾«Áé
+    // ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Ð¡ï¿½ï¿½Í¼ï¿½Ä¾ï¿½ï¿½ï¿½
     auto miniMap = cocos2d::Sprite::create();
-    miniMap->setScale(0.1f);                        // ËõÐ¡±ÈÀý
-    miniMap->setPosition(cocos2d::Vec2(500, 500));  // ÉèÖÃÐ¡µØÍ¼µÄÎ»ÖÃ
-    // ´´½¨Íæ¼Ò±ê¼Ç
+    miniMap->setScale(0.1f);                        // ï¿½ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½
+    miniMap->setPosition(cocos2d::Vec2(500, 500));  // ï¿½ï¿½ï¿½ï¿½Ð¡ï¿½ï¿½Í¼ï¿½ï¿½Î»ï¿½ï¿½
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò±ï¿½ï¿½
     auto playerMarker = cocos2d::Sprite::create();
     playerMarker->setColor(cocos2d::Color3B::RED);
     playerMarker->setScale(0.2f);
-    // Ìí¼ÓÐ¡µØÍ¼µ½µ±Ç°µØÍ¼²ã
-    this->addChild(miniMap, 100);  // 100 ÊÇ z-order£¬È·±£Ð¡µØÍ¼
+    // ï¿½ï¿½ï¿½ï¿½Ð¡ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ï¿½Í¼ï¿½ï¿½
+    this->addChild(miniMap, 100);  // 100 ï¿½ï¿½ z-orderï¿½ï¿½È·ï¿½ï¿½Ð¡ï¿½ï¿½Í¼
 }
 
 void Map::save() {
-    // »ñÈ¡Íæ¼ÒÎ»ÖÃ
+    // ï¿½ï¿½È¡ï¿½ï¿½ï¿½Î»ï¿½ï¿½
     
 
-    // »ñÈ¡µØÍ¼Æ«ÒÆ
+    // ï¿½ï¿½È¡ï¿½ï¿½Í¼Æ«ï¿½ï¿½
     
 
-    // ±£´æ×´Ì¬µ½ÎÄ¼þ
+    // ï¿½ï¿½ï¿½ï¿½×´Ì¬ï¿½ï¿½ï¿½Ä¼ï¿½
     
 }
 
 void Map::load() {
-    // ´ÓÎÄ¼þÖÐ¶ÁÈ¡×´Ì¬
+    // ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½Ð¶ï¿½È¡×´Ì¬
 
-    // ÉèÖÃÍæ¼ÒÎ»ÖÃ
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½
 
-    // ÉèÖÃµØÍ¼Æ«ÒÆ
+    // ï¿½ï¿½ï¿½Ãµï¿½Í¼Æ«ï¿½ï¿½
 }
 
 
 
 void Map::update(float delta) {
     cocos2d::Vec2 currentPos = getPos();
-    float moveStep = 100.0f * delta;  // È·±£ÒÆ¶¯ËÙ¶ÈÓëÖ¡ÂÊÎÞ¹Ø
+    float moveStep = 100.0f * delta;  // È·ï¿½ï¿½ï¿½Æ¶ï¿½ï¿½Ù¶ï¿½ï¿½ï¿½Ö¡ï¿½ï¿½ï¿½Þ¹ï¿½
 
     if (isKeyPressedW) {
         currentPos.y += moveStep;
