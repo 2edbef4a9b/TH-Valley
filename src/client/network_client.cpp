@@ -16,8 +16,9 @@ void NetworkClient::Connect(const std::string_view host,
                                   host, port);
 
     // Resolve the host name into an IP address.
-    const boost::asio::ip::tcp::resolver::query query(host.data(), port.data());
-    endpoints_ = resolver_.resolve(query);
+    const boost::asio::ip::tcp::resolver::results_type endpoints =
+        resolver_.resolve(host, port);
+    endpoints_ = endpoints;
 
     // Connect to the server asynchronously.
     boost::asio::async_connect(
