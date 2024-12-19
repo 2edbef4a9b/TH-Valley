@@ -5,11 +5,7 @@
 #include <unordered_map>
 #include "cocos2d.h"
 #include"avatar/bag.h"
-
-
-
-
-
+#include"avatar/avatar_scene.h"
 
 struct Exist {
     double blood_;
@@ -21,11 +17,6 @@ struct Exist {
 
 const Exist casterExist = {1000, 100, 100, 100};
 const Exist saberExist = {1200, 100, 100, 100};
-const Exist shilderExist = {2000, 100, 100, 100};
-
-
-
-
 
 struct Attack {
     int attackdamage_;
@@ -35,12 +26,8 @@ struct Attack {
     Attack& operator+(const Attack& giv);
 };
 
-const Attack casterAttack = {10, 100};
-const Attack saberAttack = {100, 10};
-const Attack shilderAttack = {10, 10};
-
-
-
+const Attack casterAttack = {0, 100};
+const Attack saberAttack = {100, 0};
 
 struct Defense {
     int phsicaldefense_;
@@ -52,14 +39,6 @@ struct Defense {
 
 const Defense casterDefense = {10, 10};
 const Defense saberDefense = {100, 10};
-const Defense shilderDefense = {100, 100};
-
-
-
-
-
-
-
 
 struct Attribute {
     Attribute();
@@ -70,37 +49,25 @@ struct Attribute {
     Exist exist_;
     Attack attack_;
     Defense defense_;
-    std::vector<std::string> ocupationlist{"caster", "saber", "shilder"};
-    std::vector<std::string> weponlist{"wand", "sword", "shield"};
-    std::vector<double> experiencelist{1,   100, 100, 200, 300,
-                                       300, 500, 500, 500, 900};
+    std::vector<std::string> ocupationlist{"caster", "saber"};
+    std::vector<std::string> weponlist{"wand", "sword"};
+    std::vector<double> experiencelist{10,  100, 100, 200, 300, 300, 500, 500, 500, 900};
 
 };
-
-
 
 class Avatar : public cocos2d::Sprite {
 public:
     Avatar(std::string id);
     Avatar();
-
     bool inattackzone(Avatar* other);
     void experiencegain(double exp) ;
-
     void upgrade();
-    
-
-    
-
-    // useful function:
     void existchange();
     bool judgedeath();
-   
+    friend class avatarScene;
 
-    
-
+private:
     std::pair<double, double> postion_;
- 
     double experience;
     std::string ocupation_;
     std::string wepon_;

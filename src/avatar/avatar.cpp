@@ -2,6 +2,7 @@
 #include "cocos2d.h"
 #include"avatar/avatar_application.h"
 #include"avatar/avatar.h"
+
 // operator override
 Attack& Attack::operator=(const Attack& giv) {
     if (&giv!=this) {
@@ -41,8 +42,8 @@ Exist& Exist::operator=(const Exist& other) {
     return *this;
 }
 
-
 Attribute::Attribute() {}
+
 Attribute::Attribute(const Exist e, const Attack a, const Defense d) {
     exist_ = e;
     attack_ = a;
@@ -54,21 +55,13 @@ bool Attribute::MakeUMap() {
     Attribute attCaster(casterExist, casterAttack, casterDefense);
     ChooseOpucation.insert(make_pair(ocupationlist.at(0), attCaster));
     chooseId.insert(make_pair(ocupationlist.at(0),0));
+
     Attribute attSaber(saberExist, saberAttack, saberDefense);
     ChooseOpucation.insert(make_pair(ocupationlist.at(1), attSaber));
     chooseId.insert(make_pair(ocupationlist.at(1), 1));
-    Attribute attShilder(shilderExist, shilderAttack, shilderDefense);
-    ChooseOpucation.insert(make_pair(ocupationlist.at(2), attShilder));
-    chooseId.insert(make_pair(ocupationlist.at(2), 2));
+
     return true;
 }
-
-
-
-
-
-
-
 
 // useful function
 bool Avatar::inattackzone(Avatar* other) {
@@ -90,10 +83,9 @@ void Avatar::experiencegain(double exp)  {
         return;
     }
     else
-    {
+    { 
         experience += exp;
-        if (experience >=
-            attribute.experiencelist.at(int(attribute.experiencelist.at(0)))) {
+        if (experience >= attribute.experiencelist.at(int(attribute.experiencelist.at(0)))) {
 
             if (grade_ < 10) {
                 experience -= attribute.experiencelist.at(int(attribute.experiencelist.at(0)));
@@ -127,14 +119,6 @@ void Avatar::upgrade()
     attribute.attack_ = attribute.attack_ + Attack{100, 100};
     attribute.defense_ = attribute.defense_ + Defense{100, 100};
 }
-
-
-
-
-
-
-
-
 
 void Avatar::existchange() {
     attribute.exist_.hunger_ *= 0.99;

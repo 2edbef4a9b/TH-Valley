@@ -47,13 +47,12 @@ bool avatarScene::init() {
 }
 
 void avatarScene::handleKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode,cocos2d::Event *event) {
-    //B *bPtr = dynamic_cast<B *>(p);  // 安全地将 C* 转换为 B*
+
     Avatar *Haley_ = dynamic_cast<Avatar *>(Haley);
-   moved = false;  
+    moved = false;  
     isattack = false;
     Haley->stopAllActions();
-    Haley->setTextureRect(
-        cocos2d::Rect(0, dir * 32, 16, 32));  // Set to idle frame
+    Haley->setTextureRect(cocos2d::Rect(0, dir * 32, 16, 32));  // Set to idle frame
 }
 
 void avatarScene::handleKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event *event) {
@@ -80,6 +79,11 @@ void avatarScene::handleKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, coco
         case cocos2d::EventKeyboard::KeyCode::KEY_S:
             dir = Down;  // Set direction to down
             moved = true;  // Mark as moved
+            break;
+        case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_G:
+        case cocos2d::EventKeyboard::KeyCode::KEY_G:
+            rangedAttacking(tarpos);
+            moved = false;  // Mark as moved
             break;
         // cutting
         case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_E:
@@ -170,12 +174,12 @@ void avatarScene::handleKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, coco
         animateRunning(dir, 0.06);
     }
 }
+
 void avatarScene::update(float dt)
 {
     const float speed = 40.0f;
     float movedistant = speed * dt;
-    cocos2d::Vec2 position =
-        Haley->getPosition();  // Get the current position of the
+    cocos2d::Vec2 position =Haley->getPosition();  // Get the current position of the
     Avatar *Haley_ = dynamic_cast<Avatar *>(Haley);
     if (moved && dir == 2) {
         position.y += movedistant;
@@ -364,32 +368,23 @@ void avatarScene::fishing(cocos2d::Vec2 tarpos) {
     Scene[5]->runAction(sequence);  // 运行动作序列
 }
 
-void avatarScene::attacking(cocos2d::Vec2 tarpos){
+void avatarScene::rangedAttacking(cocos2d::Vec2 tarpos) {
     // 动作序列：淡入，停留，淡出
     cocos2d::Sprite *Scene[6];
     int count = 0;
-    Scene[0] = cocos2d::Sprite::create("tool/tools.png",
-                                       cocos2d::Rect(0, 295, 35, 31));
-    Scene[1] = cocos2d::Sprite::create("tool/tools.png",
-                                       cocos2d::Rect(55, 295, 35, 31));
-    Scene[2] = cocos2d::Sprite::create("tool/tools.png",
-                                       cocos2d::Rect(102, 295, 35, 31));
-    Scene[3] = cocos2d::Sprite::create("tool/tools.png",
-                                       cocos2d::Rect(160, 295, 35, 31));
-    Scene[4] = cocos2d::Sprite::create("tool/tools.png",
-                                       cocos2d::Rect(210, 295, 35, 31));
-    Scene[5] = cocos2d::Sprite::create("tool/tools.png",
-                                       cocos2d::Rect(256, 295, 35, 31));
+    for (int i = 0; i < 6; ++i) {
+        Scene[i] = cocos2d::Sprite::create("weapon/ranged.png",cocos2d::Rect(198+74*i, 832, 74, 62));
+    }
 
-    for (int i = 0; i < 5; ++i) {
+    for (int i = 0; i < 6; ++i) {
         Scene[i]->setPosition(
-            cocos2d::Vec2(tarpos.x - 2, tarpos.y));  // 设置位置
+            cocos2d::Vec2(tarpos.x + 30, tarpos.y));  // 设置位置
         Scene[i]->setOpacity(0);                     // 初始透明度为0
         this->addChild(Scene[i]);
-
-        auto fadeIn = cocos2d::FadeIn::create(0.1f);    // 0.5秒淡入
-        auto delay = cocos2d::DelayTime::create(0.8f);  // 停留1秒
-        auto fadeOut = cocos2d::FadeOut::create(0.1f);  // 0.5秒淡出
+        Scene[i]->setScale(0.4f);
+        auto fadeIn = cocos2d::FadeIn::create(0.03f);    // 0.5秒淡入
+        auto delay = cocos2d::DelayTime::create(0.2f);  // 停留1秒
+        auto fadeOut = cocos2d::FadeOut::create(0.03f);  // 0.5秒淡出
 
         // 增加基于索引的延迟
         auto sequence = cocos2d::Sequence::create(
@@ -403,6 +398,40 @@ void avatarScene::attacking(cocos2d::Vec2 tarpos){
 
         Scene[i]->runAction(sequence);  // 运行动作序列
     }
+}
+void avatarScene::meleeAttacking(cocos2d::Vec2 tarpos) {
+
+    //Avatar *Haley_ = dynamic_cast<Avatar *>(Haley);
+    //int choose_ = (Haley_->attribute).chooseId[Haley_->id_];
+
+    // 动作序列：淡入，停留，淡出
+    cocos2d::Sprite *tempavatar = cocos2d::Sprite::create(
+        "tool/tools.png", cocos2d::Rect(242, 156 - 125, 11, 22));
+    if (dir == Up) {
+        tempavatar = cocos2d::Sprite::create(
+            "tool/tools.png", cocos2d::Rect(291, 156 - 125, 12, 25));
+    } else if (dir == Left) {
+        tempavatar = cocos2d::Sprite::create(
+            "tool/tools.png", cocos2d::Rect(302, 156 - 125, 19, 19));
+        tempavatar->setScaleX(-1);
+    } else if (dir == Right) {
+        tempavatar = cocos2d::Sprite::create(
+            "tool/tools.png", cocos2d::Rect(302, 156 - 125, 19, 19));
+    }
+    tempavatar->setPosition(cocos2d::Vec2(tarpos.x, tarpos.y));  // 设置位置
+    tempavatar->setOpacity(0);  // 初始透明度为0
+    this->addChild(tempavatar);
+    auto fadeIn = cocos2d::FadeIn::create(0.05f);    // 0.5秒淡入
+    auto delay = cocos2d::DelayTime::create(0.08f);  // 停留1秒
+    auto fadeOut = cocos2d::FadeOut::create(0.05f);  // 0.5秒淡出
+
+    // 动作序列
+    auto sequence = cocos2d::Sequence::create(
+        fadeIn, delay, fadeOut, cocos2d::CallFunc::create([tempavatar]() {
+            tempavatar->removeFromParent();  // 动作完成后移除
+        }),
+        nullptr);
+    tempavatar->runAction(sequence);  // 运行动作序列
 }
 
 
