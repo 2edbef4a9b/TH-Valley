@@ -68,7 +68,27 @@ add_subdirectory(${COCOS2DX_ROOT_PATH}/cocos ${ENGINE_BINARY_PATH}/cocos/core)
 
 # Boost configuration.
 # Find the Boost library.
-find_package(Boost REQUIRED COMPONENTS system log log_setup REQUIRED)
+if(DEFINED ENV{BOOST_ROOT} AND
+    DEFINED ENV{BOOST_LIBRARYDIR} AND
+    DEFINED ENV{BOOST_INCLUDEDIR})
+    set(BOOST_ROOT $ENV{BOOST_ROOT})
+    file(TO_CMAKE_PATH "${BOOST_ROOT}" BOOST_ROOT)
+    message(STATUS "Boost root: ${BOOST_ROOT}")
+
+    set(BOOST_LIBRARYDIR $ENV{BOOST_LIBRARYDIR})
+    file(TO_CMAKE_PATH "${BOOST_LIBRARYDIR}" BOOST_LIBRARYDIR)
+    message(STATUS "Boost library directory: ${BOOST_LIBRARYDIR}")
+
+    set(BOOST_INCLUDEDIR $ENV{BOOST_INCLUDEDIR})
+    file(TO_CMAKE_PATH "${BOOST_INCLUDEDIR}" BOOST_INCLUDEDIR)
+    message(STATUS "Boost include directory: ${BOOST_INCLUDEDIR}")
+else()
+    message(FATAL_ERROR
+        "Environment variable BOOST_ROOT, BOOST_LIBRARYDIR, "
+        "or BOOST_INCLUDEDIR is not set.")
+endif()
+
+find_package(Boost 1.80.0 REQUIRED system log log_setup REQUIRED)
 
 if(Boost_FOUND)
     list(APPEND INCLUDE_DIR ${Boost_INCLUDE_DIRS})
