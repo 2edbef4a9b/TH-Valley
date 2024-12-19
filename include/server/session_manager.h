@@ -4,7 +4,6 @@
 #include <boost/asio.hpp>
 #include <boost/uuid/uuid.hpp>
 #include <memory>
-#include <string_view>
 #include <unordered_map>
 
 #include "server/session.h"
@@ -13,11 +12,9 @@ namespace th_valley {
 
 class SessionManager {
 public:
-    SessionManager(boost::asio::io_context& io_context, std::string_view port);
+    explicit SessionManager(boost::asio::ip::tcp::acceptor& acceptor);
 
     void StartAccept();
-    void HandleAccept(const std::shared_ptr<Session>& session,
-                      const boost::system::error_code& error_code);
 
     void AddSession(const boost::uuids::uuid& uuid,
                     const std::shared_ptr<Session>& session);
