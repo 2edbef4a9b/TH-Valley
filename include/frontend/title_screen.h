@@ -8,7 +8,7 @@
 
 namespace th_valley {
 
-class TitleScreen : public cocos2d::Scene {
+class TitleScreen final : public cocos2d::Scene {
 public:
     TitleScreen() = default;
     ~TitleScreen() override = default;
@@ -16,6 +16,7 @@ public:
     TitleScreen& operator=(const TitleScreen& other) = delete;
     TitleScreen(TitleScreen&& other) = delete;
     TitleScreen& operator=(TitleScreen&& other) = delete;
+
     bool init() override;
 
     CREATE_FUNC(TitleScreen);
@@ -33,7 +34,7 @@ private:
     constexpr static std::string_view kBackgroundImagePath =
         "assets/gui/title/koishi.jpg";
     constexpr static std::string_view kTitleText =
-        "TH Valley\n~ The Last Remote";
+        "TH Moonlit Breeze Valley\n~ The Last Remote";
 
     cocos2d::Size visible_size_;
     cocos2d::Vec2 visible_origin_;

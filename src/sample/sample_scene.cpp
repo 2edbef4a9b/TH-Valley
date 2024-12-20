@@ -3,12 +3,9 @@
 #include <cstddef>
 #include <string>
 
-#include <vector>
+namespace th_valley {
 
-#include "map.h"
-
-
-bool th_valley::SampleScene::init() {
+bool SampleScene::init() {
     // Initialize super class first.
     if (!cocos2d::Scene::init()) {
         return false;
@@ -24,7 +21,6 @@ bool th_valley::SampleScene::init() {
 
     this->addChild(label);*/
 
-    
     auto _map = Map::create("assets/maps/House.tmx");
     if (_map) {
         auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
@@ -42,7 +38,7 @@ bool th_valley::SampleScene::init() {
     } else
         CCLOG("Failed to load map maps/Farm.tmx");
 
-
-    
     return true;
 }
+
+}  // namespace th_valley

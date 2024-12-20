@@ -5,7 +5,7 @@
 
 namespace th_valley {
 
-class SampleScene : public cocos2d::Scene {
+class SampleScene final : public cocos2d::Scene {
 public:
     SampleScene() = default;
     ~SampleScene() override = default;

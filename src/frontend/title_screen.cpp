@@ -5,10 +5,13 @@
 #include <string_view>
 
 #include "CCEventDispatcher.h"
-#include "CCPlatformMacros.h"
+#include "client/client_controller.h"
 #include "ui/CocosGUI.h"
+#include "utility/logger.h"
 
-bool th_valley::TitleScreen::init() {
+namespace th_valley {
+
+bool TitleScreen::init() {
     if (!cocos2d::Scene::init()) {
         return false;
     }
@@ -23,8 +26,7 @@ bool th_valley::TitleScreen::init() {
     return true;
 }
 
-void th_valley::TitleScreen::AddBackground(
-    const std::string_view& background_image) {
+void TitleScreen::AddBackground(const std::string_view& background_image) {
     // Load the background image
     auto* background = cocos2d::Sprite::create(std::string(background_image));
     background->setPosition(
@@ -42,10 +44,10 @@ void th_valley::TitleScreen::AddBackground(
     this->addChild(background, 0);
 }
 
-void th_valley::TitleScreen::AddButton(const std::string_view& text,
-                                       const float pox_x, const float pos_y,
-                                       const std::function<void()>& callback,
-                                       const std::string_view& color) {
+void TitleScreen::AddButton(const std::string_view& text, const float pox_x,
+                            const float pos_y,
+                            const std::function<void()>& callback,
+                            const std::string_view& color) {
     // Constants for button appearance.
     constexpr uint8_t kButtonNormalOpacity = 160;
     constexpr uint8_t kButtonSelectedOpacity = 200;
@@ -103,23 +105,23 @@ void th_valley::TitleScreen::AddButton(const std::string_view& text,
                 case cocos2d::ui::Widget::TouchEventType::BEGAN:
                     update_button_appearance(kButtonPressedOpacity,
                                              1.0F + kButtonScale);
-                    CCLOG("Button touch began");
+                    Logger::GetInstance().LogInfo("Button touch began");
                     break;
                 case cocos2d::ui::Widget::TouchEventType::ENDED:
                     update_button_appearance(kButtonNormalOpacity,
                                              1.0F + kButtonScale);
                     callback();
-                    CCLOG("Button touch ended");
+                    Logger::GetInstance().LogInfo("Button touch ended");
                     break;
                 case cocos2d::ui::Widget::TouchEventType::CANCELED:
                     update_button_appearance(kButtonNormalOpacity,
                                              1.0F + kButtonScale);
-                    CCLOG("Button touch canceled");
+                    Logger::GetInstance().LogInfo("Button touch canceled");
                     break;
                 case cocos2d::ui::Widget::TouchEventType::MOVED:
                     update_button_appearance(kButtonSelectedOpacity,
                                              1.0F + kButtonScale);
-                    CCLOG("Button touch moved");
+                    Logger::GetInstance().LogInfo("Button touch moved");
                     break;
                 default:
                     break;
@@ -131,7 +133,7 @@ void th_valley::TitleScreen::AddButton(const std::string_view& text,
     this->addChild(label, 2);
 }
 
-void th_valley::TitleScreen::AddLabels() {
+void TitleScreen::AddLabels() {
     const float label_pos_x = visible_origin_.x + (visible_size_.width / 4);
     const float label_pos_y = visible_origin_.y + (visible_size_.height * 0.6F);
     constexpr float kLabelSpacing = 120;
@@ -139,22 +141,44 @@ void th_valley::TitleScreen::AddLabels() {
     // Add the buttons to the scene.
     AddButton(
         "SinglePlayer", label_pos_x, label_pos_y,
-        []() { CCLOG("GameState Change: TitleScreen -> SinglePlayer"); },
+        []() {
+            Logger::GetInstance().LogInfo(
+                "GameState Change: TitleScreen -> SinglePlayer");
+            ClientController::GetInstance().SetClientState(
+                ClientController::ClientState::kSinglePlayer);
+        },
         "purple");
     AddButton(
         "MultiPlayer", label_pos_x, label_pos_y - kLabelSpacing,
-        []() { CCLOG("GameState Change: TitleScreen -> MultiPlayer"); },
+        []() {
+            Logger::GetInstance().LogInfo(
+                "GameState Change: TitleScreen -> MultiPlayer");
+            ClientController::GetInstance().SetClientState(
+                ClientController::ClientState::kMultiPlayer);
+        },
         "yellow");
     AddButton(
         "Settings", label_pos_x, label_pos_y - (kLabelSpacing * 2),
-        []() { CCLOG("GameState Change: TitleScreen -> Settings"); }, "green");
+        []() {
+            Logger::GetInstance().LogInfo(
+                "GameState Change: TitleScreen -> Settings");
+            ClientController::GetInstance().SetClientState(
+                ClientController::ClientState::kSettings);
+        },
+        "green");
     AddButton(
         "Exit", label_pos_x, label_pos_y - (kLabelSpacing * 3),
-        []() { CCLOG("GameState Change: TitleScreen -> Exit"); }, "magenta");
+        []() {
+            Logger::GetInstance().LogInfo(
+                "GameState Change: TitleScreen -> Exit");
+            ClientController::GetInstance().SetClientState(
+                ClientController::ClientState::kQuit);
+        },
+        "magenta");
 }
 
-void th_valley::TitleScreen::AddTitle() {
-    constexpr size_t kTitleFontSize = 72;
+void TitleScreen::AddTitle() {
+    constexpr size_t kTitleFontSize = 60;
     constexpr float kTitleHeightScale = 0.75F;
     // Add the title to the scene.
     auto* title = cocos2d::Label::createWithTTF(
@@ -165,3 +189,5 @@ void th_valley::TitleScreen::AddTitle() {
     title->setAlignment(cocos2d::TextHAlignment::CENTER);
     this->addChild(title, 1);
 }
+
+}  // namespace th_valley
