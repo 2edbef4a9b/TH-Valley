@@ -26,6 +26,7 @@ void ClientController::Update() {
             break;
         case ClientState::kQuit:
             Logger::GetInstance().LogInfo("GameState Change to Quit");
+            cocos2d::Director::getInstance()->end();
             break;
         case ClientState::kSettings:
             Logger::GetInstance().LogInfo("GameState Change to Settings");

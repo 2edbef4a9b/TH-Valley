@@ -5,6 +5,7 @@
 #include <string_view>
 
 #include "CCEventDispatcher.h"
+#include "client/client_controller.h"
 #include "ui/CocosGUI.h"
 #include "utility/logger.h"
 
@@ -143,6 +144,8 @@ void TitleScreen::AddLabels() {
         []() {
             Logger::GetInstance().LogInfo(
                 "GameState Change: TitleScreen -> SinglePlayer");
+            ClientController::GetInstance().SetClientState(
+                ClientController::ClientState::kSinglePlayer);
         },
         "purple");
     AddButton(
@@ -150,6 +153,8 @@ void TitleScreen::AddLabels() {
         []() {
             Logger::GetInstance().LogInfo(
                 "GameState Change: TitleScreen -> MultiPlayer");
+            ClientController::GetInstance().SetClientState(
+                ClientController::ClientState::kMultiPlayer);
         },
         "yellow");
     AddButton(
@@ -157,6 +162,8 @@ void TitleScreen::AddLabels() {
         []() {
             Logger::GetInstance().LogInfo(
                 "GameState Change: TitleScreen -> Settings");
+            ClientController::GetInstance().SetClientState(
+                ClientController::ClientState::kSettings);
         },
         "green");
     AddButton(
@@ -164,6 +171,8 @@ void TitleScreen::AddLabels() {
         []() {
             Logger::GetInstance().LogInfo(
                 "GameState Change: TitleScreen -> Exit");
+            ClientController::GetInstance().SetClientState(
+                ClientController::ClientState::kQuit);
         },
         "magenta");
 }
