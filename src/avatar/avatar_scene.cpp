@@ -128,6 +128,21 @@ void avatarScene::handleKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, coco
     }
 }
 
+
+void avatarScene::Differ(std::string handy) {
+
+
+
+
+
+
+}
+
+
+
+
+
+
 void avatarScene::update(float dt)
 {
     const float speed = 40.0f;

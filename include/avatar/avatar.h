@@ -55,6 +55,17 @@ struct Attribute {
 
 };
 
+enum class STATE {
+    move,
+    cut,
+    cultivate,
+    fish,
+    mine,
+    attack,
+    none
+};
+
+
 class Avatar : public cocos2d::Sprite {
 public:
     Avatar(std::string id);
@@ -76,6 +87,7 @@ private:
     double attackzone;
     Bag mybag;
     int grade_;
+    STATE state;
 };
 
 #endif  // AVATAR_H_

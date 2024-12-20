@@ -17,6 +17,10 @@ public:
     avatarScene(avatarScene&& other) = default;
     avatarScene& operator=(avatarScene&& other) = default;
 
+
+
+
+    void Differ(std::string handy);
     // action animate running
     // walking;
     void Moving(int dir, float flu);
