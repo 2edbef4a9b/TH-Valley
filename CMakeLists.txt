@@ -129,7 +129,7 @@ set(APP_NAME th_valley)
 
 # Add the application executable.
 add_executable(${APP_NAME}
-    ${SOURCE_FILES})
+    ${SOURCE_FILES} )
 
 # Set the C++ standard for the application.
 set_target_properties(${APP_NAME} PROPERTIES
@@ -155,7 +155,7 @@ function(add_googletest TEST_MODULE TEST_NAME)
     # Add the test executable.
     add_executable(${TEST_NAME}
         ${SOURCE_FILES_WITHOUT_MAIN}
-        tests/${TEST_MODULE}/${TEST_NAME}.cpp)
+        tests/${TEST_MODULE}/${TEST_NAME}.cpp )
 
     # Set the C++ standard for the test.
     set_target_properties(${TEST_NAME} PROPERTIES
@@ -185,4 +185,5 @@ if(BUILD_TESTS)
     add_googletest(sample sample_application_tests)
     add_googletest(frontend title_screen_tests)
     add_googletest(tool_bar tool_bar_tests)
+    add_googletest(bag_gui bag_gui_tests)
 endif()

@@ -107,19 +107,6 @@ void ToolBar::loadTools() {
         displayCount++;
     }
 
-    //for (int i = 0; i < 10; ++i) {
-    //    auto toolBorder =
-    //        LayerColor::create(Color4B(255, 255, 0, 128), boxSize - 6,
-    //                           background_->getContentSize().height - 6);
-    //    toolBorder->setAnchorPoint(Vec2(0, 1));  // Set anchor point to top-left
-    //    toolBorder->setPosition(Vec2(4 + visible_size_.width / 2 -
-    //                                   background_->getContentSize().width / 2 +
-    //                                   i * boxSize,
-    //                               -4 + background_->getContentSize().height));
-    //    toolBorder->setVisible(false);
-    //    this->addChild(toolBorder, 21);
-    //    toolBorders.push_back(toolBorder);
-    //}
     for (int i = 0; i < 10; ++i) {
         auto toolBorder =
             LayerColor::create(Color4B(255, 255, 0, 128), boxSize - 6,

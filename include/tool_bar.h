@@ -6,19 +6,7 @@
 #include <unordered_map>
 #include <vector>
 #include <string>
-
-struct ItemSprite {
-    std::string name;
-    int quantity;
-    std::string description;
-    cocos2d::Sprite* sprite;
-    ItemSprite(std::string name, int quantity, std::string description,
-               cocos2d::Sprite* sprite)
-        : name(name),
-          quantity(quantity),
-          description(description),
-          sprite(sprite) {}
-};
+#include "bag_gui.h"
 
 
 class ToolBar : public cocos2d::Layer {
