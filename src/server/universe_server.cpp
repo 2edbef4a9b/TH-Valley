@@ -40,6 +40,8 @@ void UniverseServer::RunMainLoop() {
 void UniverseServer::Update() {
     // Update game state here.
     Logger::GetInstance().LogInfo("{}: Updating game state.", GetServerName());
+    Logger::GetInstance().LogInfo(
+        "Koishi is behind you. Koishi is behind you. Koishi is behind you.");
 }
 
 }  // namespace th_valley
