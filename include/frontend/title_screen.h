@@ -34,7 +34,7 @@ private:
     constexpr static std::string_view kBackgroundImagePath =
         "assets/gui/title/koishi.jpg";
     constexpr static std::string_view kTitleText =
-        "TH Valley\n~ The Last Remote";
+        "TH Moonlit Breeze Valley\n~ The Last Remote";
 
     cocos2d::Size visible_size_;
     cocos2d::Vec2 visible_origin_;

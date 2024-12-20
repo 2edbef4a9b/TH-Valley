@@ -169,7 +169,7 @@ void TitleScreen::AddLabels() {
 }
 
 void TitleScreen::AddTitle() {
-    constexpr size_t kTitleFontSize = 72;
+    constexpr size_t kTitleFontSize = 60;
     constexpr float kTitleHeightScale = 0.75F;
     // Add the title to the scene.
     auto* title = cocos2d::Label::createWithTTF(
