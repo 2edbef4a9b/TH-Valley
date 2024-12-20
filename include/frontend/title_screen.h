@@ -2,15 +2,13 @@
 #define TITLE_SCREEN_H_
 
 #include <functional>
-#include <memory>
 #include <string_view>
 
-#include "client/client_controller.h"
 #include "cocos2d.h"
 
 namespace th_valley {
 
-class TitleScreen : public cocos2d::Scene {
+class TitleScreen final : public cocos2d::Scene {
 public:
     TitleScreen() = default;
     ~TitleScreen() override = default;

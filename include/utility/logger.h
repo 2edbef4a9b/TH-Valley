@@ -16,6 +16,7 @@ public:
     void LogError(std::string_view message);
     void LogFatal(std::string_view message);
 
+    // Log messages with format and arguments.
     template <typename... Args>
     void LogDebug(std::string_view format, Args&&... args);
 
@@ -45,31 +46,31 @@ private:
 };
 
 template <typename... Args>
-void Logger::LogDebug(std::string_view format, Args&&... args) {
+void Logger::LogDebug(const std::string_view format, Args&&... args) {
     LogDebug(std::vformat(
         format, std::make_format_args(std::forward<const Args>(args)...)));
 }
 
 template <typename... Args>
-void Logger::LogInfo(std::string_view format, Args&&... args) {
+void Logger::LogInfo(const std::string_view format, Args&&... args) {
     LogInfo(std::vformat(
         format, std::make_format_args(std::forward<const Args>(args)...)));
 }
 
 template <typename... Args>
-void Logger::LogWarning(std::string_view format, Args&&... args) {
+void Logger::LogWarning(const std::string_view format, Args&&... args) {
     LogWarning(std::vformat(
         format, std::make_format_args(std::forward<const Args>(args)...)));
 }
 
 template <typename... Args>
-void Logger::LogError(std::string_view format, Args&&... args) {
+void Logger::LogError(const std::string_view format, Args&&... args) {
     LogError(std::vformat(
         format, std::make_format_args(std::forward<const Args>(args)...)));
 }
 
 template <typename... Args>
-void Logger::LogFatal(std::string_view format, Args&&... args) {
+void Logger::LogFatal(const std::string_view format, Args&&... args) {
     LogFatal(std::vformat(
         format, std::make_format_args(std::forward<const Args>(args)...)));
 }

@@ -33,9 +33,8 @@ void Session::Start() {
 void Session::Terminate() {
     Logger::GetInstance().LogInfo("Session: Terminating with UUID: {}.",
                                   boost::uuids::to_string(uuid_));
-    boost::system::error_code error_code;
-
     if (socket_.is_open()) {
+        boost::system::error_code error_code;
         // Shutdown the socket
         socket_.shutdown(boost::asio::ip::tcp::socket::shutdown_both,
                          error_code);
@@ -124,7 +123,7 @@ void Session::HandleMessage(const std::string_view message_sv) {
     if (IsUUIDValid(message_sv)) {
         Logger::GetInstance().LogInfo(
             "Session: Received valid UUID, updating.");
-        auto old_uuid = uuid_;
+        const auto old_uuid = uuid_;
         uuid_ = boost::uuids::string_generator()(std::string(message_sv));
         session_manager_.lock()->UpdateSessionUUID(old_uuid, uuid_);
         Logger::GetInstance().LogInfo("Session: Updated UUID to {}.",
@@ -143,7 +142,7 @@ bool Session::IsUUIDValid(const std::string_view uuid_sv) {
     try {
         boost::uuids::string_generator()(std::string(uuid_sv));
         return true;
-    } catch (const std::exception &exception) {
+    } catch (const std::exception &) {
         return false;
     }
 }

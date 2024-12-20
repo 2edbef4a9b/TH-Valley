@@ -2,8 +2,9 @@
 
 #include "frontend/title_screen.h"
 #include "sample/sample_application.h"
+#include "utility/logger.h"
 
-class TitleScreenTestsApp : public th_valley::SampleApplication {
+class TitleScreenTestsApp final : public th_valley::SampleApplication {
 public:
     bool applicationDidFinishLaunching() override {
         // Initialize the director.
@@ -18,7 +19,8 @@ public:
         glview->setFrameSize(kWindowSize.width, kWindowSize.height);
 
         // Improve resolution on high-res screens.
-        glview->setDesignResolutionSize(kDesignResolutionSize.width, kDesignResolutionSize.height,
+        glview->setDesignResolutionSize(kDesignResolutionSize.width,
+                                        kDesignResolutionSize.height,
                                         ResolutionPolicy::NO_BORDER);
 
         // Set FPS. The default value is 1.0/60 if you don't call this.
@@ -28,7 +30,7 @@ public:
         UpdateResourcePath();
         const std::string resource_root_path =
             cocos2d::FileUtils::getInstance()->getDefaultResourceRootPath();
-        CCLOG("Resource root path: %s", resource_root_path.c_str());
+        th_valley::Logger::GetInstance().LogInfo("Resource root path: {}", resource_root_path);
 
         // Create a scene. It's an autorelease object.
         auto *scene = th_valley::TitleScreen::create();

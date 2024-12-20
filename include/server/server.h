@@ -13,11 +13,11 @@ class Server {
 public:
     Server(boost::asio::io_context& io_context, std::string_view port);
 
-    void StartUp();
+    void StartUp() const;
     void ShutDown();
 
 private:
-    void DoAccept();
+    void DoAccept() const;
 
     boost::asio::ip::tcp::acceptor acceptor_;
     std::shared_ptr<SessionManager> session_manager_;

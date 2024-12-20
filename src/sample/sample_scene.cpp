@@ -3,7 +3,9 @@
 #include <cstddef>
 #include <string>
 
-bool th_valley::SampleScene::init() {
+namespace th_valley {
+
+bool SampleScene::init() {
     // Initialize super class first.
     if (!cocos2d::Scene::init()) {
         return false;
@@ -21,3 +23,5 @@ bool th_valley::SampleScene::init() {
 
     return true;
 }
+
+}  // namespace th_valley

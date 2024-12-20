@@ -12,8 +12,7 @@ namespace th_valley {
 
 void NetworkClient::Connect(const std::string_view host,
                             const std::string_view port) {
-    std::lock_guard<std::mutex> lock(mutex_);
-
+    const std::lock_guard<std::mutex> lock(mutex_);
     Logger::GetInstance().LogInfo("Client: Connecting to server at {}:{}.",
                                   host, port);
 
@@ -36,24 +35,23 @@ void NetworkClient::Connect(const std::string_view host,
                     "Client: Connected to server at {}:{}.",
                     endpoint.address().to_string(), endpoint.port());
                 connected_ = true;
-                ReceiveMessages();
+                ReceiveMessages();  // Start receiving messages from the server.
             }
         });
 
     // Run the io_context to start the asynchronous operations.
+    // Run the io_context in a separate thread to prevent blocking main thread.
     io_context_thread_ = std::thread([this]() { io_context_.run(); });
-
     Logger::GetInstance().LogInfo("Client: Connection established.");
 }
 
 void NetworkClient::Disconnect() {
-    std::lock_guard<std::mutex> lock(mutex_);
-
+    const std::lock_guard<std::mutex> lock(mutex_);
     Logger::GetInstance().LogInfo("Client: Disconnecting from server.");
 
-    boost::system::error_code error_code;
     if (socket_.is_open()) {
-        // Shutdown the socket
+        boost::system::error_code error_code;
+        // Shutdown the socket to stop the asynchronous operations.
         socket_.shutdown(boost::asio::ip::tcp::socket::shutdown_both,
                          error_code);
         if (error_code) {
@@ -62,7 +60,7 @@ void NetworkClient::Disconnect() {
                 error_code.message());
         }
 
-        // Close the socket
+        // Close the socket to release the resources.
         socket_.close(error_code);
         if (error_code) {
             Logger::GetInstance().LogError(
@@ -70,6 +68,7 @@ void NetworkClient::Disconnect() {
                 error_code.message());
         }
     } else {
+        // Handle the case when the socket is already closed.
         Logger::GetInstance().LogError("Client: Socket already closed.");
     }
 
@@ -79,20 +78,24 @@ void NetworkClient::Disconnect() {
         io_context_thread_.join();
     }
 
+    // Set the connected flag to false.
     connected_ = false;
     Logger::GetInstance().LogInfo("Client: Disconnected from server.");
 }
 
 void NetworkClient::SendMessages(const std::string_view message_sv) {
-    std::lock_guard<std::mutex> lock(mutex_);
+    const std::lock_guard<std::mutex> lock(mutex_);
 
+    // Append a newline character to the message.
     sent_message_.clear();
     sent_message_ = std::string(message_sv) + "\n";
     Logger::GetInstance().LogInfo("Client: Sending message: {}.", message_sv);
+
+    // Send the message asynchronously.
     boost::asio::async_write(
         socket_, boost::asio::buffer(sent_message_, sent_message_.size()),
         [this](const boost::system::error_code& error_code,
-               std::size_t /*length*/) -> void {
+               std::size_t /* length */) -> void {
             if (!error_code) {
                 Logger::GetInstance().LogInfo(
                     "Client: Sent message: {} to server.",
@@ -108,13 +111,14 @@ void NetworkClient::SendMessages(const std::string_view message_sv) {
 }
 
 void NetworkClient::ReceiveMessages() {
-    std::lock_guard<std::mutex> lock(mutex_);
-
+    const std::lock_guard<std::mutex> lock(mutex_);
     Logger::GetInstance().LogInfo("Client: Receiving messages.");
+
+    // Receive the message asynchronously until a newline character is found.
     boost::asio::async_read_until(
         socket_, buffer_, '\n',
         [this](const boost::system::error_code& error_code,
-               std::size_t /*length*/) -> void {
+               std::size_t /* length */) -> void {
             if (!error_code) {
                 std::istream input_stream(&buffer_);
                 received_message_.clear();
@@ -122,11 +126,11 @@ void NetworkClient::ReceiveMessages() {
                 Logger::GetInstance().LogInfo("Client: Received: {}.",
                                               received_message_);
                 callback_(received_message_);
-                ReceiveMessages();
+                ReceiveMessages();  // Continue receiving messages.
             } else if (error_code == boost::asio::error::eof) {
                 Logger::GetInstance().LogInfo(
                     "Client: Server disconnected (EOF).");
-                Disconnect();
+                Disconnect();  // Disconnect from the server if EOF is received.
             } else {
                 Logger::GetInstance().LogError(
                     "Client: Receive failed with error: {}.",
@@ -139,20 +143,21 @@ void NetworkClient::ReceiveMessages() {
 
 void NetworkClient::SetCallback(
     std::function<void(std::string_view)> callback) {
-    std::lock_guard<std::mutex> lock(mutex_);
+    const std::lock_guard<std::mutex> lock(mutex_);
 
+    // Set the callback function to handle the received messages.
     Logger::GetInstance().LogInfo("Client: Setting callback.");
     callback_ = std::move(callback);
     Logger::GetInstance().LogInfo("Client: Callback set.");
 }
 
 void NetworkClient::SetUUID(boost::uuids::uuid uuid) {
-    std::lock_guard<std::mutex> lock(mutex_);
+    const std::lock_guard<std::mutex> lock(mutex_);
     uuid_ = uuid;
 }
 
 boost::uuids::uuid NetworkClient::GetUUID() {
-    // std::lock_guard<std::mutex> lock(mutex_);
+    const std::lock_guard<std::mutex> lock(mutex_);
     return uuid_;
 }
 
@@ -167,6 +172,7 @@ NetworkClient::NetworkClient() : socket_(io_context_), resolver_(io_context_) {
 
 NetworkClient::~NetworkClient() {
     Logger::GetInstance().LogInfo("Client: NetworkClient destructor.");
+    // Ensure the client is disconnected before destruction.
     if (connected_) {
         Disconnect();
     }

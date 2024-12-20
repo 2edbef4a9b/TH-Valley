@@ -21,10 +21,14 @@ void SessionManager::RemoveSession(const boost::uuids::uuid& uuid) {
 }
 
 void SessionManager::StartAccept() {
+    // Start accepting new connections asynchronously.
     acceptor_.async_accept([this](const boost::system::error_code& error_code,
                                   boost::asio::ip::tcp::socket socket) {
         if (!error_code) {
-            auto session = std::make_shared<Session>(std::move(socket));
+            // Create a new session for the accepted connection.
+            const auto session = std::make_shared<Session>(std::move(socket));
+
+            // Bind the session manager to the session and start the session.
             session->SetSessionManager(shared_from_this());
             session->Start();
 
@@ -36,6 +40,8 @@ void SessionManager::StartAccept() {
             Logger::GetInstance().LogInfo(
                 "Session Manager: Accepted client connection from {}:{}",
                 remote_endpoint_str, remote_port);
+
+            // Add the session to the session map.
             AddSession(uuid, session);
         } else {
             Logger::GetInstance().LogError(
@@ -43,13 +49,14 @@ void SessionManager::StartAccept() {
                 error_code.message());
         }
 
-        // Continue accepting new connections
+        // Continue accepting new connections regardless of the error.
         StartAccept();
     });
 }
 
 void SessionManager::UpdateSessionUUID(const boost::uuids::uuid& old_uuid,
                                        const boost::uuids::uuid& new_uuid) {
+    // Update the UUID of an existing session.
     if (sessions_.contains(old_uuid)) {
         const auto session = sessions_.at(old_uuid);
         RemoveSession(old_uuid);
