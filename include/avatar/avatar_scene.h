@@ -20,7 +20,7 @@ public:
 
 
 
-    void Differ(std::string handy);
+
     // action animate running
     // walking;
     void Moving(int dir, float flu);
@@ -46,7 +46,7 @@ public:
     // map test
     cocos2d::TMXTiledMap* map_;
     // cocos members
-    void keyboardreading();
+    void Monitor();
     void handleKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode,
                           cocos2d::Event* event);
     void handleKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode,

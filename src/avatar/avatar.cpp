@@ -50,6 +50,30 @@ Attribute::Attribute(const Exist e, const Attack a, const Defense d) {
     defense_ = d;
 }
 
+
+
+void Avatar::Differ(std::string handy) {
+    
+    if (handy == "Axe") {
+        state = STATE::cut;
+    }
+    if (handy == "Hoe") {
+        state = STATE::cultivate;
+    }
+    if (handy == "Fishingrod") {
+        state = STATE::fish;
+    }
+    if (handy == "Draft") {
+        state = STATE::mine;
+    }
+    if (handy == "wand" || handy == "sword") {
+        state = STATE::attack;
+    }
+    CCLOG("======");
+    CCLOG("do it");
+    CCLOG("======");
+
+}
 bool Attribute::MakeUMap() {
 
     Attribute attCaster(casterExist, casterAttack, casterDefense);
@@ -97,10 +121,14 @@ void Avatar::experiencegain(double exp)  {
 // init:
 Avatar::Avatar(std::string id) {
     bool flag = attribute.MakeUMap();
+    state = STATE::none;
+    handy_ = "Axe";
     if (flag) {
         wepon_ = attribute.weponlist.at(attribute.chooseId[id]);
         ocupation_ = id;
         attribute = attribute.ChooseOpucation.at(id);
+        mybag.BagInit();
+        
         CCLOG("init successfully");
     }
     CCLOG("init unseccessfully");

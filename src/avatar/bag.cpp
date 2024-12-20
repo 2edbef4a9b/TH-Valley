@@ -61,3 +61,15 @@ void Bag::openbag() {
 
 Bag::Bag() :currentnum(0),maxnum(100){}
 
+
+
+
+void Bag::BagInit() {
+    ItemSprite itemA("Axe", 10, perfect, cocos2d::Sprite::create("avatar/tool.png", cocos2d::Rect(0 + 5 * 16, 32 + 4 * 32, 16, 16)));
+    bag.insert(std::make_pair("Axe", &itemA));
+    ItemSprite itemB("Hoe", 8, high, cocos2d::Sprite::create("avatar/tool.png",cocos2d::Rect(0 + 5 * 16, 32 + 4 * 32, 16, 16)));
+    bag.insert(std::make_pair("Hoe", &itemB));
+    ItemSprite itemC("fishingrod", 1000, lowest,cocos2d::Sprite::create("avatar/tool.png", cocos2d::Rect(0 + 5 * 16, 32 + 4 * 32, 16, 16)));
+    bag.insert(std::make_pair("fishingrod", &itemC));
+}
+

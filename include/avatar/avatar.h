@@ -56,7 +56,6 @@ struct Attribute {
 };
 
 enum class STATE {
-    move,
     cut,
     cultivate,
     fish,
@@ -75,6 +74,7 @@ public:
     void upgrade();
     void existchange();
     bool judgedeath();
+    void Differ(std::string handy);
     friend class avatarScene;
 
 private:
@@ -88,6 +88,7 @@ private:
     Bag mybag;
     int grade_;
     STATE state;
+    std::string handy_;
 };
 
 #endif  // AVATAR_H_

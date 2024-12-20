@@ -42,7 +42,7 @@ bool avatarScene::init() {
         cocos2d::Rect(0, 0, 16, 32));  // Set initial frame to the first frame
     Haley->setPosition(cocos2d::Vec2(240, 160));  // Set initial position
     this->addChild(Haley);
-    keyboardreading();  // Start reading keyboard input
+    Monitor();    // Start reading keyboard input
     return true;  // Ensure to return true to indicate successful initialization
 }
 
@@ -80,45 +80,6 @@ void avatarScene::handleKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, coco
             dir = Down;  // Set direction to down
             moved = true;  // Mark as moved
             break;
-        case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_G:
-        case cocos2d::EventKeyboard::KeyCode::KEY_G:
-            Attacking("sword");
-            moved = false;  // Mark as moved
-            break;
-        case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_H:
-        case cocos2d::EventKeyboard::KeyCode::KEY_H:
-            Attacking("wand");
-            moved = false;  // Mark as moved
-            break;
-        // cutting
-        case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_E:
-        case cocos2d::EventKeyboard::KeyCode::KEY_E: 
-            Working("Axe");
-            moved = false;
-            break;
-        // mining
-        case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_Z:
-        case cocos2d::EventKeyboard::KeyCode::KEY_Z:
-            Working("Draft");
-            moved = false;
-            break;
-        // fishing
-        case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_F:
-        case cocos2d::EventKeyboard::KeyCode::KEY_F:
-            Working("Fishingrod");
-            moved = false;
-            break;
-        // cultivating
-        case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_R:
-        case cocos2d::EventKeyboard::KeyCode::KEY_R:
-            Working("Hoe");
-            moved = false;
-            break;
-        case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_T:
-        case cocos2d::EventKeyboard::KeyCode::KEY_T:
-            upgrading();
-            moved = false;
-            break;
         default:
             moved =false;  
             break;
@@ -129,14 +90,7 @@ void avatarScene::handleKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, coco
 }
 
 
-void avatarScene::Differ(std::string handy) {
 
-
-
-
-
-
-}
 
 
 
@@ -169,7 +123,8 @@ void avatarScene::update(float dt)
             Haley->setPosition(position);
         }
     }
-
+    Working(Haley_->handy_);
+    Attacking("wand");
 
 }
 
@@ -416,7 +371,7 @@ void avatarScene::Attacking(std::string weaponTypes) {
 
 }
 
-void avatarScene::keyboardreading() {
+void avatarScene::Monitor() {
     // Change the default resource path
     SetResourcePath("assets");
     // Create a keyboard listener
@@ -432,6 +387,7 @@ void avatarScene::keyboardreading() {
     // Add the keyboard listener to the event dispatcher
     _eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener,
                                                              Haley);
+
     this->scheduleUpdate();  
 }
 

@@ -30,6 +30,7 @@ public:
     void reduce(std::string key);
     void openbag();
     Bag();
+    void BagInit();
 
 
 private:
