@@ -4,6 +4,7 @@
 #include <boost/asio.hpp>
 #include <boost/uuid/uuid.hpp>
 #include <functional>
+#include <mutex>
 #include <string_view>
 #include <thread>
 
@@ -22,7 +23,7 @@ public:
     void SendMessages(std::string_view message_sv);
     void SetCallback(std::function<void(std::string_view)> callback);
     void SetUUID(boost::uuids::uuid uuid);
-    boost::uuids::uuid GetUUID() const;
+    boost::uuids::uuid GetUUID();
 
     static NetworkClient& GetInstance();
 
@@ -39,6 +40,7 @@ private:
 
     std::function<void(std::string_view)> callback_;
     std::thread io_context_thread_;
+    std::mutex mutex_;
     std::string received_message_;
     std::string sent_message_;
     bool connected_{false};
