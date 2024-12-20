@@ -23,7 +23,7 @@ public:
     void SendMessages(std::string_view message_sv);
     void SetCallback(std::function<void(std::string_view)> callback);
     void SetUUID(boost::uuids::uuid uuid);
-    boost::uuids::uuid GetUUID();
+    boost::uuids::uuid GetUUID() const;
 
     static NetworkClient& GetInstance();
 
@@ -40,9 +40,10 @@ private:
 
     std::function<void(std::string_view)> callback_;
     std::thread io_context_thread_;
-    std::mutex mutex_;
     std::string received_message_;
     std::string sent_message_;
+
+    mutable std::mutex mutex_;
     bool connected_{false};
 };
 

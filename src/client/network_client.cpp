@@ -156,7 +156,7 @@ void NetworkClient::SetUUID(boost::uuids::uuid uuid) {
     uuid_ = uuid;
 }
 
-boost::uuids::uuid NetworkClient::GetUUID() {
+boost::uuids::uuid NetworkClient::GetUUID() const {
     const std::lock_guard<std::mutex> lock(mutex_);
     return uuid_;
 }
@@ -171,6 +171,7 @@ NetworkClient::NetworkClient() : socket_(io_context_), resolver_(io_context_) {
 }
 
 NetworkClient::~NetworkClient() {
+    const std::lock_guard<std::mutex> lock(mutex_);
     Logger::GetInstance().LogInfo("Client: NetworkClient destructor.");
     // Ensure the client is disconnected before destruction.
     if (connected_) {
