@@ -141,7 +141,7 @@ set(APP_NAME th_valley)
 # Add the application executable.
 add_executable(${APP_NAME}
     ${SOURCE_FILES}
-    "src/map.cpp" "include/map.h")
+)
 
 # Set the C++ standard for the application.
 set_target_properties(${APP_NAME} PROPERTIES
