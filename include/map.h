@@ -4,12 +4,15 @@
 #include "cocos2d.h"
 #include <vector>
 #include <unordered_map>
+#include "avatar/avatar_scene.h"
 
 struct Tile {
     int x, y;
     int gid;
     Tile(int x, int y, int gid) : x(x), y(y), gid(gid) {};
 };
+
+
 
 class Map : public cocos2d::TMXTiledMap {
 protected:
@@ -25,6 +28,8 @@ protected:
     bool isKeyPressedA;
     bool isKeyPressedS;
     bool isKeyPressedD;
+
+    direction dir;
 public:
     Map() = default;
     ~Map() override = default;

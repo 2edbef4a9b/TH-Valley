@@ -1,6 +1,9 @@
 #include "AudioEngine.h"
 #include "avatar/avatar_application.h"
 #include "avatar/avatar_scene.h"
+#include "sample/sample_application.h"
+#include "sample/sample_scene.h"
+#include "map.h"
 
 avatarApplication::~avatarApplication() {
     // Release the shared instance of the audio engine.
@@ -33,10 +36,12 @@ bool avatarApplication::applicationDidFinishLaunching() {
     director->setAnimationInterval(1.0 / 60);
 
     // Create a scene. it's an autorelease object.
-    auto *scene = avatarScene::create();
+    auto *scene = SampleScene::create();
     if (scene == nullptr) {
         return false;
     }
+    scene->addChild(Map::create("maps/Farm.tmx"));
+    //scene->addChild(avatarScene::create());
 
     // Run.
     director->runWithScene(scene);

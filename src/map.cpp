@@ -10,6 +10,7 @@ bool Map::initWithTMXFile(const std::string& tmxFile) {
     tileMap = this;  // Assign the current instance to tileMap
     this->setAnchorPoint(cocos2d::Vec2(0, 0));
     this->setPosition(cocos2d::Vec2(0, 0));
+    this->setVisible(false);
 
     // 初始化地图的其他内容
     std::vector<std::string> layerNames = {
@@ -53,17 +54,20 @@ bool Map::initWithTMXFile(const std::string& tmxFile) {
           tileCoordFromPos(playerPos).y);
     setViewpointCenter(playerPos);  // 更新视角中心
 
-    // 加载纹理
-    auto texture =
-        cocos2d::Director::getInstance()->getTextureCache()->addImage(
-            "assets/Sebastian.png");
-    // 定义裁剪区域（第一幅图片的位置和尺寸）
-    cocos2d::Rect frameRect(0, 0, 16, 32);
-    // 创建精灵帧
-    auto spriteFrame =
-        cocos2d::SpriteFrame::createWithTexture(texture, frameRect);
-    // 创建精灵并设置精灵帧
-    playerSprite = cocos2d::Sprite::createWithSpriteFrame(spriteFrame);
+    //// 加载纹理
+    //auto texture =
+    //    cocos2d::Director::getInstance()->getTextureCache()->addImage(
+    //        "assets/Sebastian.png");
+    //// 定义裁剪区域（第一幅图片的位置和尺寸）
+    //cocos2d::Rect frameRect(0, 0, 16, 32);
+
+    
+    // 创建精灵
+    auto playerSprite = avatarScene::create();
+    if (!playerSprite) {
+        CCLOG("Player sprite not created");
+        return false;
+    }
     // 设置锚点为底部中心
     playerSprite->setAnchorPoint(cocos2d::Vec2(0.5f, 0.0f));
     // 设置精灵位置
@@ -72,7 +76,7 @@ bool Map::initWithTMXFile(const std::string& tmxFile) {
     CCLOG("Player sprite created at Tile: %f %f", tileCoordFromPos(playerPos).x,
           tileCoordFromPos(playerPos).y);
     // 将精灵添加到地图
-    this->addChild(playerSprite, 2);
+    this->addChild(playerSprite, 0);
 
     return true;
 }
@@ -397,6 +401,7 @@ void Map::update(float delta) {
     }
     if (isKeyPressedD) {
         currentPos.x += moveStep;
+        
     }
 
     if (isKeyPressedW || isKeyPressedS || isKeyPressedA || isKeyPressedD) {

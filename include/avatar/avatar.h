@@ -4,7 +4,7 @@
 #include <string>
 #include <unordered_map>
 #include "cocos2d.h"
-#include"avatar/bag.h"
+#include "avatar/bag.h"
 
 
 
@@ -22,10 +22,6 @@ struct Exist {
 const Exist casterExist = {1000, 100, 100, 100};
 const Exist saberExist = {1200, 100, 100, 100};
 const Exist shilderExist = {2000, 100, 100, 100};
-
-
-
-
 
 struct Attack {
     int attackdamage_;
@@ -77,8 +73,6 @@ struct Attribute {
 
 };
 
-
-
 class Avatar : public cocos2d::Sprite {
 public:
     Avatar(std::string id);
@@ -88,7 +82,6 @@ public:
     void experiencegain(double exp) ;
 
     void upgrade();
-    
 
     
 
