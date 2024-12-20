@@ -32,7 +32,6 @@ protected:
 private:
     void DoAccept() const;
     boost::asio::ip::tcp::acceptor acceptor_;
-    mutable std::mutex mutex_;
     std::thread main_loop_thread_;
     std::shared_ptr<SessionManager> session_manager_;
     std::atomic<bool> is_running_{false};

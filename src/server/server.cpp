@@ -13,40 +13,36 @@ Server::Server(boost::asio::io_context& io_context, const std::string_view port)
       session_manager_(std::make_shared<SessionManager>(acceptor_)) {}
 
 Server::~Server() {
-    std::lock_guard<std::mutex> lock(mutex_);
     if (is_running_) {
         ShutDown();
     }
 }
 
 void Server::StartUp() {
-    std::lock_guard<std::mutex> lock(mutex_);
     Logger::GetInstance().LogInfo("Server starting up.");
     is_running_ = true;
-    main_loop_thread_ = std::thread([this]() -> void { RunMainLoop(); });
     DoAccept();
+    main_loop_thread_ = std::thread([this]() -> void { RunMainLoop(); });
     Logger::GetInstance().LogInfo("Server started up.");
 }
 
 void Server::ShutDown() {
-    std::lock_guard<std::mutex> lock(mutex_);
     Logger::GetInstance().LogInfo("Server shutting down.");
+    is_running_.store(false, std::memory_order_release);
     acceptor_.close();
     if (main_loop_thread_.joinable()) {
         main_loop_thread_.join();
     }
-    is_running_ = false;
     Logger::GetInstance().LogInfo("Server shut down.");
 }
 
 bool Server::IsRunning() const {
-    std::lock_guard<std::mutex> lock(mutex_);
-    return is_running_;
+    return is_running_.load(std::memory_order_acquire);
 }
 
 void Server::RunMainLoop() {
     Logger::GetInstance().LogInfo("Server running main loop.");
-    while (is_running_) {
+    while (IsRunning()) {
         std::this_thread::sleep_for(
             std::chrono::milliseconds(kServerTickInterval));
     }
@@ -54,7 +50,6 @@ void Server::RunMainLoop() {
 }
 
 void Server::DoAccept() const {
-    std::lock_guard<std::mutex> lock(mutex_);
     Logger::GetInstance().LogInfo("Server accepting connections.");
     session_manager_->StartAccept();
     Logger::GetInstance().LogInfo("Server accepted connections.");
