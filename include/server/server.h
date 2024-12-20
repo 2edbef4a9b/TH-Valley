@@ -12,8 +12,14 @@ namespace th_valley {
 class Server {
 public:
     Server(boost::asio::io_context& io_context, std::string_view port);
+    ~Server();
 
-    void StartUp() const;
+    Server(const Server& other) = delete;
+    Server& operator=(const Server& other) = delete;
+    Server(Server&& other) = delete;
+    Server& operator=(Server&& other) = delete;
+
+    void StartUp();
     void ShutDown();
 
 private:
@@ -21,6 +27,7 @@ private:
 
     boost::asio::ip::tcp::acceptor acceptor_;
     std::shared_ptr<SessionManager> session_manager_;
+    bool is_running_{false};
 };
 
 }  // namespace th_valley
