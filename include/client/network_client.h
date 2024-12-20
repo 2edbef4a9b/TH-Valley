@@ -39,6 +39,7 @@ private:
 
     std::function<void(std::string_view)> callback_;
     std::thread io_context_thread_;
+    bool connected_{false};
 };
 
 }  // namespace th_valley

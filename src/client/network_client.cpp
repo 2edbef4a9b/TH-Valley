@@ -33,6 +33,7 @@ void NetworkClient::Connect(const std::string_view host,
                 Logger::GetInstance().LogInfo(
                     "Client: Connected to server at {}:{}.",
                     endpoint.address().to_string(), endpoint.port());
+                connected_ = true;
                 ReceiveMessages();
             }
         });
@@ -74,6 +75,7 @@ void NetworkClient::Disconnect() {
         io_context_thread_.join();
     }
 
+    connected_ = false;
     Logger::GetInstance().LogInfo("Client: Disconnected from server.");
 }
 
@@ -143,6 +145,9 @@ NetworkClient::NetworkClient() : socket_(io_context_), resolver_(io_context_) {
 
 NetworkClient::~NetworkClient() {
     Logger::GetInstance().LogInfo("Client: NetworkClient destructor.");
+    if (connected_) {
+        Disconnect();
+    }
     Logger::GetInstance().LogInfo("Client: NetworkClient destructed.");
 }
 
