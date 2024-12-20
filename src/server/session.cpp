@@ -55,6 +55,14 @@ void Session::Terminate() {
         Logger::GetInstance().LogError("Session: Socket already closed.");
     }
 
+    // Remove the session from the session manager after termination.
+    if (session_manager_.lock()) {
+        session_manager_.lock()->RemoveSession(uuid_);
+    } else {
+        Logger::GetInstance().LogError(
+            "Session: Session manager is not set, cannot remove session.");
+    }
+
     Logger::GetInstance().LogInfo("Session: Terminated with UUID: {}.",
                                   boost::uuids::to_string(uuid_));
 }
