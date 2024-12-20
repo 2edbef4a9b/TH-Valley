@@ -23,18 +23,25 @@ public:
     void ShutDown();
 
 protected:
-    bool IsRunning() const;
+    [[nodiscard]] bool IsRunning() const;
+    [[nodiscard]] std::string_view GetServerName() const;
+    void SetServerName(std::string_view server_name);
+
     virtual void RunMainLoop();
+
     static constexpr double kServerTickRate = 60.0;
     static constexpr std::size_t kServerTickInterval =
         static_cast<std::size_t>(1000.0 / kServerTickRate);
 
 private:
     void DoAccept() const;
+
     boost::asio::ip::tcp::acceptor acceptor_;
+
     std::thread main_loop_thread_;
     std::shared_ptr<SessionManager> session_manager_;
     std::atomic<bool> is_running_{false};
+    std::string server_name_{"Server"};
 };
 
 }  // namespace th_valley
