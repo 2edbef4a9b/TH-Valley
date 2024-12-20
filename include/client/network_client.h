@@ -39,6 +39,8 @@ private:
 
     std::function<void(std::string_view)> callback_;
     std::thread io_context_thread_;
+    std::string received_message_;
+    std::string sent_message_;
     bool connected_{false};
 };
 

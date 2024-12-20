@@ -4,6 +4,7 @@
 #include <boost/asio.hpp>
 #include <boost/uuid/uuid.hpp>
 #include <memory>
+#include <string>
 #include <string_view>
 
 #include "server/session_manager.h"
@@ -33,6 +34,8 @@ private:
     boost::asio::streambuf buffer_;
     boost::uuids::uuid uuid_;
 
+    std::string received_message_;
+    std::string sent_message_;
     std::weak_ptr<SessionManager> session_manager_;
 };
 

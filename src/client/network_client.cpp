@@ -1,7 +1,6 @@
 #include "client/network_client.h"
 
 #include <boost/uuid/uuid_io.hpp>
-#include <chrono>
 #include <string>
 #include <thread>
 #include <utility>
@@ -80,20 +79,20 @@ void NetworkClient::Disconnect() {
 }
 
 void NetworkClient::SendMessages(const std::string_view message_sv) {
-    std::string message(message_sv);
-    std::string sent_message = message + "\n";
-    Logger::GetInstance().LogInfo("Client: Sending message: {}.", message);
+    sent_message_ = std::string(message_sv) + "\n";
+    Logger::GetInstance().LogInfo("Client: Sending message: {}.", message_sv);
     boost::asio::async_write(
-        socket_, boost::asio::buffer(sent_message, sent_message.size()),
-        [this, message](const boost::system::error_code& error_code,
-                        std::size_t /*length*/) -> void {
+        socket_, boost::asio::buffer(sent_message_, sent_message_.size()),
+        [this](const boost::system::error_code& error_code,
+               std::size_t /*length*/) -> void {
             if (error_code) {
                 Logger::GetInstance().LogError(
                     "Client: Send failed with error: {}.",
                     error_code.message());
             } else {
                 Logger::GetInstance().LogInfo(
-                    "Client: Sent message: {} to server.", message);
+                    "Client: Sent message: {} to server.",
+                    sent_message_.substr(0, sent_message_.size() - 1));
             }
         });
 
@@ -112,10 +111,10 @@ void NetworkClient::ReceiveMessages() {
                     error_code.message());
             } else {
                 std::istream input_stream(&buffer_);
-                std::string message;
-                std::getline(input_stream, message);
-                Logger::GetInstance().LogInfo("Client: Received: {}.", message);
-                callback_(message);
+                std::getline(input_stream, received_message_);
+                Logger::GetInstance().LogInfo("Client: Received: {}.",
+                                              received_message_);
+                callback_(received_message_);
                 ReceiveMessages();
             }
         });

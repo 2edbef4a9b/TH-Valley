@@ -6,6 +6,7 @@
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_generators.hpp>
 #include <boost/uuid/uuid_io.hpp>
+#include <string_view>
 
 #include "utility/logger.h"
 
@@ -65,16 +66,14 @@ void Session::DoRead() {
     // Start an asynchronous read operation.
     boost::asio::async_read_until(
         socket_, buffer_, '\n',
-        [this, self](const boost::system::error_code &error_code,
-                     const std::size_t length) {
+        [self](const boost::system::error_code &error_code,
+               const std::size_t /* length */) -> void {
             if (!error_code) {
                 // Extract the message from the buffer.
-                std::istream input_stream(&buffer_);
-                std::string message;
-                std::getline(input_stream, message);
-                self->HandleMessage(message);
+                std::istream input_stream(&self->buffer_);
+                std::getline(input_stream, self->received_message_);
+                self->HandleMessage(self->received_message_);
             } else if (error_code == boost::asio::error::eof) {
-                // Handle the end of file error gracefully.
                 Logger::GetInstance().LogInfo(
                     "Session: Client disconnected (EOF).");
                 self->Terminate();
@@ -90,21 +89,22 @@ void Session::DoRead() {
 }
 
 void Session::DoWrite(const std::string_view message_sv) {
+    sent_message_ = std::string(message_sv) + "\n";
     // Convert the message to a string and append a newline for the protocol.
-    std::string message(message_sv);
-    std::string sent_message = message + "\n";
-    Logger::GetInstance().LogInfo("Session: Writing messageL {} to client.",
-                                  message);
+    Logger::GetInstance().LogInfo("Session: Writing message {} to client.",
+                                  message_sv);
 
     auto self(shared_from_this());
     // Start an asynchronous write operation.
     boost::asio::async_write(
-        socket_, boost::asio::buffer(sent_message, sent_message.size()),
-        [self, message](const boost::system::error_code &error_code,
-                        const std::size_t /* length */) {
+        socket_, boost::asio::buffer(sent_message_, sent_message_.size()),
+        [self](const boost::system::error_code &error_code,
+               const std::size_t /* length */) {
             if (!error_code) {
                 Logger::GetInstance().LogInfo(
-                    "Session: Sent message: {} to client.", message);
+                    "Session: Sent message: {} to client.",
+                    self->sent_message_.substr(0,
+                                               self->sent_message_.size() - 1));
             } else {
                 Logger::GetInstance().LogError(
                     "Session: Error writing to socket: {}.",
@@ -127,13 +127,13 @@ void Session::HandleMessage(const std::string_view message_sv) {
         session_manager_.lock()->UpdateSessionUUID(old_uuid, uuid_);
         Logger::GetInstance().LogInfo("Session: Updated UUID to {}.",
                                       boost::uuids::to_string(uuid_));
+        DoWrite("UUID updated");
     } else {
         Logger::GetInstance().LogInfo(
             "Session: Received invalid UUID, treating as message.");
         DoWrite(message_sv);
     }
     Logger::GetInstance().LogInfo("Session: Handled message.");
-
     DoRead();  // Continue reading from the client socket.
 }
 
