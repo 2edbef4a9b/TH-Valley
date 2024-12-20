@@ -71,6 +71,7 @@ void Session::DoRead() {
             if (!error_code) {
                 // Extract the message from the buffer.
                 std::istream input_stream(&self->buffer_);
+                self->received_message_.clear();
                 std::getline(input_stream, self->received_message_);
                 self->HandleMessage(self->received_message_);
             } else if (error_code == boost::asio::error::eof) {
@@ -89,10 +90,11 @@ void Session::DoRead() {
 }
 
 void Session::DoWrite(const std::string_view message_sv) {
-    sent_message_ = std::string(message_sv) + "\n";
-    // Convert the message to a string and append a newline for the protocol.
     Logger::GetInstance().LogInfo("Session: Writing message {} to client.",
                                   message_sv);
+    // Convert the message to a string and append a newline for the protocol.
+    sent_message_.clear();
+    sent_message_ = std::string(message_sv) + "\n";
 
     auto self(shared_from_this());
     // Start an asynchronous write operation.
