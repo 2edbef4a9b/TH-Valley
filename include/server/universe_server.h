@@ -1,3 +1,6 @@
+#ifndef UNIVERSE_SERVER_H_
+#define UNIVERSE_SERVER_H_
+
 #include "server/server.h"
 
 namespace th_valley {
@@ -20,3 +23,5 @@ private:
 };
 
 }  // namespace th_valley
+
+#endif  // UNIVERSE_SERVER_H_
