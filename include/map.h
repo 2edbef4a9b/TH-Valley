@@ -69,7 +69,6 @@ public:
      * @return cocos2d::Vec2
      */
     cocos2d::Vec2 tileCoordFromPos(cocos2d::Vec2 pos);
-    cocos2d::Vec2 PosFromtileCoord(Position pos);
     /**
      * @brief �ж��Ƿ�����ײ
      * @param cocos2d::Vec2 pos ���ص�����  string LayerName ������
@@ -147,19 +146,6 @@ public:
     static Map* create(const std::string& tmxFile,
                        cocos2d::Sprite* PlayerSprite, ToolBar* CurrentToolBar,
                        BagGUI* CurrentBag);
-
-    // Crop option
-    void CropPlant(const Position& PlantPosition, Crops* Crop);
-    void CropRemove(const Position& RemovePosition);
-    void CropUpdate(const Position& UpdatePosition);
-    void ShowCropInformation(Crops* Crop, const Position& InfoPosition,
-                             int& priority);
-
-    // Animal option
-    void initAnimalPosition();
-    void updateAnimalSprites(float dt);
-    void ShowAnimalInfomation(cocos2d::Sprite* Animal,
-                              const cocos2d::Vec2& InfoPosition, int& priority);
 };
 
 #endif  // MAP_H_

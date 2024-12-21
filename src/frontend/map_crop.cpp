@@ -1,12 +1,14 @@
 #include "cocos2d.h"
 #include "game/crops.h"
-#include "map.h"
+#include "game/tiled_map.h"
 #include "ui/CocosGUI.h"
 
-void Map::CropPlant(const Position& PlantPosition, Crops* Crop) {
+namespace th_valley {
+
+void TiledMap::CropPlant(const Position& PlantPosition, Crops* Crop) {
     // Position check
     // static int priority = 3;
-    auto PlayerTilePos = tileCoordFromPos(playerPos);
+    auto PlayerTilePos = TileCoordFromPos(player_pos_);
     if (fabs(PlayerTilePos.x - PlantPosition.x) > 1 ||
         fabs(PlayerTilePos.y - PlantPosition.y) > 1) {
         CCLOG("Too far to plant");
@@ -24,7 +26,7 @@ void Map::CropPlant(const Position& PlantPosition, Crops* Crop) {
     // Soil Check
     int SoilCheck = 0;
     int gid =
-        getTileID(cocos2d::Vec2(PlantPosition.x, PlantPosition.y), "Back");
+        GetTileID(cocos2d::Vec2(PlantPosition.x, PlantPosition.y), "Back");
     for (int i = 0; i < Crop->SoilRequirement.size(); i++)
         if (PropertyCheck(gid, Crop->SoilRequirement[i])) {
             SoilCheck = 1;
@@ -43,8 +45,8 @@ void Map::CropPlant(const Position& PlantPosition, Crops* Crop) {
     cocos2d::Vec2 PicturePosition;
     PicturePosition = PosFromtileCoord(PlantPosition);
 
-    CCLOG("Size: %f %f\n", tileMap->getTileSize().width,
-          tileMap->getTileSize().height);
+    CCLOG("Size: %f %f\n", tiled_map_->getTileSize().width,
+          tiled_map_->getTileSize().height);
     CCLOG("PicturePosition: %f %f\n", PicturePosition.x, PicturePosition.y);
     CCLOG("PlantPosition: %f %f\n", PlantPosition.x, PlantPosition.y);
     CropPicture->setPosition(PicturePosition);
@@ -56,7 +58,7 @@ void Map::CropPlant(const Position& PlantPosition, Crops* Crop) {
     this->addChild(CropPicture, 1);
 }
 
-void Map::CropRemove(const Position& RemovePosition) {
+void TiledMap::CropRemove(const Position& RemovePosition) {
     Crops* Crop = CropPosition[RemovePosition];
     auto Picture = SpritePosition[RemovePosition];
     std::vector<Crops*>::iterator it;
@@ -80,7 +82,7 @@ void Map::CropRemove(const Position& RemovePosition) {
     SpritePosition[RemovePosition] = 0;
 }
 
-void Map::CropUpdate(const Position& UpdatePosition) {
+void TiledMap::CropUpdate(const Position& UpdatePosition) {
     auto Picture = SpritePosition[UpdatePosition];
     Crops* Crop = CropPosition[UpdatePosition];
     auto newPicture =
@@ -90,8 +92,8 @@ void Map::CropUpdate(const Position& UpdatePosition) {
     delete newPicture;
 }
 
-void Map::ShowCropInformation(Crops* Crop, const Position& InfoPosition,
-                              int& priority) {
+void TiledMap::ShowCropInformation(Crops* Crop, const Position& InfoPosition,
+                                   int& priority) {
     // Turn Tile position to scene position
     cocos2d::Vec2 PicturePosition = PosFromtileCoord(InfoPosition);
 
@@ -265,3 +267,5 @@ void Map::ShowCropInformation(Crops* Crop, const Position& InfoPosition,
         });
     this->addChild(CloseButton, priority++);
 }
+
+}  // namespace th_valley

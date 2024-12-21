@@ -1,22 +1,27 @@
+
 #include "game/animals.h"
-#include "map.h"
+#include "game/tiled_map.h"
 #include "random"
 #include "ui/CocosGUI.h"
 
-void Map::initAnimalPosition() {
+namespace th_valley {
+
+void TiledMap::initAnimalPosition() {
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> MaxHeight(
-        getMapSize().height * getTileSize().height / 4,
-        getMapSize().height * getTileSize().height * 3 / 4);
+        tiled_map_->getMapSize().height * tiled_map_->getTileSize().height / 4,
+        tiled_map_->getMapSize().height * tiled_map_->getTileSize().height * 3 /
+            4);
     std::uniform_int_distribution<> MaxWidth(
-        getMapSize().width * getTileSize().height / 4,
-        getMapSize().width * getTileSize().height * 3 / 4);
+        tiled_map_->getMapSize().width * tiled_map_->getTileSize().height / 4,
+        tiled_map_->getMapSize().width * tiled_map_->getTileSize().height * 3 /
+            4);
     for (int i = 0; i < MapAnimals.size(); i++) {
         int RandomHeight = MaxHeight(gen);
         int RandomWidth = MaxWidth(gen);
         while (
-            isCollisionAtAnyLayer(cocos2d::Vec2(RandomWidth, RandomHeight))) {
+            IsCollisionAtAnyLayer(cocos2d::Vec2(RandomWidth, RandomHeight))) {
             RandomHeight = MaxHeight(gen);
             RandomWidth = MaxWidth(gen);
         }
@@ -31,18 +36,20 @@ void Map::initAnimalPosition() {
         this->addChild(MapAnimals[i]->initSprite);
     }
 
-    this->schedule(CC_SCHEDULE_SELECTOR(Map::updateAnimalSprites), 5.0f);
+    this->schedule(CC_SCHEDULE_SELECTOR(TiledMap::updateAnimalSprites), 5.0f);
 }
 
-void Map::updateAnimalSprites(float dt) {
+void TiledMap::updateAnimalSprites(float dt) {
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> MaxHeight(
-        getMapSize().height * getTileSize().height / 4,
-        getMapSize().height * getTileSize().height * 3 / 4);
+        tiled_map_->getMapSize().height * tiled_map_->getTileSize().height / 4,
+        tiled_map_->getMapSize().height * tiled_map_->getTileSize().height * 3 /
+            4);
     std::uniform_int_distribution<> MaxWidth(
-        getMapSize().width * getTileSize().height / 4,
-        getMapSize().width * getTileSize().height * 3 / 4);
+        tiled_map_->getMapSize().width * tiled_map_->getTileSize().height / 4,
+        tiled_map_->getMapSize().width * tiled_map_->getTileSize().height * 3 /
+            4);
     std::uniform_int_distribution<> direction(0, 3);
     std::uniform_int_distribution<> Step(20, 100);
     for (int i = 0; i < AnimalSprite.size(); i++) {
@@ -78,13 +85,17 @@ void Map::updateAnimalSprites(float dt) {
             for (int i = 1; i <= step; i++) {
                 float nextX = targetX + deltaX;
                 float nextY = targetY + deltaY;
-                if (nextY < getMapSize().height * getTileSize().height / 4 ||
-                    nextY > getMapSize().height * getTileSize().height * 3 / 4)
+                if (nextY < tiled_map_->getMapSize().height *
+                                tiled_map_->getTileSize().height / 4 ||
+                    nextY > tiled_map_->getMapSize().height *
+                                tiled_map_->getTileSize().height * 3 / 4)
                     break;
-                if (nextX < getMapSize().width * getTileSize().width / 4 ||
-                    nextX > getMapSize().width * getTileSize().width * 3 / 4)
+                if (nextX < tiled_map_->getMapSize().width *
+                                tiled_map_->getTileSize().width / 4 ||
+                    nextX > tiled_map_->getMapSize().width *
+                                tiled_map_->getTileSize().width * 3 / 4)
                     break;
-                if (isCollisionAtAnyLayer(cocos2d::Vec2(nextX, nextY))) break;
+                if (IsCollisionAtAnyLayer(cocos2d::Vec2(nextX, nextY))) break;
 
                 targetX = nextX;
                 targetY = nextY;
@@ -109,16 +120,15 @@ void Map::updateAnimalSprites(float dt) {
                     float nextY = targetY + deltaY;
                     bool check = 1;
                     if (nextY <
-                            getMapSize().height * getTileSize().height / 4 ||
-                        nextY >
-                            getMapSize().height * getTileSize().height * 3 / 4)
-                        check = 0;
-                    if (nextX < getMapSize().width * getTileSize().width / 4 ||
-                        nextX >
-                            getMapSize().width * getTileSize().width * 3 / 4)
-                        check = 0;
-                    if (isCollisionAtAnyLayer(cocos2d::Vec2(nextX, nextY)))
-                        check = 0;
+                            tiled_map_->getMapSize().height *
+            tiled_map_->getTileSize().height / 4 || nextY >
+            tiled_map_->getMapSize().height
+            * tiled_map_->getTileSize().height * 3 / 4) check = 0; if (nextX <
+            tiled_map_->getMapSize().width * tiled_map_->getTileSize().width / 4
+            || nextX > tiled_map_->getMapSize().width *
+            tiled_map_->getTileSize().width
+            * 3 / 4) check = 0; if (IsCollisionAtAnyLayer(cocos2d::Vec2(nextX,
+            nextY))) check = 0;
 
                     targetX = nextX;
                     targetY = nextY;
@@ -147,9 +157,9 @@ void Map::updateAnimalSprites(float dt) {
     }
 }
 
-void Map::ShowAnimalInfomation(cocos2d::Sprite *Animal,
-                               const cocos2d::Vec2 &InfoPosition,
-                               int &priority) {
+void TiledMap::ShowAnimalInfomation(cocos2d::Sprite *Animal,
+                                    const cocos2d::Vec2 &InfoPosition,
+                                    int &priority) {
     CCLOG("Has opend animal infobox\n");
     auto middleNode = cocos2d::Node::create();
     middleNode->setPosition(cocos2d::Vec2(0, 0));
@@ -239,3 +249,5 @@ void Map::ShowAnimalInfomation(cocos2d::Sprite *Animal,
     // ConfirmButton->setSwallowTouches(true);
     middleNode->addChild(ConfirmButton, priority);
 }
+
+}  // namespace th_valley

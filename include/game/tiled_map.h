@@ -63,6 +63,11 @@ private:
 
     cocos2d::Vec2 GetPos();
     cocos2d::Vec2 TileCoordFromPos(cocos2d::Vec2 pos);
+    cocos2d::Vec2 PosFromtileCoord(Position pos);
+
+    int GetTileID(cocos2d::Vec2 tileCoord, std::string LayerName);
+    int GetTileID(std::string Properties);
+    bool PropertyCheck(int gid, std::string property);
 
     std::optional<Portal> GetPortal(
         cocos2d::Vec2 pos, std::string_view ObjectLayerName = "Objects") const;
@@ -70,6 +75,19 @@ private:
     void SetViewpointCenter(cocos2d::Vec2 pos);
     void UpdateTileAt(cocos2d::Vec2 tileCoord, int newGID,
                       std::string LayerName);
+
+    // Crop option
+    void CropPlant(const Position& PlantPosition, Crops* Crop);
+    void CropRemove(const Position& RemovePosition);
+    void CropUpdate(const Position& UpdatePosition);
+    void ShowCropInformation(Crops* Crop, const Position& InfoPosition,
+                             int& priority);
+
+    // Animal option
+    void initAnimalPosition();
+    void updateAnimalSprites(float dt);
+    void ShowAnimalInfomation(cocos2d::Sprite* Animal,
+                              const cocos2d::Vec2& InfoPosition, int& priority);
 
     cocos2d::TMXTiledMap* tiled_map_{};
     std::unordered_map<std::string, cocos2d::TMXLayer*> map_layer_;
