@@ -2,10 +2,12 @@
 #include <cstddef>
 #include <string>
 #include "avatar/avatar.h"
+#include "bag_gui.h"
 
 #include <vector>
 
 #include "map.h"
+#include "shop.h"
 
 bool th_valley::SampleScene::init() {
     // Initialize super class first.
@@ -13,8 +15,13 @@ bool th_valley::SampleScene::init() {
         return false;
     }
     auto ToolBar = ToolBar::create();
+    auto Bag = BagGUI::create();
+    ToolBar->bag_ = Bag->bag_;
+    Bag->toolBar = ToolBar;
     this->CurrentToolBar = ToolBar;
-    this->addChild(ToolBar, 20);
+    this->CurrentBag = Bag;
+    this->addChild(ToolBar, 21);
+    this->addChild(Bag, 20);
     // Create a label and add it to the scene.
     /*constexpr size_t kFontSize = 120;
     auto *label = cocos2d::Label::createWithTTF(
@@ -25,10 +32,11 @@ bool th_valley::SampleScene::init() {
 
     this->addChild(label);*/
 
+    
     Haley = cocos2d::Sprite::create("assets/avatar/Haley.png");
     Haley->setTextureRect(cocos2d::Rect(0, 0, 16, 32));  // Set initial frame to the first frame
     //CurrentToolBar->outputindex();
-    this->_map = Map::create("assets/maps/Farm.tmx", Haley, CurrentToolBar);
+    this->_map = Map::create("assets/maps/Farm.tmx", Haley, CurrentToolBar, CurrentBag);
 
     // Create sprite and add it to the scene
     //Haley->setPosition(cocos2d::Vec2(240, 160));  // Set initial position

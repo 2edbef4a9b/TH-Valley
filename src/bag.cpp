@@ -98,3 +98,10 @@ void Bag::bagInit() {
 const std::unordered_map<int, ItemSprite*>& Bag::getItems() const {
     return items_;
 }
+
+ItemSprite* Bag::getItems(int index) {
+    if (items_[index])
+        return items_[index];
+    else
+        return nullptr;
+}

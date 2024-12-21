@@ -6,6 +6,7 @@
 #include <vector>
 #include <memory>
 #include <bag.h>
+#include "tool_bar.h"
 
 #include "cocos2d.h"
 
@@ -24,7 +25,8 @@ public:
 
     CREATE_FUNC(BagGUI);
 
-    //ToolBar toolBar;
+    ToolBar* toolBar;
+    Bag* bag_;
 
     void toggleBag();  // 打开/关闭背包
 
@@ -40,7 +42,7 @@ private:
     cocos2d::Menu* closeButtonMenu_;
 
 
-    bool isBagOpen = true;  // 背包是否打开
+    bool isBagOpen = false;  // 背包是否打开
     void displayBagItems();
     void hideBagItems();
 
@@ -60,8 +62,6 @@ private:
     void initBagGUI();
 
     std::map<ItemSprite*, cocos2d::Vec2> itemPositions;
-
-    Bag* bag_;
 
 };
 

@@ -6,23 +6,12 @@
 #include <unordered_map>
 #include <vector>
 #include <string>
-
-struct ItemSprite {
-    std::string name;
-    int quantity;
-    std::string description;
-    cocos2d::Sprite* sprite;
-    ItemSprite(std::string name, int quantity, std::string description,
-               cocos2d::Sprite* sprite)
-        : name(name),
-          quantity(quantity),
-          description(description),
-          sprite(sprite) {}
-};
-
+#include "bag.h"
 
 class ToolBar : public cocos2d::Layer {
 public:
+    Bag* bag_;
+
     ToolBar() = default;
     ~ToolBar() override = default;
     ToolBar(const ToolBar& other) = delete;
@@ -37,6 +26,7 @@ public:
     void selectTool(int index);
     void updateToolBar();
     std::string getToolName();
+    void loadTools();
     void outputindex() { CCLOG("Index: %d\n", selectedToolIndex); }
 
 private:
@@ -57,25 +47,10 @@ private:
     int draggingToolIndex = -1;
 
     void addToolLable();
-    void loadTools();
     void updateToolDisplay();
     void dropCurrentTool();
 
-    std::unordered_map<int, ItemSprite*> itemSprites;  // Container for item sprites
-    Bag* bag_;
-
-    void initBag() {
-        ItemSprite* Axe =
-            new ItemSprite("Axe", 1, "Used for chopping wood",
-                           cocos2d::Sprite::create("assets/TileSheets/tools.png",
-                               cocos2d::Rect(0 + 5 * 16, 32 + 4 * 32, 16, 16)));
-        itemSprites[0] = Axe;
-        ItemSprite* Hoe =
-            new ItemSprite("Hoe", 3, "Used for chopping wood",
-                           cocos2d::Sprite::create("assets/TileSheets/tools.png",
-                               cocos2d::Rect(0 + 5 * 16, 32 + 0 * 32, 16, 16)));
-        itemSprites[1] = Hoe;
-    }
+    //std::unordered_map<int, ItemSprite*> itemSprites;  // Container for item sprites
 };
 
 

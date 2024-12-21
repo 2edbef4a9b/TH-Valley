@@ -60,6 +60,7 @@ void ToolBar::onEnter() {
                    keyCode <= EventKeyboard::KeyCode::KEY_9) {
             int index = static_cast<int>(keyCode) -
                         static_cast<int>(EventKeyboard::KeyCode::KEY_1);
+            CCLOG("Select Index: %d\n", index);
             selectTool(index);
         } else if (keyCode == EventKeyboard::KeyCode::KEY_0)
             selectTool(9);
@@ -92,7 +93,8 @@ void ToolBar::loadTools() {
     int displayCount = 0;
     for (const auto& [index, item] : itemSprites) {
         if (displayCount >= 10) break;
-
+        if (index > 9) continue;
+        CCLOG("index in toolBar: %d\n", index);
         auto toolIcon = Sprite::create(item->fileName, item->rect);
         toolIcon->setAnchorPoint(
             Vec2(0, 1));  // Set anchor point to top-left
@@ -124,19 +126,21 @@ void ToolBar::loadTools() {
         displayCount++;
     }
 
-    for (int i = 0; i < 10; ++i) {
-        auto toolBorder =
-            LayerColor::create(Color4B(255, 255, 0, 128), boxSize - 6,
-                               boxSize - 6);
-        toolBorder->setAnchorPoint(Vec2(0, 0));  // Set anchor point to top-left
-        toolBorder->setPosition(
-            Vec2(4 + visible_size_.width / 2 -
-                     background_->getContentSize().width / 2 + i * boxSize,
-                 4));
-        toolBorder->setVisible(false);
-        this->addChild(toolBorder,
-                       21);  // Ensure the border is below the tool icons
-        toolBorders.push_back(toolBorder);
+    if (toolBorders.size() < 10) {
+        for (int i = 0; i < 10; ++i) {
+            auto toolBorder = LayerColor::create(Color4B(255, 255, 0, 128),
+                                                 boxSize - 6, boxSize - 6);
+            toolBorder->setAnchorPoint(
+                Vec2(0, 0));  // Set anchor point to top-left
+            toolBorder->setPosition(
+                Vec2(4 + visible_size_.width / 2 -
+                         background_->getContentSize().width / 2 + i * boxSize,
+                     4));
+            toolBorder->setVisible(false);
+            this->addChild(toolBorder,
+                           21);  // Ensure the border is below the tool icons
+            toolBorders.push_back(toolBorder);
+        }
     }
 }
 
@@ -150,7 +154,7 @@ void ToolBar::selectTool(int index) {
 
 void ToolBar::updateToolDisplay() {
     for (size_t i = 0; i < toolBorders.size(); ++i) {
-        toolBorders[i]->setVisible(i == selectedToolIndex);
+        if (toolBorders[i] != nullptr) toolBorders[i]->setVisible(i == selectedToolIndex);
     }
 }
 
@@ -175,8 +179,10 @@ void ToolBar::dropCurrentTool() {
 }
 
 std::string ToolBar::getToolName() {
-    if (itemSprites[selectedToolIndex] != nullptr)
-        return itemSprites[selectedToolIndex]->name;
+    CCLOG("1");
+    CCLOG("selectedToolIndex: %d", selectedToolIndex);
+    if (bag_->getItems(selectedToolIndex) != nullptr)
+        return bag_->getItems(selectedToolIndex)->name;
     else
         return "NULL";
 }

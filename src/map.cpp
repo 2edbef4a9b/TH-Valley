@@ -3,8 +3,9 @@
 #include "cocos2d.h"
 #include "ui/CocosGUI.h"
 #include "Animals.h"
+#include "bag_gui.h"
 
-bool Map::initWithTMXFile(const std::string& tmxFile, cocos2d::Sprite* Haley, ToolBar* CurrentToolBar) {
+bool Map::initWithTMXFile(const std::string& tmxFile, cocos2d::Sprite* Haley, ToolBar* CurrentToolBar, BagGUI* CurrentBag) {
 
 
     if (!cocos2d::TMXTiledMap::initWithTMXFile(tmxFile)) {
@@ -12,7 +13,7 @@ bool Map::initWithTMXFile(const std::string& tmxFile, cocos2d::Sprite* Haley, To
     }
 
     // test animal
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 0; i++) {
         Pig* testPig;
         testPig = new Pig;
         MapAnimals.push_back(testPig);
@@ -75,7 +76,7 @@ bool Map::initWithTMXFile(const std::string& tmxFile, cocos2d::Sprite* Haley, To
 
     // ToolBar init
     MapToolBar = CurrentToolBar;
-
+    MapBag = CurrentBag;
     // Player init
     playerSprite = Haley;
     playerSprite->setAnchorPoint(cocos2d::Vec2(0.5f, 0.0f));
@@ -93,9 +94,9 @@ bool Map::initWithTMXFile(const std::string& tmxFile, cocos2d::Sprite* Haley, To
     return true;
 }
 
-Map* Map::create(const std::string& tmxFile, cocos2d::Sprite* Haley, ToolBar* CurrentToolBar) {
+Map* Map::create(const std::string& tmxFile, cocos2d::Sprite* Haley, ToolBar* CurrentToolBar, BagGUI* CurrentBag) {
     Map* ret = new (std::nothrow) Map();
-    if (ret && ret->initWithTMXFile(tmxFile, Haley, CurrentToolBar)) {
+    if (ret && ret->initWithTMXFile(tmxFile, Haley, CurrentToolBar, CurrentBag)) {
         ret->autorelease();
         return ret;
     } else {
@@ -250,7 +251,7 @@ bool Map::isPortal(cocos2d::Vec2 pos, std::string ObjectLayerName) {
 void Map::triggerPortalEvent(const std::string& portalName) {
     if (portalName == "FarmToHome") {
         CCLOG("Triggering %s event", portalName.c_str());
-        auto house = Map::create("assets/maps/FarmHouse.tmx", playerSprite, MapToolBar);
+        auto house = Map::create("assets/maps/FarmHouse.tmx", playerSprite, MapToolBar, MapBag);
         if (house) {
             house->setPosition(cocos2d::Vec2(200, 200));
             house->setVisible(true);
@@ -341,7 +342,10 @@ void Map::onEnter() {
         // Plant
         int gid = getTileID(tilePos, "Back");
         if (PropertyCheck(gid, "Cultivable") && MapToolBar->getToolName() == "Hoe") {
-            if(MapToolBar != nullptr) MapToolBar->outputindex();
+            if (MapToolBar != nullptr)
+                MapToolBar->outputindex();
+            else
+                CCLOG("MapToolBar is nullptr");
             auto PlayerTilePos = tileCoordFromPos(playerPos);
             if (fabs(PlayerTilePos.x - tilePos.x) > 1 ||
                 fabs(PlayerTilePos.y - tilePos.y) > 1) {

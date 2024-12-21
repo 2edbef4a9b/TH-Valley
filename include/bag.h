@@ -40,6 +40,7 @@ public:
     void bagInit();
     // 新增的 getItems 方法
     const std::unordered_map<int, ItemSprite*>& getItems() const;
+    ItemSprite* getItems(int index);
 
 private:
     std::unordered_map<int, ItemSprite*> items_;  // 存储物品

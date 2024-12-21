@@ -4,6 +4,8 @@
 #include "cocos2d.h"
 #include "avatar/avatar.h"
 #include "tool_bar.h"
+#include "bag.h"
+#include "bag_gui.h"
 
 enum direction { Down = 0, Right = 1, Up = 2, Left = 3 };
 
@@ -12,6 +14,7 @@ namespace th_valley {
 class SampleScene : public cocos2d::Scene {
 public:
     ToolBar* CurrentToolBar;
+    BagGUI* CurrentBag;
 
     SampleScene() = default;
     ~SampleScene() override = default;

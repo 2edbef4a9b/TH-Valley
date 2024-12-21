@@ -8,6 +8,7 @@
 #include "agriculture.h"
 #include "position.h"
 #include "tool_bar.h"
+#include "bag_gui.h"
 
 struct Tile {
     int x, y;
@@ -38,6 +39,7 @@ public:
     std::vector<Animals*> MapAnimals;
     std::vector<cocos2d::Sprite*> AnimalSprite;
     ToolBar* MapToolBar;
+    BagGUI* MapBag;
     int priority = 255;
     Map() = default;
     ~Map() override = default;
@@ -52,7 +54,7 @@ public:
      * @return true: �ɹ����� false: ����ʧ��
      */
     bool initWithTMXFile(const std::string& tmxFile, cocos2d::Sprite* Haley,
-                         ToolBar* CurrentToolBar);
+                         ToolBar* CurrentToolBar, BagGUI* CurrentBag);
     /**
      * @brief �������λ��
      * @param cocos2d::Vec2 pos
@@ -141,7 +143,7 @@ public:
 
     static Map* create(const std::string& tmxFile,
                        cocos2d::Sprite* PlayerSprite,
-                       ToolBar* CurrentToolBar);
+                       ToolBar* CurrentToolBar, BagGUI* CurrentBag);
 
     // Crop option
     void CropPlant(const Position &PlantPosition, Crops* Crop);

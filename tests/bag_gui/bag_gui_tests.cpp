@@ -35,14 +35,22 @@ public:
             cocos2d::FileUtils::getInstance()->getDefaultResourceRootPath();
         CCLOG("Resource root path: %s", resource_root_path.c_str());
 
+        /*ToolBar *toolBar = ToolBar::create();
+        BagGUI *Bag = BagGUI::create();
+        toolBar->bag_ = Bag->bag_;
+        Bag->toolBar = toolBar;*/
+
         // Create a scene. It's an autorelease object.
         auto *scene = th_valley::SampleScene::create();
+        //scene->CurrentToolBar = toolBar;
         if (scene == nullptr) {
             return false;
         }
 
-        scene->addChild(ToolBar::create(), 20);
-        scene->addChild(BagGUI::create(), 21);
+        //Bag->setVisible(false);
+
+        /*scene->addChild(toolBar, 20);
+        scene->addChild(Bag, 21);*/
         // Run.
         director->runWithScene(scene);
 

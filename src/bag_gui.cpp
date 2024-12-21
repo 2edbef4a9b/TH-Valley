@@ -190,6 +190,7 @@ void BagGUI::onMouseDown(Event* event) {
             }
         }
     }
+    //toolBar->loadTools();
 }
 
 void BagGUI::onMouseMove(Event* event) {
@@ -198,6 +199,7 @@ void BagGUI::onMouseMove(Event* event) {
     Vec2 location = mouseEvent->getLocationInView();
     location = this->convertToNodeSpace(location);
     selectedItem->setPosition(location);
+    //toolBar->loadTools();
 }
 
 void BagGUI::onMouseUp(Event* event) {
@@ -245,7 +247,7 @@ void BagGUI::onMouseUp(Event* event) {
 
     selectedItem = nullptr;
     draggingItemIndex = -1;
-
+    toolBar->loadTools();
     initBagGUI();
 
 }
