@@ -187,6 +187,7 @@ if(BUILD_TESTS)
     add_googletest(sample sample_application_tests)
     add_googletest(frontend title_screen_tests)
     add_googletest(tool_bar tool_bar_tests)
+    add_googletest(bag_gui bag_gui_tests)
 endif()
 
 

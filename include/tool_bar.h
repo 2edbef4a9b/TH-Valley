@@ -51,6 +51,7 @@ private:
     cocos2d::Sprite* background_;  // background image
     std::vector<cocos2d::LayerColor*> toolBorders;  // Borders for tools
     std::vector<cocos2d::Label*> toolCounts;        // Labels for tool counts
+    cocos2d::Sprite* toolIcons[10] = {nullptr};
 
     int selectedToolIndex;
     int draggingToolIndex = -1;
@@ -61,6 +62,7 @@ private:
     void dropCurrentTool();
 
     std::unordered_map<int, ItemSprite*> itemSprites;  // Container for item sprites
+    Bag* bag_;
 
     void initBag() {
         ItemSprite* Axe =
