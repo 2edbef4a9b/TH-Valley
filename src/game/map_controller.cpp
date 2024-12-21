@@ -29,7 +29,12 @@ void MapController::TriggerTeleport(const std::string& portal_name) {
         return;
     }
     parent->removeChild(game_tiled_map_);
-
+    std::string map_path =
+        kTiledMapPathPrefix + portal.GetToMap() + kTiledMapPathSuffix;
+    if (!cocos2d::FileUtils::getInstance()->isFileExist(map_path)) {
+        Logger::GetInstance().LogError("Map file not found: {}", map_path);
+        return;
+    }
     LoadTiledMap(portal.GetToMap(), parent);
     const auto portal_rect =
         game_tiled_map_->GetPortalRect(portal.GetOppositePorta());
