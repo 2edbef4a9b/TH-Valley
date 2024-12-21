@@ -3,13 +3,15 @@
 namespace th_valley {
 
 bool TiledMap::initWithTMXFile(const std::string& tmxFile) {
-    if (!cocos2d::TMXTiledMap::initWithTMXFile(tmxFile)) {
+    tileMap_ = cocos2d::TMXTiledMap::create(tmxFile);
+    if (!tileMap_) {
         return false;
     }
 
-    tileMap_ = this;  // Assign the current instance to tileMap_
-    this->setAnchorPoint(cocos2d::Vec2(0, 0));
-    this->setPosition(cocos2d::Vec2(0, 0));
+    this->addChild(tileMap_);
+
+    tileMap_->setAnchorPoint(cocos2d::Vec2(0, 0));
+    tileMap_->setPosition(cocos2d::Vec2(0, 0));
 
     std::vector<std::string> layerNames = {"Back",     "Back2",    "Block",
                                            "Interact", "Building", "Paths",
@@ -37,13 +39,11 @@ bool TiledMap::initWithTMXFile(const std::string& tmxFile) {
         CCLOG("ObjectGroup 'Objects' loaded successfully");
     }
 
-    // ��ȡ��ʼ���λ�ￄ1�7
     auto player = objectGroup_->getObject("Player");
     if (!player.empty()) {
         float x = player.at("x").asFloat();
         float y = player.at("y").asFloat();
         playerPos_ = cocos2d::Vec2(x, y);
-
     } else {
         CCLOG("Player object not found");
         playerPos_ = cocos2d::Vec2::ZERO;
@@ -64,9 +64,9 @@ bool TiledMap::initWithTMXFile(const std::string& tmxFile) {
     playerSprite_->setAnchorPoint(cocos2d::Vec2(0.5f, 0.0f));
     playerSprite_->setPosition(playerPos_);
     CCLOG("Player sprite created at %f %f", playerPos_.x, playerPos_.y);
-    CCLOG("Player sprite created at Tile: %f %f", tileCoordFromPos(playerPos_).x,
-          tileCoordFromPos(playerPos_).y);
-    this->addChild(playerSprite_, 2);
+    CCLOG("Player sprite created at Tile: %f %f",
+          tileCoordFromPos(playerPos_).x, tileCoordFromPos(playerPos_).y);
+    tileMap_->addChild(playerSprite_, 2);
 
     return true;
 }
@@ -84,8 +84,8 @@ TiledMap* TiledMap::create(const std::string& tmxFile) {
 }
 
 void TiledMap::setPlayerPos(cocos2d::Vec2 pos) {
-    auto mapSize = this->getMapSize();
-    auto tileSize = this->getTileSize();
+    auto mapSize = tileMap_->getMapSize();
+    auto tileSize = tileMap_->getTileSize();
     float mapWidth = mapSize.width * tileSize.width;
     float mapHeight = mapSize.height * tileSize.height;
 
@@ -106,17 +106,16 @@ void TiledMap::setPlayerPos(cocos2d::Vec2 pos) {
 }
 
 cocos2d::Vec2 TiledMap::tileCoordFromPos(cocos2d::Vec2 pos) {
-    // pos = this->convertToNodeSpace(pos);
     int x = pos.x / tileMap_->getTileSize().width;
-    int y =
-        (tileMap_->getMapSize().height * tileMap_->getTileSize().height - pos.y) /
-        tileMap_->getTileSize().height;
+    int y = (tileMap_->getMapSize().height * tileMap_->getTileSize().height -
+             pos.y) /
+            tileMap_->getTileSize().height;
     return cocos2d::Vec2(x, y);
 }
 
 void TiledMap::setViewpointCenter(cocos2d::Vec2 pos) {
-    auto mapSize = this->getMapSize();
-    auto tileSize = this->getTileSize();
+    auto mapSize = tileMap_->getMapSize();
+    auto tileSize = tileMap_->getTileSize();
     auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
     float x = MAX(pos.x, visibleSize.width / 2);
     float y = MAX(pos.y, visibleSize.height / 2);
@@ -139,17 +138,17 @@ void TiledMap::setViewpointCenter(cocos2d::Vec2 pos) {
         offset.y = (visibleSize.height - mapSize.height * tileSize.height) / 2;
     }
 
-    this->setPosition(offset);
+    tileMap_->setPosition(offset);
 }
 
 bool TiledMap::isCollision(cocos2d::Vec2 pos, std::string LayerName) {
-    auto Layer = this->getLayer(LayerName);
+    auto Layer = tileMap_->getLayer(LayerName);
 
     auto tileCoord = this->tileCoordFromPos(pos);
 
     int tileGid = Layer->getTileGIDAt(tileCoord);
     if (tileGid != 0) {
-        auto properties = this->getPropertiesForGID(tileGid);
+        auto properties = tileMap_->getPropertiesForGID(tileGid);
 
         if (properties.getType() == cocos2d::Value::Type::MAP) {
             auto valueMap = properties.asValueMap();
@@ -160,13 +159,6 @@ bool TiledMap::isCollision(cocos2d::Vec2 pos, std::string LayerName) {
                       tileCoord.x, tileCoord.y, LayerName.c_str());
                 return true;
             }
-
-            // auto it2 = valueMap.find("Cultivable");
-            // if (it2 != valueMap.end() && it2->second.asString() == "true") {
-            //     CCLOG("LAND detected at tile: %f, %f at Layer %s",
-            //           tileCoord.x, tileCoord.y, LayerName.c_str());
-            //     updateTileAt(tileCoord, 557, LayerName);
-            // }
         }
     }
     return false;
@@ -182,7 +174,7 @@ bool TiledMap::isCollisionAtAnyLayer(cocos2d::Vec2 pos) {
 }
 
 bool TiledMap::isPortal(cocos2d::Vec2 pos, std::string ObjectLayerName) {
-    auto objectGroup_ = this->getObjectGroup(ObjectLayerName);
+    auto objectGroup_ = tileMap_->getObjectGroup(ObjectLayerName);
     if (objectGroup_ == nullptr) {
         CCLOG("ObjectGroup %s not found", ObjectLayerName.c_str());
         return false;
@@ -198,7 +190,6 @@ bool TiledMap::isPortal(cocos2d::Vec2 pos, std::string ObjectLayerName) {
                   rect.origin.y, rect.size.width, rect.size.height);
             if (rect.containsPoint(pos)) {
                 CCLOG("Portal detected at tile: %f, %f", pos.x, pos.y);
-                // ���ݾ���������ɲ�ͬ����ͼ���ￄ1�7
                 std::string portalName = dict["name"].asString();
                 CCLOG("Portal %s detected.", portalName.c_str());
                 triggerPortalEvent(portalName);
@@ -216,7 +207,7 @@ void TiledMap::triggerPortalEvent(const std::string& portalName) {
         if (house) {
             house->setPosition(cocos2d::Vec2(200, 200));
             house->setVisible(true);
-            this->addChild(house, 12);
+            tileMap_->addChild(house, 12);
         } else
             CCLOG("Failed to load map maps/FarmHouse.tmx");
     } else {
@@ -225,18 +216,7 @@ void TiledMap::triggerPortalEvent(const std::string& portalName) {
 }
 
 void TiledMap::checkEventsAndTrigger(cocos2d::Vec2 tileCoord) {
-    //// ��ȡ��Ƭ�����Ӧ��gid
-    // int gid = collisionLayer->getTileGIDAt(tileCoord);
-    // if (gid) {
-    //     auto properties = this->getPropertiesForGID(gid).asValueMap();
-    //     if (properties["Event"].asString() == "True") {
-    //         // �����¼�
-    //         CCLOG("Event triggered at tile: %f, %f", tileCoord.x,
-    //         tileCoord.y);
-    //         // �����¼�����ִ����Ӧ���߼�
-    //         // ���磺this->triggerBattleEvent();
-    //     }
-    // }
+    // Implementation for event checking and triggering
 }
 
 cocos2d::Vec2 TiledMap::getPos() { return playerPos_; }
@@ -250,14 +230,15 @@ void TiledMap::updateTileAt(cocos2d::Vec2 tileCoord, int newGID,
 }
 
 void TiledMap::onEnter() {
-    cocos2d::TMXTiledMap::onEnter();
+    cocos2d::Node::onEnter();
     CCLOG("Map onEnter");
 
     auto listener = cocos2d::EventListenerMouse::create();
 
     listener->onMouseDown = [this](cocos2d::Event* event) {
         auto mouseEvent = dynamic_cast<cocos2d::EventMouse*>(event);
-        auto pos = this->convertToNodeSpace(mouseEvent->getLocationInView());
+        auto pos =
+            tileMap_->convertToNodeSpace(mouseEvent->getLocationInView());
         auto tilePos = tileCoordFromPos(pos);
 
         CCLOG("Mouse Down Tile: %f, %f", tilePos.x, tilePos.y);
@@ -275,10 +256,9 @@ void TiledMap::onEnter() {
 
     listener->onMouseMove = [this](cocos2d::Event* event) {
         auto mouseEvent = dynamic_cast<cocos2d::EventMouse*>(event);
-        auto pos = this->convertToNodeSpace(mouseEvent->getLocationInView());
+        auto pos =
+            tileMap_->convertToNodeSpace(mouseEvent->getLocationInView());
         auto tilePos = tileCoordFromPos(pos);
-        // CCLOG("Mouse Move Tile: %f, %f", tilePos.x, tilePos.y);
-        // CCLOG("Mouse Move: %f, %f", pos.x, pos.y);
     };
 
     auto keyListener = cocos2d::EventListenerKeyboard::create();
@@ -331,25 +311,26 @@ void TiledMap::onEnter() {
 }
 
 void TiledMap::createMiniMap() {
-    auto * mini_map = cocos2d::Sprite::create();
+    auto* mini_map = cocos2d::Sprite::create();
     mini_map->setScale(0.1f);
     mini_map->setPosition(cocos2d::Vec2(500, 500));
-    auto * player_marker = cocos2d::Sprite::create();
+    auto* player_marker = cocos2d::Sprite::create();
     player_marker->setColor(cocos2d::Color3B::RED);
     player_marker->setScale(0.2f);
-    this->addChild(mini_map, 100);
+    tileMap_->addChild(mini_map, 100);
 }
 
 void TiledMap::save() {
+    // Implementation for save
 }
 
 void TiledMap::load() {
+    // Implementation for load
 }
 
 void TiledMap::update(float delta) {
     cocos2d::Vec2 current_pos = getPos();
-    const float move_step =
-        100.0f * delta;
+    const float move_step = 100.0f * delta;
 
     if (isKeyPressedW_) {
         current_pos.y += move_step;
