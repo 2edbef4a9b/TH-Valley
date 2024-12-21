@@ -39,7 +39,7 @@ void ClientController::Update() {
         case ClientState::kSinglePlayer:
             Logger::GetInstance().LogInfo("GameState Change to SinglePlayer");
             director->getOpenGLView()->setDesignResolutionSize(
-                576, 324, ResolutionPolicy::NO_BORDER);
+                384, 216, ResolutionPolicy::NO_BORDER);
             director->replaceScene(GameScene::create());
             break;
         case ClientState::kStartUp:
