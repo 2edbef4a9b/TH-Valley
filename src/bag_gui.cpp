@@ -20,9 +20,12 @@ bool BagGUI::init() {
     this->addChild(background_, -1);
     background_->setVisible(false);
 
+    bag_ = new Bag();
+    const auto& itemSprites = bag_->getItems();
+    for (const auto& [index, item] : itemSprites) {
+        CCLOG("GUI Item %s added to bag index %d", item->name.c_str(), index);
+    }
 
-
-    initBag();
     createCloseButton();
     initBagGUI();
     toggleBag();
@@ -31,25 +34,32 @@ bool BagGUI::init() {
 }
 
 void BagGUI::initBagGUI() {
-    for (const auto& icon : toolIcons) {
-        if (icon != nullptr) this->removeChild(icon);
-    }
-    for (const auto& count : toolCounts) {
-        if (count != nullptr) {
-            this->removeChild(count);
+    for (auto icon : toolIcons) {
+        if (icon != nullptr) {
+            this->removeChild(icon);
+            icon == nullptr;
         }
     }
-    toolIcons.clear();
-    toolCounts.clear();
+    for (auto count : toolCounts) {
+        if (count != nullptr) {
+            this->removeChild(count);
+            count == nullptr;
+        }
+    }
 
+    const auto& itemSprites = bag_->getItems();
     auto boxSize = background_->getContentSize().width / 10.0;
+    for (const auto& [index, item] : itemSprites) {
+        CCLOG("2GUI Item %s added to bag index %d", item->name.c_str(), index);
+    }
+
 
     int index = 0;
     for (const auto& [index, item] : itemSprites) {
         int row = index / 10;
         int col = index % 10;
         if (item != nullptr) {
-            auto toolIcon = item->sprite;
+            auto toolIcon = Sprite::create(item->fileName, item->rect);
             toolIcon->setAnchorPoint(
                 Vec2(0.5, 0.5));  // Set anchor point to mid
             toolIcon->setPosition(
@@ -60,7 +70,7 @@ void BagGUI::initBagGUI() {
                   toolIcon->getPosition().y);
             this->addChild(toolIcon, 3);
             toolIcon->setVisible(true);
-            toolIcons.push_back(toolIcon);
+            toolIcons[index] = toolIcon;
             itemPositions[item] = toolIcon->getPosition();
 
             if (item->quantity != 1) {
@@ -76,7 +86,7 @@ void BagGUI::initBagGUI() {
                     Vec2(toolIcon->getContentSize().width / 2,
                          -4 + -toolIcon->getContentSize().height / 2));
                 this->addChild(toolCount);
-                toolCounts.push_back(toolCount);
+                toolCounts[index] = toolCount;
             } 
         }
     }
@@ -119,7 +129,9 @@ void BagGUI::displayBagItems() {
     background_->setVisible(true);
     closeButtonMenu_->setVisible(true);
     for (const auto& icon : toolIcons) {
-        icon->setVisible(true);
+        if (icon != nullptr) {
+            icon->setVisible(true);
+        }
     }
     for (const auto& count : toolCounts) {
         if (count != nullptr) {
@@ -130,7 +142,9 @@ void BagGUI::displayBagItems() {
 
 void BagGUI::hideBagItems() {
     for (const auto& icon : toolIcons) {
-        icon->setVisible(false);
+        if (icon != nullptr) {
+            icon->setVisible(false);
+        }
     }
     for (const auto& count : toolCounts) {
         if (count != nullptr) {
@@ -166,16 +180,16 @@ void BagGUI::onMouseDown(Event* event) {
     Vec2 location = mouseEvent->getLocationInView();
     location = this->convertToNodeSpace(location);
     CCLOG("Mouse down at (%f, %f)", location.x, location.y);
+    const auto& itemSprites = bag_->getItems();
     for (auto& [idx, item] : itemSprites) {
-        if (item && item->sprite->isVisible()) {
-            Rect boundingBox = item->sprite->getBoundingBox();
+        if (item) {
+            Rect boundingBox = toolIcons[idx]->getBoundingBox();
             CCLOG("Item %s bounding box: origin(%f, %f), size(%f, %f)",
                   item->name.c_str(), boundingBox.origin.x,
                   boundingBox.origin.y, boundingBox.size.width,
                   boundingBox.size.height);
-
             if (boundingBox.containsPoint(location)) {
-                selectedItem = item;
+                selectedItem = toolIcons[idx];
                 originalPosition = itemPositions[item];
                 draggingItemIndex = idx;
                 CCLOG("Item selected at index %d", idx);
@@ -190,7 +204,7 @@ void BagGUI::onMouseMove(Event* event) {
     EventMouse* mouseEvent = dynamic_cast<EventMouse*>(event);
     Vec2 location = mouseEvent->getLocationInView();
     location = this->convertToNodeSpace(location);
-    selectedItem->sprite->setPosition(location);
+    selectedItem->setPosition(location);
 }
 
 void BagGUI::onMouseUp(Event* event) {
@@ -203,7 +217,7 @@ void BagGUI::onMouseUp(Event* event) {
     Rect backgroundRect = background_->getBoundingBox();
     if (!backgroundRect.containsPoint(location)) {
         // 超出背景范围，返回原始位置
-        selectedItem->sprite->setPosition(originalPosition);
+        selectedItem->setPosition(originalPosition);
         selectedItem = nullptr;
         draggingItemIndex = -1;
         return;
@@ -220,26 +234,66 @@ void BagGUI::onMouseUp(Event* event) {
 
     CCLOG("Mouse up at (%f, %f), target index: %d", location.x, location.y,
           targetIndex);
+    const auto& itemSprites = bag_->getItems();
+    if (targetIndex != draggingItemIndex) {
+        if (targetIndex == 39) {
+            // 扔到垃圾桶
+            bag_->removeItem(draggingItemIndex);
+        } else {
+            // 调换位置
+            bag_->swapItems(draggingItemIndex, targetIndex);
+        }
+    }
 
-    if (targetIndex != draggingItemIndex &&
-        itemSprites.find(targetIndex) == itemSprites.end()) {
-        if (targetIndex == 39) itemSprites.erase(draggingItemIndex);
-        // 更新 itemSprites 中的索引与物品
-        itemSprites[targetIndex] = selectedItem;
-        itemSprites.erase(draggingItemIndex);
+    //if (targetIndex != draggingItemIndex) {
 
-        //// 更新物品位置
-        //auto boxSize = background_->getContentSize().width / 10.0;
-        //Vec2 newPosition =
-        //    background_->getPosition() +
-        //    Vec2(boxSize / 2 + (targetIndex % 10) * boxSize - boxSize * 5,
-        //         boxSize / 2 - (targetIndex / 10) * boxSize + boxSize * 1 - 3);
-        //selectedItem->sprite->setPosition(newPosition);
-        //itemPositions[selectedItem] = newPosition;
+    //    if (targetIndex == 39) {
+    //        bag_->removeItem(draggingItemIndex);
+    //        //itemSprites.erase(draggingItemIndex);
+    //        //initBagGUI();
+        //}
+            //auto originalSprite = itemSprites[draggingItemIndex];
+            //if (originalSprite) {
+                //bag_->removeItem(draggingItemIndex);
+            //}
+    //        
+    //    } else {
+    //        // 更新 itemSprites 中的索引与物品
+    //        // std::swap(itemSprites[targetIndex],
+    //        // itemSprites[draggingItemIndex]);
+    //        if (itemSprites[targetIndex] == nullptr) {
+    //            bag_->addItem(targetIndex, itemSprites[draggingItemIndex]);
+    //            bag_->removeItem(draggingItemIndex);
+    //        }
 
-        //CCLOG("Item moved to new index %d", targetIndex);
-        
-    } 
+    //        else {
+    //            //ItemSprite* tmp = itemSprites[targetIndex];
+    //            //bag_->replaceItem(targetIndex, itemSprites[draggingItemIndex]);
+    //            //itemSprites[targetIndex] = itemSprites[draggingItemIndex];
+    //            //itemSprites[draggingItemIndex] = tmp;
+    //        }
+
+    //        // 更新物品位置
+    //        auto boxSize = background_->getContentSize().width / 10.0;
+    //        Vec2 newPosition =
+    //            background_->getPosition() +
+    //            Vec2(boxSize / 2 + (targetIndex % 10) * boxSize - boxSize * 5,
+    //                 boxSize / 2 - (targetIndex / 10) * boxSize + boxSize * 1 -
+    //                     3);
+    //        selectedItem->setPosition(newPosition);
+    //        itemPositions[itemSprites[targetIndex]] = newPosition;
+
+    //        // Remove the original sprite
+    //        auto originalSprite = itemSprites[draggingItemIndex];
+    //        if (originalSprite) {
+    //            this->removeChild(
+    //                toolIcons[draggingItemIndex]);     // Remove from scene
+    //            itemSprites.erase(draggingItemIndex);  // Remove from map
+    //        }
+        //}
+    //    //toolBar->loadTools(itemSprites);
+    //    CCLOG("Item moved to new index %d", targetIndex);
+    //}
 
     CCLOG("Current itemSprites content:");
     for (const auto& [key, value] : itemSprites) {
@@ -249,6 +303,9 @@ void BagGUI::onMouseUp(Event* event) {
     selectedItem = nullptr;
     draggingItemIndex = -1;
 
-    //initBagGUI();
+    initBagGUI();
+
 }
+
+
 

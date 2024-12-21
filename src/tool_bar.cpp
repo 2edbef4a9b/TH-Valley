@@ -17,16 +17,14 @@ bool ToolBar::init() {
 
     this->addChild(background_, 20);
 
-    initBag();
+    bag_ = new Bag();
 
     addToolLable();
-
     // Load tools
     loadTools();
 
-    // Initialize selected tool index
-    selectedToolIndex = 0;
-    updateToolDisplay();
+
+
 
     return true;
 }
@@ -46,6 +44,7 @@ void ToolBar::addToolLable() {
         this->addChild(toolLabel, 30);
     }
 }
+
 
 void ToolBar::onEnter() {
     Node::onEnter();
@@ -70,14 +69,31 @@ void ToolBar::onEnter() {
 }
 
 void ToolBar::loadTools() {
-    auto boxSize = background_->getContentSize().width / 10.0;
+    for (auto icon : toolIcons) {
+        if (icon != nullptr) {
+            this->removeChild(icon);
+            icon == nullptr;
+        }
+    }
+    for (auto count : toolCounts) {
+        if (count != nullptr) {
+            this->removeChild(count);
+            count == nullptr;
+        }
+    }
 
+
+    auto boxSize = background_->getContentSize().width / 10.0;
+    const auto& itemSprites = bag_->getItems();
+    for (const auto& [index, item] : itemSprites) {
+        CCLOG("Item %s added to bag index %d", item->name.c_str(), index);
+    }
 
     int displayCount = 0;
     for (const auto& [index, item] : itemSprites) {
         if (displayCount >= 10) break;
 
-        auto toolIcon = item->sprite;
+        auto toolIcon = Sprite::create(item->fileName, item->rect);
         toolIcon->setAnchorPoint(
             Vec2(0, 1));  // Set anchor point to top-left
         toolIcon->setPosition(
@@ -85,6 +101,7 @@ void ToolBar::loadTools() {
                      background_->getContentSize().width / 2 + index * boxSize,
                  -4 + background_->getContentSize().height));
         this->addChild(toolIcon, 25);
+        toolIcons[index] = toolIcon;
 
         if (item->quantity != 1) {
             auto toolCount =
@@ -137,36 +154,22 @@ void ToolBar::updateToolDisplay() {
     }
 }
 
-void ToolBar::updateToolBar() {
-    // Update tool counts or other dynamic elements if needed
-}
 
 void ToolBar::dropCurrentTool() {
-    if (selectedToolIndex >= 0 && selectedToolIndex < 10 &&
-        itemSprites.find(selectedToolIndex) != itemSprites.end()) {
-        // Remove the current tool icon, count, and border
-        this->removeChild(itemSprites[selectedToolIndex]->sprite);
-        if (toolCounts[selectedToolIndex]) {
-            this->removeChild(toolCounts[selectedToolIndex]);
-            toolCounts[selectedToolIndex] = nullptr;
+    if (selectedToolIndex >= 0 && selectedToolIndex < 10) {
+        if (toolIcons[selectedToolIndex] != nullptr && bag_) {
+            // 从 Bag 中移除对应的物品
+            bag_->removeItem(selectedToolIndex);
+            // 更新工具栏显示
+            loadTools();
+            CCLOG("Dropped tool index: %d", selectedToolIndex);
         }
-        delete itemSprites[selectedToolIndex];
-        itemSprites.erase(selectedToolIndex);
-
-        // Update selected tool index
-        if (selectedToolIndex >= itemSprites.size()) {
-            selectedToolIndex = itemSprites.size() - 1;
-        }
-        updateToolDisplay();
-        CCLOG("Dropped tool index: %d", selectedToolIndex);
     }
 
-    // Ensure the selected tool index is valid
-    if (selectedToolIndex >= 0 && selectedToolIndex < itemSprites.size()) {
-        selectTool(selectedToolIndex);
-    } else if (!itemSprites.empty()) {
-        selectTool(0);
-    } else {
-        selectedToolIndex = -1;
+    const auto& itemSprites = bag_->getItems();
+    for (const auto& [index, item] : itemSprites) {
+        CCLOG("Item %s added to bag index %d", item->name.c_str(), index);
     }
+    selectedToolIndex = -1;
+
 }

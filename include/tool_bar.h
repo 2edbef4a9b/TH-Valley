@@ -6,8 +6,7 @@
 #include <unordered_map>
 #include <vector>
 #include <string>
-#include "bag_gui.h"
-
+#include "bag.h"
 
 class ToolBar : public cocos2d::Layer {
 public:
@@ -19,13 +18,11 @@ public:
     ToolBar& operator=(ToolBar&& other) = delete;
     bool init() override;
     void onEnter() override;
+    //void update(float delta) override;
 
     CREATE_FUNC(ToolBar);
 
     void selectTool(int index);
-    void updateToolBar();
-
-
 private:
     constexpr static std::string_view kFontPath =
         "assets/fonts/DFHannotateW5-A.ttf";
@@ -39,28 +36,17 @@ private:
     std::vector<cocos2d::LayerColor*> toolBorders;  // Borders for tools
     std::vector<cocos2d::Label*> toolCounts;        // Labels for tool counts
 
+    cocos2d::Sprite* toolIcons[10] = {nullptr};
+
     int selectedToolIndex;
     int draggingToolIndex = -1;
 
     void addToolLable();
-    void loadTools();
     void updateToolDisplay();
     void dropCurrentTool();
+    void loadTools();
 
-    std::unordered_map<int, ItemSprite*> itemSprites;  // Container for item sprites
-
-    void initBag() {
-        ItemSprite* Axe =
-            new ItemSprite("Axe", 1, "Used for chopping wood",
-                           cocos2d::Sprite::create("assets/TileSheets/tools.png",
-                               cocos2d::Rect(0 + 5 * 16, 32 + 4 * 32, 16, 16)));
-        itemSprites[0] = Axe;
-        ItemSprite* Hoe =
-            new ItemSprite("Hoe", 3, "Used for chopping wood",
-                           cocos2d::Sprite::create("assets/TileSheets/tools.png",
-                               cocos2d::Rect(0 + 5 * 16, 32 + 0 * 32, 16, 16)));
-        itemSprites[1] = Hoe;
-    }
+    Bag* bag_;
 };
 
 
