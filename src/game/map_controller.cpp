@@ -38,6 +38,7 @@ void MapController::TriggerTeleport(const std::string& portal_name) {
         Logger::GetInstance().LogError("Parent node is null");
         return;
     }
+    game_tiled_map_->unscheduleUpdate();
     parent->removeChild(game_tiled_map_);
 
     // Load the new map and set the player's position.
