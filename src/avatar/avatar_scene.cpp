@@ -93,8 +93,9 @@ void avatarScene::handleKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, coco
         case cocos2d::EventKeyboard::KeyCode::KEY_U:
             // test for haley
             // ok
-            Haley.experiencegain(1000);
+            Haley.experiencegain(100);
             Haley.upgrade();
+            upgrading();
             CCLOG("%d,%lf", Haley.attribute.experiencelist[0], Haley.experience);
             break;
         case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_I:
