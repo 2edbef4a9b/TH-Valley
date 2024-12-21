@@ -128,27 +128,20 @@ void BagGUI::toggleBag() {
 void BagGUI::displayBagItems() {
     background_->setVisible(true);
     closeButtonMenu_->setVisible(true);
-    for (const auto& icon : toolIcons) {
-        if (icon != nullptr) {
-            icon->setVisible(true);
-        }
-    }
-    for (const auto& count : toolCounts) {
-        if (count != nullptr) {
-            count->setVisible(true);
-        }
-    }
+    initBagGUI();
 }
 
 void BagGUI::hideBagItems() {
     for (const auto& icon : toolIcons) {
         if (icon != nullptr) {
-            icon->setVisible(false);
+            this->removeChild(icon);
+            icon == nullptr;
         }
     }
     for (const auto& count : toolCounts) {
         if (count != nullptr) {
-            count->setVisible(false);
+            this->removeChild(count);
+            count == nullptr;
         }
     }
     closeButtonMenu_->setVisible(false);
@@ -244,56 +237,6 @@ void BagGUI::onMouseUp(Event* event) {
             bag_->swapItems(draggingItemIndex, targetIndex);
         }
     }
-
-    //if (targetIndex != draggingItemIndex) {
-
-    //    if (targetIndex == 39) {
-    //        bag_->removeItem(draggingItemIndex);
-    //        //itemSprites.erase(draggingItemIndex);
-    //        //initBagGUI();
-        //}
-            //auto originalSprite = itemSprites[draggingItemIndex];
-            //if (originalSprite) {
-                //bag_->removeItem(draggingItemIndex);
-            //}
-    //        
-    //    } else {
-    //        // 更新 itemSprites 中的索引与物品
-    //        // std::swap(itemSprites[targetIndex],
-    //        // itemSprites[draggingItemIndex]);
-    //        if (itemSprites[targetIndex] == nullptr) {
-    //            bag_->addItem(targetIndex, itemSprites[draggingItemIndex]);
-    //            bag_->removeItem(draggingItemIndex);
-    //        }
-
-    //        else {
-    //            //ItemSprite* tmp = itemSprites[targetIndex];
-    //            //bag_->replaceItem(targetIndex, itemSprites[draggingItemIndex]);
-    //            //itemSprites[targetIndex] = itemSprites[draggingItemIndex];
-    //            //itemSprites[draggingItemIndex] = tmp;
-    //        }
-
-    //        // 更新物品位置
-    //        auto boxSize = background_->getContentSize().width / 10.0;
-    //        Vec2 newPosition =
-    //            background_->getPosition() +
-    //            Vec2(boxSize / 2 + (targetIndex % 10) * boxSize - boxSize * 5,
-    //                 boxSize / 2 - (targetIndex / 10) * boxSize + boxSize * 1 -
-    //                     3);
-    //        selectedItem->setPosition(newPosition);
-    //        itemPositions[itemSprites[targetIndex]] = newPosition;
-
-    //        // Remove the original sprite
-    //        auto originalSprite = itemSprites[draggingItemIndex];
-    //        if (originalSprite) {
-    //            this->removeChild(
-    //                toolIcons[draggingItemIndex]);     // Remove from scene
-    //            itemSprites.erase(draggingItemIndex);  // Remove from map
-    //        }
-        //}
-    //    //toolBar->loadTools(itemSprites);
-    //    CCLOG("Item moved to new index %d", targetIndex);
-    //}
 
     CCLOG("Current itemSprites content:");
     for (const auto& [key, value] : itemSprites) {
