@@ -2,27 +2,19 @@
 #define AVATAR_SCENE_H_
 #include"avatar/avatar.h"
 #include "cocos2d.h"
-
-
-enum direction { Down = 0, Right = 1, Up = 2, Left = 3 };
-
-
+enum  direction { Down = 0, Right = 1, Up = 2, Left = 3 };
 class avatarScene : public cocos2d::Scene {
 public:
-    // operation
+
+    
     avatarScene() = default;
     ~avatarScene() override = default;
     avatarScene(const avatarScene& other) = default;
     avatarScene& operator=(const avatarScene& other) = default;
     avatarScene(avatarScene&& other) = default;
     avatarScene& operator=(avatarScene&& other) = default;
-
-
-
-
-
     // action animate running
-    // walking;
+    // walking
     void Moving(int dir, float flu);
     // when upgrade;
     void upgrading();
@@ -31,18 +23,19 @@ public:
     // launch attack
     void Attacking(std::string weaponTypes);
     // avatar
-    cocos2d::Sprite* Haley;
-    // directions
+
+    Avatar Haley;
+
     direction dir;
+
+
     // control mark
     bool moved = false;
     bool isattack = false;  
     bool isfish = false;
 
+    //void openbag();
 
-
-
-    
     // map test
     cocos2d::TMXTiledMap* map_;
     // cocos members

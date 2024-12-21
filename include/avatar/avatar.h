@@ -5,7 +5,6 @@
 #include <unordered_map>
 #include "cocos2d.h"
 #include"avatar/bag.h"
-#include"avatar/avatar_scene.h"
 
 struct Exist {
     double blood_;
@@ -51,44 +50,35 @@ struct Attribute {
     Defense defense_;
     std::vector<std::string> ocupationlist{"caster", "saber"};
     std::vector<std::string> weponlist{"wand", "sword"};
-    std::vector<double> experiencelist{10,  100, 100, 200, 300, 300, 500, 500, 500, 900};
-
+    std::vector<double> experiencelist{1,  100, 100, 200, 300, 300, 500, 500, 500, 900};
 };
 
-enum class STATE {
-    cut,
-    cultivate,
-    fish,
-    mine,
-    attack,
-    none
-};
+const float initx = 240;
+const float inity = 160;
 
-
-class Avatar : public cocos2d::Sprite {
+class Avatar{
 public:
-    Avatar(std::string id);
+    void Set(std::string id);
     Avatar();
-    bool inattackzone(Avatar* other);
+    bool inattackzone(Avatar* other) const ;
     void experiencegain(double exp) ;
     void upgrade();
     void existchange();
-    bool judgedeath();
-    void Differ(std::string handy);
+    bool judgedeath() const ;
+    
     friend class avatarScene;
 
+
 private:
-    std::pair<double, double> postion_;
+    std::pair<float, float> postion_;
     double experience;
     std::string ocupation_;
     std::string wepon_;
-    std::string id_;  
     Attribute attribute;
     double attackzone;
     Bag mybag;
-    int grade_;
-    STATE state;
     std::string handy_;
+    cocos2d::Sprite* pic;
 };
 
 #endif  // AVATAR_H_

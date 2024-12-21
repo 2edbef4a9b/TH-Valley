@@ -50,30 +50,6 @@ Attribute::Attribute(const Exist e, const Attack a, const Defense d) {
     defense_ = d;
 }
 
-
-
-void Avatar::Differ(std::string handy) {
-    
-    if (handy == "Axe") {
-        state = STATE::cut;
-    }
-    if (handy == "Hoe") {
-        state = STATE::cultivate;
-    }
-    if (handy == "Fishingrod") {
-        state = STATE::fish;
-    }
-    if (handy == "Draft") {
-        state = STATE::mine;
-    }
-    if (handy == "wand" || handy == "sword") {
-        state = STATE::attack;
-    }
-    CCLOG("======");
-    CCLOG("do it");
-    CCLOG("======");
-
-}
 bool Attribute::MakeUMap() {
 
     Attribute attCaster(casterExist, casterAttack, casterDefense);
@@ -83,12 +59,12 @@ bool Attribute::MakeUMap() {
     Attribute attSaber(saberExist, saberAttack, saberDefense);
     ChooseOpucation.insert(make_pair(ocupationlist.at(1), attSaber));
     chooseId.insert(make_pair(ocupationlist.at(1), 1));
-
+    CCLOG(" Makemap successfully");
     return true;
 }
 
 // useful function
-bool Avatar::inattackzone(Avatar* other) {
+bool Avatar::inattackzone(Avatar* other) const {
     std::pair<double, double> other_pos(other->postion_);
     double dir = sqrt((other_pos.first - postion_.first) *
                           (other_pos.first - postion_.first) +
@@ -102,39 +78,60 @@ bool Avatar::inattackzone(Avatar* other) {
 }
 
 void Avatar::experiencegain(double exp)  {
-    if (grade_==10)
+    if (attribute.experiencelist[0] < 10)
     {
-        return;
-    }
-    else
-    { 
         experience += exp;
-        if (experience >= attribute.experiencelist.at(int(attribute.experiencelist.at(0)))) {
-
-            if (grade_ < 10) {
-                experience -= attribute.experiencelist.at(int(attribute.experiencelist.at(0)));
+        if (experience >=
+            attribute.experiencelist[attribute.experiencelist[0]]) {
+            attribute.experiencelist[0]++;
+            if (attribute.experiencelist[0] < 10) {
+                experience -=attribute.experiencelist[attribute.experiencelist[0]];
+            } else {
+                CCLOG("full grade");
             }
         }
     }
 }
 
-// init:
-Avatar::Avatar(std::string id) {
-    bool flag = attribute.MakeUMap();
-    state = STATE::none;
-    handy_ = "Axe";
-    if (flag) {
-        wepon_ = attribute.weponlist.at(attribute.chooseId[id]);
+// init:// Êä³öÂÒÂë
+void Avatar::Set(std::string id) {
+    CCLOG("==================================================");
+    CCLOG("ocupation is : %s", id);
+    if (id == "caster" || id == "saber") {
         ocupation_ = id;
-        attribute = attribute.ChooseOpucation.at(id);
-        mybag.BagInit();
-        
-        CCLOG("init successfully");
+        CCLOG("ocupation is : %s", ocupation_);
+        CCLOG("ocupation is : %s", id);
+        auto posid = attribute.chooseId.find(id);
+        if (posid != attribute.chooseId.end()) {
+            wepon_ = attribute.weponlist[attribute.chooseId[id]];
+            CCLOG("wepon is : %s", wepon_);
+            CCLOG("wepon is : %s",attribute.weponlist[attribute.chooseId[id]]);
+        } else {
+            CCLOG("id error");
+        }
+        attribute.exist_ = attribute.ChooseOpucation[id].exist_;
+        CCLOG("blood = %lf,hunger = %lf,thirsty = %lf,power = %lf",
+              attribute.exist_.blood_, attribute.exist_.hunger_,
+              attribute.exist_.thisty_, attribute.exist_.powerrest_);
+        attribute.defense_ = attribute.ChooseOpucation[id].defense_;
+        CCLOG("phsicaldefense_ = %d,spelldefense_ = %d",attribute.defense_.phsicaldefense_, attribute.defense_.spelldefense_);
+        attribute.attack_ = attribute.ChooseOpucation[id].attack_;
+        CCLOG("phsicaldamage__ = %d,spellpower_ = %d",attribute.attack_.attackdamage_,attribute.attack_.spellpower_);
+        CCLOG(" set successfully");
     }
-    CCLOG("init unseccessfully");
-
+    CCLOG("==================================================");
 }
-Avatar::Avatar() {}
+Avatar::Avatar() {
+   
+
+    postion_.first = initx;
+    postion_.second = inity;
+    bool flag = attribute.MakeUMap();
+    handy_ = "Axe";
+    attackzone = 10;
+    experience = 0;
+    mybag.BagInit();
+}
 
 
 
@@ -142,8 +139,7 @@ void Avatar::upgrade()
 {
     attribute.exist_.blood_ += 1000.0f;
     attribute.exist_.powerrest_ += 100.0f;
-    grade_ += 1;
-    attribute.experiencelist.at(0) = grade_;
+    attribute.experiencelist[0]++;
     attribute.attack_ = attribute.attack_ + Attack{100, 100};
     attribute.defense_ = attribute.defense_ + Defense{100, 100};
 }
@@ -153,7 +149,7 @@ void Avatar::existchange() {
     attribute.exist_.thisty_ *= 0.99;
 }
 
-bool Avatar::judgedeath() {
+bool Avatar::judgedeath() const  {
     bool flag = false;
     double exp = 0.00001;
     if (abs(attribute.exist_.blood_) < exp) {

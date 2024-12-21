@@ -18,12 +18,14 @@ void Bag::addobj(std::string key,  ItemSprite* additem) {
         if (pos != bag.end()) {
             int temp = bag[key]->quantity;
             bag[key]->quantity = temp + additem->quantity;
+
             CCLOG("add successfully");
         }
         else{
             bag.insert(make_pair(key, additem));
             CCLOG("insert successfully");
             currentnum++;
+            idMap.insert(make_pair(key, currentnum - 1));
         }
 
     }
@@ -46,6 +48,7 @@ void Bag::reduce(std::string key) {
         if (bag[key]->quantity == 0) {
             bag.erase(key);
             currentnum--;
+            idMap.erase(key);
             CCLOG("num=0,has earse");
         }
         else{
@@ -55,9 +58,6 @@ void Bag::reduce(std::string key) {
     CCLOG("notfind");
 }
 
-void Bag::openbag() {
-    CCLOG("open");
-}
 
 Bag::Bag() :currentnum(0),maxnum(100){}
 
@@ -65,11 +65,17 @@ Bag::Bag() :currentnum(0),maxnum(100){}
 
 
 void Bag::BagInit() {
-    ItemSprite itemA("Axe", 10, perfect, cocos2d::Sprite::create("avatar/tool.png", cocos2d::Rect(0 + 5 * 16, 32 + 4 * 32, 16, 16)));
+    ItemSprite itemA("Axe", 10, perfect, cocos2d::Sprite::create("tool/tools.png", cocos2d::Rect(304, 159, 17, 17)));
     bag.insert(std::make_pair("Axe", &itemA));
-    ItemSprite itemB("Hoe", 8, high, cocos2d::Sprite::create("avatar/tool.png",cocos2d::Rect(0 + 5 * 16, 32 + 4 * 32, 16, 16)));
+    idMap.insert(std::make_pair("Axe", 0));
+    ItemSprite itemB("Hoe", 8, high, cocos2d::Sprite::create("tool/tools.png",cocos2d::Rect(304, 33, 17, 17)));
     bag.insert(std::make_pair("Hoe", &itemB));
-    ItemSprite itemC("fishingrod", 1000, lowest,cocos2d::Sprite::create("avatar/tool.png", cocos2d::Rect(0 + 5 * 16, 32 + 4 * 32, 16, 16)));
-    bag.insert(std::make_pair("fishingrod", &itemC));
+    idMap.insert(std::make_pair("Hoe", 1));
+    ItemSprite itemC("Fishingrod", 1000, lowest,cocos2d::Sprite::create("tool/tools.png", cocos2d::Rect(268, 310, 21, 15)));
+    bag.insert(std::make_pair("Fishingrod", &itemC));
+    idMap.insert(std::make_pair("fishingrod", 2));
+    ItemSprite itemD("fishingrod", 1000, lowest,cocos2d::Sprite::create("tool/tools.png",cocos2d::Rect(253, 225, 23, 17)));
+    bag.insert(std::make_pair("WateringCan", &itemD));
+    idMap.insert(std::make_pair("WateringCan", 3));
 }
 

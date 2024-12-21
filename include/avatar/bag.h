@@ -28,7 +28,6 @@ public:
     void addobj(std::string key,  ItemSprite* additem);
     ItemSprite* myfind(std::string key);
     void reduce(std::string key);
-    void openbag();
     Bag();
     void BagInit();
 
@@ -36,6 +35,8 @@ public:
 private:
 
     std::unordered_map<std::string, ItemSprite*> bag;
+    std::unordered_map<std::string, int> idMap;
+    bool isopen = false;
     int currentnum;
     int maxnum;
 };
