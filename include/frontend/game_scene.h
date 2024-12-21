@@ -20,7 +20,7 @@ public:
     CREATE_FUNC(GameScene);
 
 private:
-    TiledMap* game_tiled_map_{};
+    static constexpr std::string_view kInitialMap = "House";
 };
 
 }  // namespace th_valley
