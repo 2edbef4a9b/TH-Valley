@@ -1,6 +1,6 @@
-#include "sample/sample_application.h"
+#include "client/client_application.h"
 
-int main(int argc, char** argv) {
-    const th_valley::SampleApplication app;
-    return th_valley::SampleApplication::getInstance()->run();
+auto main(int /* argc */, char** /* argv */) -> int {
+    const th_valley::ClientApplication app;
+    return cocos2d::Application::getInstance()->run();
 }

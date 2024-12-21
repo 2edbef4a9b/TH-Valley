@@ -6262,11 +6262,11 @@
 </data>
  </layer>
  <objectgroup name="Objects">
-  <object id="1" name="TownToFarm" type="Portal" x="-8" y="216.667" width="40.6667" height="58.6667"/>
-  <object id="3" name="TownToBeach" type="Portal" x="442.667" y="934" width="42.6667" height="36.6667"/>
-  <object id="4" name="TownToShop" type="Portal" x="715.333" y="235.333" width="44.6667" height="46"/>
-  <object id="5" name="TownToHospital" type="Portal" x="602" y="222" width="28.6667" height="46.6667"/>
-  <object id="6" name="TownToBar" type="Portal" x="671.333" y="548.667" width="18" height="62"/>
+  <object id="1" name="Town-Farm" type="Portal" x="-8" y="216.667" width="40.6667" height="58.6667"/>
+  <object id="3" name="Town-Beach" type="Portal" x="442.667" y="934" width="42.6667" height="36.6667"/>
+  <object id="4" name="Town-Shop" type="Portal" x="715.333" y="235.333" width="44.6667" height="46"/>
+  <object id="5" name="Town-Hospital" type="Portal" x="602" y="222" width="28.6667" height="46.6667"/>
+  <object id="6" name="Town-Bar" type="Portal" x="671.333" y="548.667" width="18" height="62"/>
   <object id="7" name="Player" x="394.667" y="379.333" width="28.6667" height="48.6667">
    <ellipse/>
   </object>

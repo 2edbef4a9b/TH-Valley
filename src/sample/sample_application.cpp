@@ -2,21 +2,23 @@
 
 #include "AudioEngine.h"
 #include "sample/sample_scene.h"
-#include "Crops.h"
+#include "utility/logger.h"
 
-th_valley::SampleApplication::~SampleApplication() {
+namespace th_valley {
+
+SampleApplication::~SampleApplication() {
     // Release the shared instance of the audio engine.
     cocos2d::AudioEngine::end();
 }
 
-void th_valley::SampleApplication::initGLContextAttrs() {
+void SampleApplication::initGLContextAttrs() {
     // Set OpenGL context attributes:
     // red, green, blue, alpha, depth, stencil and multisamples count.
     GLContextAttrs gl_context_attrs{8, 8, 8, 8, 24, 8, 0};
     cocos2d::GLView::setGLContextAttrs(gl_context_attrs);
 }
 
-bool th_valley::SampleApplication::applicationDidFinishLaunching() {
+bool SampleApplication::applicationDidFinishLaunching() {
     // Initialize director.
     auto *director = cocos2d::Director::getInstance();
     auto *glview = director->getOpenGLView();
@@ -42,7 +44,7 @@ bool th_valley::SampleApplication::applicationDidFinishLaunching() {
     UpdateResourcePath();
     const std::string resource_root_path =
         cocos2d::FileUtils::getInstance()->getDefaultResourceRootPath();
-    CCLOG("Resource root path: %s", resource_root_path.c_str());
+    Logger::GetInstance().LogInfo("Resource root path: {}", resource_root_path);
 
     // Create a scene. it's an autorelease object.
     auto *scene = SampleScene::create();
@@ -50,27 +52,25 @@ bool th_valley::SampleApplication::applicationDidFinishLaunching() {
         return false;
     }
 
-
     // Run.
     director->runWithScene(scene);
-    
 
     return true;
 }
 
-void th_valley::SampleApplication::applicationDidEnterBackground() {
+void SampleApplication::applicationDidEnterBackground() {
     cocos2d::Director::getInstance()->stopAnimation();
     // Pause the audio engine when the application enters the background.
     cocos2d::AudioEngine::pauseAll();
 }
 
-void th_valley::SampleApplication::applicationWillEnterForeground() {
+void SampleApplication::applicationWillEnterForeground() {
     cocos2d::Director::getInstance()->startAnimation();
     // Resume the audio engine when the application enters the foreground.
     cocos2d::AudioEngine::resumeAll();
 }
 
-void th_valley::SampleApplication::UpdateResourcePath() {
+void SampleApplication::UpdateResourcePath() {
     static bool is_called = false;
     // Ensure that this method is called only once.
     if (is_called) {
@@ -97,3 +97,5 @@ void th_valley::SampleApplication::UpdateResourcePath() {
     // Update the default resource root path.
     file_utils->setDefaultResourceRootPath(resource_root_path);
 }
+
+}  // namespace th_valley
