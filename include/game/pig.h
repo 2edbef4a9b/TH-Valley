@@ -1,7 +1,7 @@
-#ifndef ANIMALS_H_
-#define ANIMAL
+#ifndef PIG_H_
+#define PIG_H_
 
-#include "agriculture.h"
+#include "game/animals.h"
 
 class Pig : public Animals {
 public:
@@ -16,12 +16,12 @@ public:
 
         initSprite = cocos2d::Sprite::create("assets/Animals/Pig.png",
                                              cocos2d::Rect(0, 0, 32, 32));
-        //initSprite->setScale(0.6);
+        // initSprite->setScale(0.6);
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 4; j++) {
                 cocos2d::Rect frameRect(j * 32, i * 32, 32, 32);
-                auto frame =
-                    cocos2d::SpriteFrame::create("assets/Animals/Pig.png", frameRect);
+                auto frame = cocos2d::SpriteFrame::create(
+                    "assets/Animals/Pig.png", frameRect);
                 if (frame) animFrames[i].pushBack(frame);
             }
         }
@@ -40,4 +40,4 @@ public:
     }
 };
 
-#endif
+#endif  // PIG_H_

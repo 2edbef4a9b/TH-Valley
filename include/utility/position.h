@@ -11,4 +11,4 @@ struct Position {
     }
 };
 
-#endif
+#endif  // POSITION_H_

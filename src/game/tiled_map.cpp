@@ -77,26 +77,26 @@ bool TiledMap::InitWithTMXFile(const std::string& tmxFile) {
         }
     }
 
-    objectGroup_ = tiled_map_->getObjectGroup("Objects");
-    if (objectGroup_ == nullptr) {
+    object_group_ = tiled_map_->getObjectGroup("Objects");
+    if (object_group_ == nullptr) {
         CCLOG("ObjectGroup 'Objects' not found");
     } else {
         CCLOG("ObjectGroup 'Objects' loaded successfully");
     }
 
-    auto player = objectGroup_->getObject("Player");
+    auto player = object_group_->getObject("Player");
     if (!player.empty()) {
         float x = player.at("x").asFloat();
         float y = player.at("y").asFloat();
-        playerPos_ = cocos2d::Vec2(x, y);
+        player_pos_ = cocos2d::Vec2(x, y);
     } else {
         CCLOG("Player object not found");
-        playerPos_ = cocos2d::Vec2::ZERO;
+        player_pos_ = cocos2d::Vec2::ZERO;
     }
-    CCLOG("Player position set to: %f, %f", playerPos_.x, playerPos_.y);
-    CCLOG("Player position set to Tile: %f, %f", TileCoordFromPos(playerPos_).x,
-          TileCoordFromPos(playerPos_).y);
-    SetViewpointCenter(playerPos_);
+    CCLOG("Player position set to: %f, %f", player_pos_.x, player_pos_.y);
+    CCLOG("Player position set to Tile: %f, %f",
+          TileCoordFromPos(player_pos_).x, TileCoordFromPos(player_pos_).y);
+    SetViewpointCenter(player_pos_);
 
     // auto texture =
     //     cocos2d::Director::getInstance()->getTextureCache()->addImage(
@@ -120,14 +120,14 @@ bool TiledMap::InitWithTMXFile(const std::string& tmxFile) {
     cocos2d::Rect frameRect(0, 0, 3072, 3072);
     auto spriteFrame =
         cocos2d::SpriteFrame::createWithTexture(texture, frameRect);
-    playerSprite_ = cocos2d::Sprite::createWithSpriteFrame(spriteFrame);
-    playerSprite_->setScale(32.0f / 3072.0f);
-    playerSprite_->setAnchorPoint(cocos2d::Vec2(0.5f, 0.0f));
-    playerSprite_->setPosition(playerPos_);
-    CCLOG("Player sprite created at %f %f", playerPos_.x, playerPos_.y);
+    player_sprite_ = cocos2d::Sprite::createWithSpriteFrame(spriteFrame);
+    player_sprite_->setScale(32.0f / 3072.0f);
+    player_sprite_->setAnchorPoint(cocos2d::Vec2(0.5f, 0.0f));
+    player_sprite_->setPosition(player_pos_);
+    CCLOG("Player sprite created at %f %f", player_pos_.x, player_pos_.y);
     CCLOG("Player sprite created at Tile: %f %f",
-          TileCoordFromPos(playerPos_).x, TileCoordFromPos(playerPos_).y);
-    tiled_map_->addChild(playerSprite_, 2);
+          TileCoordFromPos(player_pos_).x, TileCoordFromPos(player_pos_).y);
+    tiled_map_->addChild(player_sprite_, 2);
 
     return true;
 }
@@ -184,14 +184,14 @@ void TiledMap::SetPlayerPos(cocos2d::Vec2 pos) {
     pos.x = std::max(0.0F, std::min(pos.x, map_width));
     pos.y = std::max(0.0F, std::min(pos.y, map_height));
 
-    playerPos_ = pos;
+    player_pos_ = pos;
     Logger::GetInstance().LogInfo("Player position set to: {}, {}",
-                                  playerPos_.x, playerPos_.y);
+                                  player_pos_.x, player_pos_.y);
     Logger::GetInstance().LogInfo("Tile: {}, {}",
-                                  TileCoordFromPos(playerPos_).x,
-                                  TileCoordFromPos(playerPos_).y);
-    SetViewpointCenter(playerPos_);
-    playerSprite_->setPosition(playerPos_);
+                                  TileCoordFromPos(player_pos_).x,
+                                  TileCoordFromPos(player_pos_).y);
+    SetViewpointCenter(player_pos_);
+    player_sprite_->setPosition(player_pos_);
 }
 
 void TiledMap::SetTeleportStatus(bool status) { is_teleporting_ = status; }
@@ -328,7 +328,7 @@ bool TiledMap::IsCollisionAtAnyLayer(cocos2d::Vec2 pos) {
     return false;
 }
 
-cocos2d::Vec2 TiledMap::GetPos() { return playerPos_; }
+cocos2d::Vec2 TiledMap::GetPos() { return player_pos_; }
 
 cocos2d::Vec2 TiledMap::TileCoordFromPos(cocos2d::Vec2 pos) {
     int x = pos.x / tiled_map_->getTileSize().width;

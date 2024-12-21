@@ -1,35 +1,37 @@
 #ifndef MAP_H_
 #define MAP_H_
 
-#include "cocos2d.h"
-#include <vector>
-#include <unordered_map>
 #include <map>
+#include <unordered_map>
+#include <vector>
+
 #include "agriculture.h"
+#include "bag_gui.h"
+#include "cocos2d.h"
 #include "position.h"
 #include "tool_bar.h"
-#include "bag_gui.h"
 
 struct Tile {
     int x, y;
     int gid;
     Tile(int x, int y, int gid) : x(x), y(y), gid(gid) {};
 };
-
 class Crops;
+
 class Animals;
 class Map : public cocos2d::TMXTiledMap {
 protected:
     cocos2d::TMXTiledMap* tileMap;
     std::unordered_map<std::string, cocos2d::TMXLayer*> mapLayer;
-    cocos2d::TMXObjectGroup* objectGroup;  
-    cocos2d::Vec2 playerPos;   
+    cocos2d::TMXObjectGroup* objectGroup;
+    cocos2d::Vec2 playerPos;
     cocos2d::ValueMap playerObject;
 
     bool isKeyPressedW;
     bool isKeyPressedA;
     bool isKeyPressedS;
     bool isKeyPressedD;
+
 public:
     cocos2d::Sprite* playerSprite;
     std::map<Position, Crops*> CropPosition;
@@ -64,7 +66,7 @@ public:
     /**
      * @brief ���ص�����ת��Ϊ��Ƭ����
      * @param cocos2d::Vec2 pos
-     * @return cocos2d::Vec2 
+     * @return cocos2d::Vec2
      */
     cocos2d::Vec2 tileCoordFromPos(cocos2d::Vec2 pos);
     cocos2d::Vec2 PosFromtileCoord(Position pos);
@@ -87,7 +89,7 @@ public:
 
     /**
      * @brief ��ͼ
-     * @param string portalName 
+     * @param string portalName
      false: ��
      */
     void triggerPortalEvent(const std::string& portalName);
@@ -114,7 +116,8 @@ public:
      * @brief ������ͼ
      * @param cocos2d::Vec2 tileCoord; int newGID; string LayerName
      */
-    void updateTileAt(cocos2d::Vec2 tileCoord, int newGID, std::string LayerName);
+    void updateTileAt(cocos2d::Vec2 tileCoord, int newGID,
+                      std::string LayerName);
     int getTileID(cocos2d::Vec2 tileCoord, std::string LayerName);
     bool PropertyCheck(int gid, std::string property);
     int getTileID(std::string Properties);
@@ -142,20 +145,21 @@ public:
     void update(float delta) override;
 
     static Map* create(const std::string& tmxFile,
-                       cocos2d::Sprite* PlayerSprite,
-                       ToolBar* CurrentToolBar, BagGUI* CurrentBag);
+                       cocos2d::Sprite* PlayerSprite, ToolBar* CurrentToolBar,
+                       BagGUI* CurrentBag);
 
     // Crop option
-    void CropPlant(const Position &PlantPosition, Crops* Crop);
+    void CropPlant(const Position& PlantPosition, Crops* Crop);
     void CropRemove(const Position& RemovePosition);
     void CropUpdate(const Position& UpdatePosition);
-    void ShowCropInformation(Crops *Crop, const Position &InfoPosition, int &priority);
+    void ShowCropInformation(Crops* Crop, const Position& InfoPosition,
+                             int& priority);
 
     // Animal option
     void initAnimalPosition();
     void updateAnimalSprites(float dt);
-    void ShowAnimalInfomation(cocos2d::Sprite* Animal, const cocos2d::Vec2 &InfoPosition, int &priority);
+    void ShowAnimalInfomation(cocos2d::Sprite* Animal,
+                              const cocos2d::Vec2& InfoPosition, int& priority);
 };
-
 
 #endif  // MAP_H_

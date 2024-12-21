@@ -67,9 +67,9 @@ private:
 
     cocos2d::TMXTiledMap* tiled_map_{};
     std::unordered_map<std::string, cocos2d::TMXLayer*> map_layer_;
-    cocos2d::TMXObjectGroup* objectGroup_{};
-    cocos2d::Vec2 playerPos_;
-    cocos2d::Sprite* playerSprite_{};
+    cocos2d::TMXObjectGroup* object_group_{};
+    cocos2d::Vec2 player_pos_;
+    cocos2d::Sprite* player_sprite_{};
 
     bool is_key_pressed_w_{false};
     bool is_key_pressed_a_{false};

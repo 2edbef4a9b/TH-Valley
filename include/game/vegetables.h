@@ -1,9 +1,9 @@
-#ifndef CROPS_H_
-#define CROPS_H_
+#ifndef VEGETABLES_H_
+#define VEGETABLES_H_
 
-#include "agriculture.h"
+#include "game/crops.h"
 
-class Strawberry: public Crops {
+class Strawberry : public Crops {
 public:
     Strawberry() {
         CropName = "Strawberry";
@@ -132,4 +132,4 @@ public:
     }
 };
 
-#endif
+#endif  // VEGETABLES_H_

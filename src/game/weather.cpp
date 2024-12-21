@@ -1,7 +1,9 @@
-#include "weather.h"
-#include "worldtime.h"
+#include "game/weather.h"
+
 #include <random>
 #include <string>
+
+#include "game/worldtime.h"
 
 void Weather::WeatherAutomaticUpdate(WorldTime Time) {
     // TimeUpdate
@@ -65,4 +67,7 @@ void Weather::WeatherAutomaticUpdate(WorldTime Time) {
 
 void Weather::WeatherSet(std::string weather) { WeatherType = weather; }
 
-void Weather::WeatherShow() { CCLOG("%s Duration: %d\n Temperature: %d\n", WeatherType.c_str(), TypeDuringTime, Temperature); }
+void Weather::WeatherShow() {
+    CCLOG("%s Duration: %d\n Temperature: %d\n", WeatherType.c_str(),
+          TypeDuringTime, Temperature);
+}
