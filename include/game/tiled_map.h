@@ -27,7 +27,19 @@ public:
     void Load();
 
 private:
-    using Portal = std::pair<std::string_view, std::string_view>;
+    class Portal {
+    public:
+        Portal(std::string_view from_map, std::string_view to_map);
+
+        std::string_view GetFromMap() const;
+        std::string_view GetToMap() const;
+        std::string GetPortalName() const;
+
+    private:
+        std::string_view from_map_;
+        std::string_view to_map_;
+    };
+
     void onEnter() override;
     void update(float delta) override;
 
