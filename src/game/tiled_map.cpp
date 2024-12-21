@@ -3,6 +3,7 @@
 #include <optional>
 #include <regex>
 
+#include "game/pig.h"
 #include "math/CCGeometry.h"
 #include "utility/logger.h"
 
@@ -128,6 +129,12 @@ bool TiledMap::InitWithTMXFile(const std::string& tmxFile) {
     CCLOG("Player sprite created at Tile: %f %f",
           TileCoordFromPos(player_pos_).x, TileCoordFromPos(player_pos_).y);
     tiled_map_->addChild(player_sprite_, 2);
+
+    for (int pig_count = 0; pig_count < 10; pig_count++) {
+        Pig* pig = new Pig;
+        MapAnimals.push_back(pig);
+    }
+    initAnimalPosition();
 
     return true;
 }
@@ -337,6 +344,51 @@ cocos2d::Vec2 TiledMap::TileCoordFromPos(cocos2d::Vec2 pos) {
          pos.y) /
         tiled_map_->getTileSize().height;
     return cocos2d::Vec2(x, y);
+}
+
+cocos2d::Vec2 TiledMap::PosFromtileCoord(Position PlantPosition) {
+    cocos2d::Vec2 PicturePosition;
+    PicturePosition.x = PlantPosition.x * tiled_map_->getTileSize().width;
+    PicturePosition.y =
+        (tiled_map_->getMapSize().height * tiled_map_->getTileSize().height) -
+        PlantPosition.y * tiled_map_->getTileSize().height;
+    PicturePosition.x += tiled_map_->getTileSize().width / 2;
+    PicturePosition.y -= tiled_map_->getTileSize().height / 2;
+    return PicturePosition;
+}
+
+
+int TiledMap::GetTileID(cocos2d::Vec2 tileCoord, std::string LayerName) {
+    auto layer = tiled_map_->getLayer(LayerName);
+    int gid = layer->getTileGIDAt(tileCoord);
+    if (gid == 0) {
+        CCLOG("No tile at this position\n");
+        return 0;
+    }
+    return gid;
+}
+
+bool TiledMap::PropertyCheck(int gid, std::string property) {
+    cocos2d::Value properties = tiled_map_->getPropertiesForGID(gid);
+    if (properties.isNull()) {
+        CCLOG("There is no properties\n");
+        return false;
+    } else {
+        cocos2d::ValueMap propertyMap = properties.asValueMap();
+        auto it = propertyMap.find(property);
+        if (it != propertyMap.end()) {
+            bool isCorrect = it->second.asBool();
+            if (isCorrect) {
+                CCLOG("%s is true\n", property.c_str());
+                return true;
+            } else {
+                CCLOG("%s is false\n", property.c_str());
+                return false;
+            }
+        }
+        CCLOG("Not find property: %s\n", property.c_str());
+        return false;
+    }
 }
 
 std::optional<TiledMap::Portal> TiledMap::GetPortal(

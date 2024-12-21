@@ -66,7 +66,6 @@ private:
     cocos2d::Vec2 PosFromtileCoord(Position pos);
 
     int GetTileID(cocos2d::Vec2 tileCoord, std::string LayerName);
-    int GetTileID(std::string Properties);
     bool PropertyCheck(int gid, std::string property);
 
     std::optional<Portal> GetPortal(
