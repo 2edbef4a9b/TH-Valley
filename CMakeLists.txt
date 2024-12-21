@@ -32,7 +32,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Set the compiler flags for the different toolchains.
 if(MSVC)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4 /EHsc ")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4 /EHsc")
     add_definitions(-D_DISABLE_VECTOR_ANNOTATION -D_DISABLE_STRING_ANNOTATION)
 else()
     set(CMAKE_CXX_FLAGS
