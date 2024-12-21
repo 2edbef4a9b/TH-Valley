@@ -6,24 +6,27 @@
 #include <unordered_map>
 
 #include "cocos2d.h"
+#include "game/map_controller.h"
 #include "math/CCGeometry.h"
 
 namespace th_valley {
+
+class MapController;
 
 class TiledMap final : public cocos2d::Node {
 public:
     class Portal {
     public:
-        Portal(std::string_view from_map, std::string_view to_map);
-
-        std::string_view GetFromMap() const;
-        std::string_view GetToMap() const;
-        std::string GetFromPortalName() const;
-        std::string GetToPortalName() const;
+        explicit Portal(const std::string& portal_name);
+        [[nodiscard]] std::string GetFromMap() const;
+        [[nodiscard]] std::string GetToMap() const;
+        [[nodiscard]] std::string GetPortalName() const;
+        [[nodiscard]] std::string GetOppositePortalName() const;
+        [[nodiscard]] Portal GetOppositePorta() const;
 
     private:
-        std::string_view from_map_;
-        std::string_view to_map_;
+        std::string from_map_;
+        std::string to_map_;
     };
 
     TiledMap() = default;
@@ -40,6 +43,10 @@ public:
     void Save();
     void Load();
 
+    cocos2d::Rect GetPortalRect(Portal portal,
+                                std::string_view ObjectLayerName = "Objects");
+    void SetPlayerPos(cocos2d::Vec2 pos);
+
 private:
     void onEnter() override;
     void update(float delta) override;
@@ -51,11 +58,8 @@ private:
     cocos2d::Vec2 TileCoordFromPos(cocos2d::Vec2 pos);
 
     std::optional<Portal> GetPortal(
-        cocos2d::Vec2 pos, std::string_view ObjectLayerName = "Objects");
-    cocos2d::Rect GetPortalRect(Portal portal,
-                                std::string_view ObjectLayerName = "Objects");
+        cocos2d::Vec2 pos, std::string_view ObjectLayerName = "Objects") const;
 
-    void SetPlayerPos(cocos2d::Vec2 pos);
     void SetViewpointCenter(cocos2d::Vec2 pos);
     void UpdateTileAt(cocos2d::Vec2 tileCoord, int newGID,
                       std::string LayerName);

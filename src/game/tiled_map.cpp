@@ -8,19 +8,31 @@
 
 namespace th_valley {
 
-TiledMap::Portal::Portal(std::string_view from_map, std::string_view to_map)
-    : from_map_(from_map), to_map_(to_map) {}
-
-std::string_view TiledMap::Portal::GetFromMap() const { return from_map_; }
-
-std::string_view TiledMap::Portal::GetToMap() const { return to_map_; }
-
-std::string TiledMap::Portal::GetFromPortalName() const {
-    return std::string(from_map_) + "To" + std::string(to_map_);
+TiledMap::Portal::Portal(const std::string& portal_name) {
+    std::regex portal_regex(R"((\w+)To(\w+))");
+    std::smatch match;
+    if (std::regex_match(portal_name, match, portal_regex)) {
+        from_map_ = match[1];
+        to_map_ = match[2];
+    } else {
+        Logger::GetInstance().LogError("Invalid portal name: {}", portal_name);
+    }
 }
 
-std::string TiledMap::Portal::GetToPortalName() const {
-    return std::string(to_map_) + "To" + std::string(from_map_);
+std::string TiledMap::Portal::GetFromMap() const { return from_map_; }
+
+std::string TiledMap::Portal::GetToMap() const { return to_map_; }
+
+std::string TiledMap::Portal::GetPortalName() const {
+    return from_map_ + "To" + to_map_;
+}
+
+std::string TiledMap::Portal::GetOppositePortalName() const {
+    return to_map_ + "To" + from_map_;
+}
+
+TiledMap::Portal TiledMap::Portal::GetOppositePorta() const {
+    return Portal(GetOppositePortalName());
 }
 
 TiledMap* TiledMap::create(const std::string& tmxFile) {
@@ -122,30 +134,55 @@ void TiledMap::Load() {
     // Implementation for load
 }
 
+cocos2d::Rect TiledMap::GetPortalRect(Portal portal,
+                                      std::string_view ObjectLayerName) {
+    auto* object_group = tileMap_->getObjectGroup(ObjectLayerName.data());
+    if (object_group == nullptr) {
+        Logger::GetInstance().LogError("ObjectGroup Objects not found");
+        return cocos2d::Rect();
+    }
+    auto objects = object_group->getObjects();
+    for (const auto& object : objects) {
+        auto value_map = object.asValueMap();
+        if (value_map["type"].asString() == "Portal") {
+            std::string portal_name = value_map["name"].asString();
+            if (portal_name == portal.GetPortalName()) {
+                return cocos2d::Rect(value_map["x"].asFloat(),
+                                     value_map["y"].asFloat(),
+                                     value_map["width"].asFloat(),
+                                     value_map["height"].asFloat());
+            }
+        }
+    }
+    Logger::GetInstance().LogError("Portal {} not found",
+                                   portal.GetPortalName());
+    return cocos2d::Rect();
+}
+
+void TiledMap::SetPlayerPos(cocos2d::Vec2 pos) {
+    const auto map_size = tileMap_->getMapSize();
+    const auto tile_size = tileMap_->getTileSize();
+    const float map_width = map_size.width * tile_size.width;
+    const float map_height = map_size.height * tile_size.height;
+
+    pos.x = std::max(0.0F, std::min(pos.x, map_width));
+    pos.y = std::max(0.0F, std::min(pos.y, map_height));
+
+    playerPos_ = pos;
+    Logger::GetInstance().LogInfo("Player position set to: {}, {}",
+                                  playerPos_.x, playerPos_.y);
+    Logger::GetInstance().LogInfo("Tile: {}, {}",
+                                  TileCoordFromPos(playerPos_).x,
+                                  TileCoordFromPos(playerPos_).y);
+    SetViewpointCenter(playerPos_);
+    playerSprite_->setPosition(playerPos_);
+}
+
 void TiledMap::onEnter() {
     cocos2d::Node::onEnter();
     CCLOG("Map onEnter");
 
     auto listener = cocos2d::EventListenerMouse::create();
-
-    listener->onMouseDown = [this](cocos2d::Event* event) {
-        auto mouseEvent = dynamic_cast<cocos2d::EventMouse*>(event);
-        auto pos =
-            tileMap_->convertToNodeSpace(mouseEvent->getLocationInView());
-        auto tilePos = TileCoordFromPos(pos);
-
-        CCLOG("Mouse Down Tile: %f, %f", tilePos.x, tilePos.y);
-        CCLOG("Mouse Down: %f, %f", pos.x, pos.y);
-
-        for (const auto& layer : mapLayer_) {
-            if (layer.second != nullptr) {
-                int gid = layer.second->getTileGIDAt(tilePos);
-                CCLOG("Checking layer: %s, gid: %d", layer.first.c_str(), gid);
-                IsCollision(pos, layer.first);
-            }
-        }
-        GetPortal(pos, "Objects");
-    };
 
     listener->onMouseMove = [this](cocos2d::Event* event) {
         auto mouseEvent = dynamic_cast<cocos2d::EventMouse*>(event);
@@ -203,9 +240,13 @@ void TiledMap::onEnter() {
     this->scheduleUpdate();
 }
 
-void TiledMap::update(float delta) {
+void TiledMap::update(const float delta) {
     cocos2d::Vec2 current_pos = GetPos();
-    const float move_step = 100.0f * delta;
+    const float move_step = 100.0F * delta;
+    auto portal = GetPortal(current_pos);
+    if (portal.has_value()) {
+        MapController::GetInstance().TriggerTeleport(portal->GetPortalName());
+    }
 
     if (isKeyPressedW_) {
         current_pos.y += move_step;
@@ -221,7 +262,11 @@ void TiledMap::update(float delta) {
     }
 
     if (isKeyPressedW_ || isKeyPressedS_ || isKeyPressedA_ || isKeyPressedD_) {
-        SetPlayerPos(current_pos);
+        if (IsCollisionAtAnyLayer(current_pos)) {
+            Logger::GetInstance().LogInfo("Collision detected");
+        } else {
+            SetPlayerPos(current_pos);
+        }
     }
 }
 
@@ -268,7 +313,7 @@ cocos2d::Vec2 TiledMap::TileCoordFromPos(cocos2d::Vec2 pos) {
 }
 
 std::optional<TiledMap::Portal> TiledMap::GetPortal(
-    cocos2d::Vec2 pos, std::string_view ObjectLayerName) {
+    cocos2d::Vec2 pos, std::string_view ObjectLayerName) const {
     auto* object_group = tileMap_->getObjectGroup(ObjectLayerName.data());
     if (object_group == nullptr) {
         Logger::GetInstance().LogError("ObjectGroup {} not found",
@@ -283,66 +328,11 @@ std::optional<TiledMap::Portal> TiledMap::GetPortal(
                 value_map["x"].asFloat(), value_map["y"].asFloat(),
                 value_map["width"].asFloat(), value_map["height"].asFloat());
             if (rect.containsPoint(pos)) {
-                std::string portal_name = value_map["name"].asString();
-                std::regex portal_regex(R"((\w+)To(\w+))");
-                std::smatch match;
-                if (std::regex_match(portal_name, match, portal_regex)) {
-                    Logger::GetInstance().LogInfo(
-                        "Portal from {} to {} detected", match[1].str(),
-                        match[2].str());
-                    return Portal(match[1].str(), match[2].str());
-                }
+                return Portal(value_map["name"].asString());
             }
         }
     }
     return std::nullopt;
-}
-
-cocos2d::Rect TiledMap::GetPortalRect(Portal portal,
-                                      std::string_view ObjectLayerName) {
-    auto* object_group = tileMap_->getObjectGroup(ObjectLayerName.data());
-    if (object_group == nullptr) {
-        Logger::GetInstance().LogError("ObjectGroup Objects not found");
-        return cocos2d::Rect();
-    }
-    auto objects = object_group->getObjects();
-    for (const auto& object : objects) {
-        auto value_map = object.asValueMap();
-        if (value_map["type"].asString() == "Portal") {
-            std::string portal_name = value_map["name"].asString();
-            if (portal_name == portal.GetFromPortalName()) {
-                return cocos2d::Rect(value_map["x"].asFloat(),
-                                     value_map["y"].asFloat(),
-                                     value_map["width"].asFloat(),
-                                     value_map["height"].asFloat());
-            }
-        }
-    }
-    Logger::GetInstance().LogError("Portal {} not found",
-                                   portal.GetFromPortalName());
-    return cocos2d::Rect();
-}
-
-void TiledMap::SetPlayerPos(cocos2d::Vec2 pos) {
-    auto mapSize = tileMap_->getMapSize();
-    auto tileSize = tileMap_->getTileSize();
-    float mapWidth = mapSize.width * tileSize.width;
-    float mapHeight = mapSize.height * tileSize.height;
-
-    pos.x = std::max(0.0f, std::min(pos.x, mapWidth));
-    pos.y = std::max(0.0f, std::min(pos.y, mapHeight));
-
-    if (IsCollisionAtAnyLayer(pos)) {
-        CCLOG("Collision detected, player position not updated");
-    } else {
-        playerPos_ = pos;
-        CCLOG("Player position set to: %f, %f", pos.x, pos.y);
-        CCLOG("Tile: %f, %f", TileCoordFromPos(pos).x, TileCoordFromPos(pos).y);
-
-        SetViewpointCenter(pos);
-
-        playerSprite_->setPosition(playerPos_);
-    }
 }
 
 void TiledMap::SetViewpointCenter(cocos2d::Vec2 pos) {
