@@ -46,6 +46,7 @@ public:
     cocos2d::Rect GetPortalRect(Portal portal,
                                 std::string_view ObjectLayerName = "Objects");
     void SetPlayerPos(cocos2d::Vec2 pos);
+    void SetTeleportStatus(bool status);
 
 private:
     void onEnter() override;
@@ -64,16 +65,17 @@ private:
     void UpdateTileAt(cocos2d::Vec2 tileCoord, int newGID,
                       std::string LayerName);
 
-    cocos2d::TMXTiledMap* tileMap_{};
-    std::unordered_map<std::string, cocos2d::TMXLayer*> mapLayer_;
+    cocos2d::TMXTiledMap* tiled_map_{};
+    std::unordered_map<std::string, cocos2d::TMXLayer*> map_layer_;
     cocos2d::TMXObjectGroup* objectGroup_{};
     cocos2d::Vec2 playerPos_;
     cocos2d::Sprite* playerSprite_{};
 
-    bool isKeyPressedW_{};
-    bool isKeyPressedA_{};
-    bool isKeyPressedS_{};
-    bool isKeyPressedD_{};
+    bool is_key_pressed_w_{};
+    bool is_key_pressed_a_{};
+    bool is_key_pressed_s_{};
+    bool is_key_pressed_d_{};
+    bool is_teleporting_{false};
 };
 
 }  // namespace th_valley

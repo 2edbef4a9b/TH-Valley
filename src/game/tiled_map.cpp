@@ -48,15 +48,15 @@ TiledMap* TiledMap::create(const std::string& tmxFile) {
 }
 
 bool TiledMap::InitWithTMXFile(const std::string& tmxFile) {
-    tileMap_ = cocos2d::TMXTiledMap::create(tmxFile);
-    if (!tileMap_) {
+    tiled_map_ = cocos2d::TMXTiledMap::create(tmxFile);
+    if (!tiled_map_) {
         return false;
     }
 
-    this->addChild(tileMap_);
+    this->addChild(tiled_map_);
 
-    tileMap_->setAnchorPoint(cocos2d::Vec2(0, 0));
-    tileMap_->setPosition(cocos2d::Vec2(0, 0));
+    tiled_map_->setAnchorPoint(cocos2d::Vec2(0, 0));
+    tiled_map_->setPosition(cocos2d::Vec2(0, 0));
 
     std::vector<std::string> layerNames = {"Back",     "Back2",    "Block",
                                            "Interact", "Building", "Paths",
@@ -64,20 +64,20 @@ bool TiledMap::InitWithTMXFile(const std::string& tmxFile) {
 
     int zOrder = -5;
     for (const auto& name : layerNames) {
-        auto layer = tileMap_->getLayer(name);
+        auto layer = tiled_map_->getLayer(name);
         if (layer) {
             if (name == "Front") {
                 zOrder += 5;
             }
             layer->setLocalZOrder(zOrder++);
-            mapLayer_[name] = layer;
+            map_layer_[name] = layer;
             CCLOG("Layer '%s' added with z-order %d", name.c_str(), zOrder - 1);
         } else {
             CCLOG("Layer '%s' not found", name.c_str());
         }
     }
 
-    objectGroup_ = tileMap_->getObjectGroup("Objects");
+    objectGroup_ = tiled_map_->getObjectGroup("Objects");
     if (objectGroup_ == nullptr) {
         CCLOG("ObjectGroup 'Objects' not found");
     } else {
@@ -111,7 +111,7 @@ bool TiledMap::InitWithTMXFile(const std::string& tmxFile) {
     CCLOG("Player sprite created at %f %f", playerPos_.x, playerPos_.y);
     CCLOG("Player sprite created at Tile: %f %f",
           TileCoordFromPos(playerPos_).x, TileCoordFromPos(playerPos_).y);
-    tileMap_->addChild(playerSprite_, 2);
+    tiled_map_->addChild(playerSprite_, 2);
 
     return true;
 }
@@ -123,7 +123,7 @@ void TiledMap::CreateMiniMap() {
     auto* player_marker = cocos2d::Sprite::create();
     player_marker->setColor(cocos2d::Color3B::RED);
     player_marker->setScale(0.2f);
-    tileMap_->addChild(mini_map, 100);
+    tiled_map_->addChild(mini_map, 100);
 }
 
 void TiledMap::Save() {
@@ -136,7 +136,7 @@ void TiledMap::Load() {
 
 cocos2d::Rect TiledMap::GetPortalRect(Portal portal,
                                       std::string_view ObjectLayerName) {
-    auto* object_group = tileMap_->getObjectGroup(ObjectLayerName.data());
+    auto* object_group = tiled_map_->getObjectGroup(ObjectLayerName.data());
     if (object_group == nullptr) {
         Logger::GetInstance().LogError("ObjectGroup Objects not found");
         return cocos2d::Rect();
@@ -160,8 +160,8 @@ cocos2d::Rect TiledMap::GetPortalRect(Portal portal,
 }
 
 void TiledMap::SetPlayerPos(cocos2d::Vec2 pos) {
-    const auto map_size = tileMap_->getMapSize();
-    const auto tile_size = tileMap_->getTileSize();
+    const auto map_size = tiled_map_->getMapSize();
+    const auto tile_size = tiled_map_->getTileSize();
     const float map_width = map_size.width * tile_size.width;
     const float map_height = map_size.height * tile_size.height;
 
@@ -178,6 +178,8 @@ void TiledMap::SetPlayerPos(cocos2d::Vec2 pos) {
     playerSprite_->setPosition(playerPos_);
 }
 
+void TiledMap::SetTeleportStatus(bool status) { is_teleporting_ = status; }
+
 void TiledMap::onEnter() {
     cocos2d::Node::onEnter();
     CCLOG("Map onEnter");
@@ -187,7 +189,7 @@ void TiledMap::onEnter() {
     listener->onMouseMove = [this](cocos2d::Event* event) {
         auto mouseEvent = dynamic_cast<cocos2d::EventMouse*>(event);
         auto pos =
-            tileMap_->convertToNodeSpace(mouseEvent->getLocationInView());
+            tiled_map_->convertToNodeSpace(mouseEvent->getLocationInView());
         auto tilePos = TileCoordFromPos(pos);
     };
 
@@ -196,16 +198,16 @@ void TiledMap::onEnter() {
                                        cocos2d::Event* event) {
         switch (keyCode) {
             case cocos2d::EventKeyboard::KeyCode::KEY_W:
-                isKeyPressedW_ = true;
+                is_key_pressed_w_ = true;
                 break;
             case cocos2d::EventKeyboard::KeyCode::KEY_S:
-                isKeyPressedS_ = true;
+                is_key_pressed_s_ = true;
                 break;
             case cocos2d::EventKeyboard::KeyCode::KEY_A:
-                isKeyPressedA_ = true;
+                is_key_pressed_a_ = true;
                 break;
             case cocos2d::EventKeyboard::KeyCode::KEY_D:
-                isKeyPressedD_ = true;
+                is_key_pressed_d_ = true;
                 break;
             default:
                 break;
@@ -216,16 +218,16 @@ void TiledMap::onEnter() {
                                         cocos2d::Event* event) {
         switch (keyCode) {
             case cocos2d::EventKeyboard::KeyCode::KEY_W:
-                isKeyPressedW_ = false;
+                is_key_pressed_w_ = false;
                 break;
             case cocos2d::EventKeyboard::KeyCode::KEY_S:
-                isKeyPressedS_ = false;
+                is_key_pressed_s_ = false;
                 break;
             case cocos2d::EventKeyboard::KeyCode::KEY_A:
-                isKeyPressedA_ = false;
+                is_key_pressed_a_ = false;
                 break;
             case cocos2d::EventKeyboard::KeyCode::KEY_D:
-                isKeyPressedD_ = false;
+                is_key_pressed_d_ = false;
                 break;
             default:
                 break;
@@ -245,23 +247,29 @@ void TiledMap::update(const float delta) {
     const float move_step = 100.0F * delta;
     auto portal = GetPortal(current_pos);
     if (portal.has_value()) {
-        MapController::GetInstance().TriggerTeleport(portal->GetPortalName());
+        if (!is_teleporting_) {
+            MapController::GetInstance().TriggerTeleport(
+                portal->GetPortalName());
+        }
+    } else {
+        SetTeleportStatus(false);
     }
 
-    if (isKeyPressedW_) {
+    if (is_key_pressed_w_) {
         current_pos.y += move_step;
     }
-    if (isKeyPressedS_) {
+    if (is_key_pressed_s_) {
         current_pos.y -= move_step;
     }
-    if (isKeyPressedA_) {
+    if (is_key_pressed_a_) {
         current_pos.x -= move_step;
     }
-    if (isKeyPressedD_) {
+    if (is_key_pressed_d_) {
         current_pos.x += move_step;
     }
 
-    if (isKeyPressedW_ || isKeyPressedS_ || isKeyPressedA_ || isKeyPressedD_) {
+    if (is_key_pressed_w_ || is_key_pressed_s_ || is_key_pressed_a_ ||
+        is_key_pressed_d_) {
         if (IsCollisionAtAnyLayer(current_pos)) {
             Logger::GetInstance().LogInfo("Collision detected");
         } else {
@@ -271,13 +279,13 @@ void TiledMap::update(const float delta) {
 }
 
 bool TiledMap::IsCollision(cocos2d::Vec2 pos, std::string LayerName) {
-    auto Layer = tileMap_->getLayer(LayerName);
+    auto Layer = tiled_map_->getLayer(LayerName);
 
     auto tileCoord = this->TileCoordFromPos(pos);
 
     int tileGid = Layer->getTileGIDAt(tileCoord);
     if (tileGid != 0) {
-        auto properties = tileMap_->getPropertiesForGID(tileGid);
+        auto properties = tiled_map_->getPropertiesForGID(tileGid);
 
         if (properties.getType() == cocos2d::Value::Type::MAP) {
             auto valueMap = properties.asValueMap();
@@ -294,7 +302,7 @@ bool TiledMap::IsCollision(cocos2d::Vec2 pos, std::string LayerName) {
 }
 
 bool TiledMap::IsCollisionAtAnyLayer(cocos2d::Vec2 pos) {
-    for (const auto& pair : mapLayer_) {
+    for (const auto& pair : map_layer_) {
         if (IsCollision(pos, pair.first)) {
             return true;
         }
@@ -305,16 +313,17 @@ bool TiledMap::IsCollisionAtAnyLayer(cocos2d::Vec2 pos) {
 cocos2d::Vec2 TiledMap::GetPos() { return playerPos_; }
 
 cocos2d::Vec2 TiledMap::TileCoordFromPos(cocos2d::Vec2 pos) {
-    int x = pos.x / tileMap_->getTileSize().width;
-    int y = (tileMap_->getMapSize().height * tileMap_->getTileSize().height -
-             pos.y) /
-            tileMap_->getTileSize().height;
+    int x = pos.x / tiled_map_->getTileSize().width;
+    int y =
+        (tiled_map_->getMapSize().height * tiled_map_->getTileSize().height -
+         pos.y) /
+        tiled_map_->getTileSize().height;
     return cocos2d::Vec2(x, y);
 }
 
 std::optional<TiledMap::Portal> TiledMap::GetPortal(
     cocos2d::Vec2 pos, std::string_view ObjectLayerName) const {
-    auto* object_group = tileMap_->getObjectGroup(ObjectLayerName.data());
+    auto* object_group = tiled_map_->getObjectGroup(ObjectLayerName.data());
     if (object_group == nullptr) {
         Logger::GetInstance().LogError("ObjectGroup {} not found",
                                        ObjectLayerName);
@@ -336,8 +345,8 @@ std::optional<TiledMap::Portal> TiledMap::GetPortal(
 }
 
 void TiledMap::SetViewpointCenter(cocos2d::Vec2 pos) {
-    auto mapSize = tileMap_->getMapSize();
-    auto tileSize = tileMap_->getTileSize();
+    auto mapSize = tiled_map_->getMapSize();
+    auto tileSize = tiled_map_->getTileSize();
     auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
     float x = MAX(pos.x, visibleSize.width / 2);
     float y = MAX(pos.y, visibleSize.height / 2);
@@ -360,12 +369,12 @@ void TiledMap::SetViewpointCenter(cocos2d::Vec2 pos) {
         offset.y = (visibleSize.height - mapSize.height * tileSize.height) / 2;
     }
 
-    tileMap_->setPosition(offset);
+    tiled_map_->setPosition(offset);
 }
 
 void TiledMap::UpdateTileAt(cocos2d::Vec2 tileCoord, int newGID,
                             std::string LayerName) {
-    auto layer = tileMap_->getLayer(LayerName);
+    auto layer = tiled_map_->getLayer(LayerName);
     layer->setTileGID(newGID, tileCoord);
     CCLOG("Tile updated at %f, %f with GID: %d", tileCoord.x, tileCoord.y,
           newGID);

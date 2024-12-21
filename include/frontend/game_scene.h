@@ -20,7 +20,7 @@ public:
     CREATE_FUNC(GameScene);
 
 private:
-    static constexpr std::string_view kInitialMap = "House";
+    static constexpr std::string_view kInitialMap = "Farm";
 };
 
 }  // namespace th_valley
