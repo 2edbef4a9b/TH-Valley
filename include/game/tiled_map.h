@@ -12,6 +12,20 @@ namespace th_valley {
 
 class TiledMap final : public cocos2d::Node {
 public:
+    class Portal {
+    public:
+        Portal(std::string_view from_map, std::string_view to_map);
+
+        std::string_view GetFromMap() const;
+        std::string_view GetToMap() const;
+        std::string GetFromPortalName() const;
+        std::string GetToPortalName() const;
+
+    private:
+        std::string_view from_map_;
+        std::string_view to_map_;
+    };
+
     TiledMap() = default;
     ~TiledMap() override = default;
     TiledMap(const TiledMap& other) = delete;
@@ -27,26 +41,11 @@ public:
     void Load();
 
 private:
-    class Portal {
-    public:
-        Portal(std::string_view from_map, std::string_view to_map);
-
-        std::string_view GetFromMap() const;
-        std::string_view GetToMap() const;
-        std::string GetPortalName() const;
-
-    private:
-        std::string_view from_map_;
-        std::string_view to_map_;
-    };
-
     void onEnter() override;
     void update(float delta) override;
 
     bool IsCollision(cocos2d::Vec2 pos, std::string LayerName = "Paths");
     bool IsCollisionAtAnyLayer(cocos2d::Vec2 pos);
-    bool IsPortal(cocos2d::Vec2 pos, std::string ObjectLayerName = "Objects");
-    void TriggerPortalEvent(const std::string& portalName);
 
     cocos2d::Vec2 GetPos();
     cocos2d::Vec2 TileCoordFromPos(cocos2d::Vec2 pos);
@@ -58,7 +57,6 @@ private:
 
     void SetPlayerPos(cocos2d::Vec2 pos);
     void SetViewpointCenter(cocos2d::Vec2 pos);
-    void CheckEventsAndTrigger(cocos2d::Vec2 tileCoord);
     void UpdateTileAt(cocos2d::Vec2 tileCoord, int newGID,
                       std::string LayerName);
 
