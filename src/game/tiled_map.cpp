@@ -100,7 +100,7 @@ bool TiledMap::InitWithTMXFile(const std::string& tmxFile) {
 
     auto texture =
         cocos2d::Director::getInstance()->getTextureCache()->addImage(
-            "assets/Sebastian.png");
+            "assets/tilesheets/Sebastian.png");
 
     cocos2d::Rect frameRect(0, 0, 16, 32);
     auto spriteFrame =
@@ -112,6 +112,22 @@ bool TiledMap::InitWithTMXFile(const std::string& tmxFile) {
     CCLOG("Player sprite created at Tile: %f %f",
           TileCoordFromPos(playerPos_).x, TileCoordFromPos(playerPos_).y);
     tiled_map_->addChild(playerSprite_, 2);
+
+    // auto texture =
+    //     cocos2d::Director::getInstance()->getTextureCache()->addImage(
+    //         "assets/tilesheets/koishi.png");
+
+    // cocos2d::Rect frameRect(0, 0, 3072, 3072);
+    // auto spriteFrame =
+    //     cocos2d::SpriteFrame::createWithTexture(texture, frameRect);
+    // playerSprite_ = cocos2d::Sprite::createWithSpriteFrame(spriteFrame);
+    // playerSprite_->setScale(32.0f / 3072.0f);
+    // playerSprite_->setAnchorPoint(cocos2d::Vec2(0.5f, 0.0f));
+    // playerSprite_->setPosition(playerPos_);
+    // CCLOG("Player sprite created at %f %f", playerPos_.x, playerPos_.y);
+    // CCLOG("Player sprite created at Tile: %f %f",
+    //       TileCoordFromPos(playerPos_).x, TileCoordFromPos(playerPos_).y);
+    // tiled_map_->addChild(playerSprite_, 2);
 
     return true;
 }
