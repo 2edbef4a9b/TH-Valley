@@ -266,6 +266,7 @@ void TiledMap::update(const float delta) {
         if (!is_teleporting_) {
             MapController::GetInstance().TriggerTeleport(
                 portal->GetPortalName());
+            is_teleporting_ = true;
             return;
         }
     } else {
