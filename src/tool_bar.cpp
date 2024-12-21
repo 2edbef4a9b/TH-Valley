@@ -183,3 +183,10 @@ void ToolBar::dropCurrentTool() {
         selectedToolIndex = -1;
     }
 }
+
+std::string ToolBar::getToolName() {
+    if (itemSprites[selectedToolIndex] != nullptr)
+        return itemSprites[selectedToolIndex]->name;
+    else
+        return "NULL";
+}

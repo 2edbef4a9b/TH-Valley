@@ -5,7 +5,7 @@
 
 void Map::CropPlant(const Position& PlantPosition, Crops* Crop) {
     // Position check
-    static int priority = 3;
+    //static int priority = 3;
     auto PlayerTilePos = tileCoordFromPos(playerPos);
     if (fabs(PlayerTilePos.x - PlantPosition.x) > 1 ||
         fabs(PlayerTilePos.y - PlantPosition.y) > 1) {
@@ -37,9 +37,7 @@ void Map::CropPlant(const Position& PlantPosition, Crops* Crop) {
 
     CCLOG("Can be planted");
 
-    auto CropPicture =
-        cocos2d::Sprite::create("assets/Crops/crops.png",
-                                Crop->frameRect[Crop->CurrentGrowthStage]);
+    auto CropPicture = Crop->CropSprite;
 
     // Picture Position Calculate
     cocos2d::Vec2 PicturePosition;

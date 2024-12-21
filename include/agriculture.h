@@ -28,6 +28,7 @@ public:
     std::vector < int > GrowthDuration;
     std::vector<std::string> GrowthStage;
     std::vector<cocos2d::Rect> frameRect;
+    cocos2d::Sprite *CropSprite;
 
     // Situation
     std::vector<std::string> GrowthSituation;
@@ -98,11 +99,18 @@ public:
     std::vector<std::string> GrowthStage;
     std::vector<std::string> Output;
     std::vector<int> OutputNumber;
+    bool InfoOpen = false;
+
+    // Animation
+    cocos2d::Vector<cocos2d::SpriteFrame *> animFrames[10];
+    cocos2d::Sprite *initSprite;
+    std::vector<float> scale;
 
     bool isUnhappy;
     bool isHungry;
 
     int GrowthSpeed;
+    bool moved;
 
     // Requirement
     int Happiness; // ÐÒ¸£¶È
@@ -113,10 +121,10 @@ public:
 
     virtual void Stroke();
     virtual bool Eat(std::string EatFood);
-    virtual void RandomMove();
+   /* virtual void RandomMove();*/
     virtual void AnimalAutomaticUpdate();
 
-    virtual void AnimalShowInfo();
+    /*virtual void AnimalShowInfo();*/
 };
 
 class FarmHouse : public agriculture {

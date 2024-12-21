@@ -7,6 +7,7 @@
 #include <map>
 #include "agriculture.h"
 #include "position.h"
+#include "tool_bar.h"
 
 struct Tile {
     int x, y;
@@ -32,8 +33,12 @@ public:
     cocos2d::Sprite* playerSprite;
     std::map<Position, Crops*> CropPosition;
     std::map<Position, cocos2d::Sprite*> SpritePosition;
+    std::map<cocos2d::Sprite*, Animals*> SpritetoAnimal;
     std::vector<Crops*> MapCrops;
     std::vector<Animals*> MapAnimals;
+    std::vector<cocos2d::Sprite*> AnimalSprite;
+    ToolBar* MapToolBar;
+    int priority = 255;
     Map() = default;
     ~Map() override = default;
     Map(const Map& other) = default;
@@ -46,8 +51,8 @@ public:
      * @param string tmxFile
      * @return true: �ɹ����� false: ����ʧ��
      */
-    bool initWithTMXFile(const std::string& tmxFile, cocos2d::Sprite* Haley)
-        ;
+    bool initWithTMXFile(const std::string& tmxFile, cocos2d::Sprite* Haley,
+                         ToolBar* CurrentToolBar);
     /**
      * @brief �������λ��
      * @param cocos2d::Vec2 pos
@@ -134,13 +139,20 @@ public:
 
     void update(float delta) override;
 
-    static Map* create(const std::string& tmxFile, cocos2d::Sprite* PlayerSprite);
+    static Map* create(const std::string& tmxFile,
+                       cocos2d::Sprite* PlayerSprite,
+                       ToolBar* CurrentToolBar);
 
     // Crop option
     void CropPlant(const Position &PlantPosition, Crops* Crop);
     void CropRemove(const Position& RemovePosition);
     void CropUpdate(const Position& UpdatePosition);
     void ShowCropInformation(Crops *Crop, const Position &InfoPosition, int &priority);
+
+    // Animal option
+    void initAnimalPosition();
+    void updateAnimalSprites(float dt);
+    void ShowAnimalInfomation(cocos2d::Sprite* Animal, const cocos2d::Vec2 &InfoPosition, int &priority);
 };
 
 

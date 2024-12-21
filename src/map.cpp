@@ -2,11 +2,20 @@
 #include "Crops.h"
 #include "cocos2d.h"
 #include "ui/CocosGUI.h"
+#include "Animals.h"
 
-bool Map::initWithTMXFile(const std::string& tmxFile, cocos2d::Sprite* Haley) {
+bool Map::initWithTMXFile(const std::string& tmxFile, cocos2d::Sprite* Haley, ToolBar* CurrentToolBar) {
+
 
     if (!cocos2d::TMXTiledMap::initWithTMXFile(tmxFile)) {
         return false;
+    }
+
+    // test animal
+    for (int i = 0; i < 5; i++) {
+        Pig* testPig;
+        testPig = new Pig;
+        MapAnimals.push_back(testPig);
     }
 
     tileMap = this;  // Assign the current instance to tileMap
@@ -64,10 +73,17 @@ bool Map::initWithTMXFile(const std::string& tmxFile, cocos2d::Sprite* Haley) {
 
     //playerSprite = cocos2d::Sprite::createWithSpriteFrame(spriteFrame);
 
+    // ToolBar init
+    MapToolBar = CurrentToolBar;
+
+    // Player init
     playerSprite = Haley;
     playerSprite->setAnchorPoint(cocos2d::Vec2(0.5f, 0.0f));
-
     playerSprite->setPosition(playerPos);
+
+    // Animal init
+    initAnimalPosition();
+
     CCLOG("Player sprite created at %f %f", playerPos.x, playerPos.y);
     CCLOG("Player sprite created at Tile: %f %f", tileCoordFromPos(playerPos).x,
           tileCoordFromPos(playerPos).y);
@@ -77,9 +93,9 @@ bool Map::initWithTMXFile(const std::string& tmxFile, cocos2d::Sprite* Haley) {
     return true;
 }
 
-Map* Map::create(const std::string& tmxFile, cocos2d::Sprite* Haley) {
+Map* Map::create(const std::string& tmxFile, cocos2d::Sprite* Haley, ToolBar* CurrentToolBar) {
     Map* ret = new (std::nothrow) Map();
-    if (ret && ret->initWithTMXFile(tmxFile, Haley)) {
+    if (ret && ret->initWithTMXFile(tmxFile, Haley, CurrentToolBar)) {
         ret->autorelease();
         return ret;
     } else {
@@ -234,7 +250,7 @@ bool Map::isPortal(cocos2d::Vec2 pos, std::string ObjectLayerName) {
 void Map::triggerPortalEvent(const std::string& portalName) {
     if (portalName == "FarmToHome") {
         CCLOG("Triggering %s event", portalName.c_str());
-        auto house = Map::create("assets/maps/FarmHouse.tmx", playerSprite);
+        auto house = Map::create("assets/maps/FarmHouse.tmx", playerSprite, MapToolBar);
         if (house) {
             house->setPosition(cocos2d::Vec2(200, 200));
             house->setVisible(true);
@@ -323,25 +339,55 @@ void Map::onEnter() {
         }
 
         // Plant
-        // if (Seed in Hand):
         int gid = getTileID(tilePos, "Back");
-        if (PropertyCheck(gid, "Cultivable")) {
-            updateTileAt(tilePos, 557, "Back");
+        if (PropertyCheck(gid, "Cultivable") && MapToolBar->getToolName() == "Hoe") {
+            if(MapToolBar != nullptr) MapToolBar->outputindex();
+            auto PlayerTilePos = tileCoordFromPos(playerPos);
+            if (fabs(PlayerTilePos.x - tilePos.x) > 1 ||
+                fabs(PlayerTilePos.y - tilePos.y) > 1) {
+                CCLOG("Too far to cultivate");
+            } else {
+                updateTileAt(tilePos, 557, "Back");
+                CCLOG("Tile is cultivable\n");
+            }
+        } else {
+            Position PlantTilePos;
+            PlantTilePos.x = tilePos.x;
+            PlantTilePos.y = tilePos.y;
+
+            // take a Strawberry as an example
+            /*Strawberry* exampleStrawberry;
+            exampleStrawberry = new Strawberry;*/
+
+            Potato* exampleStrawberry;
+            exampleStrawberry = new Potato;
+            CCLOG("Potato");
+
+            CropPlant(PlantTilePos, exampleStrawberry);
         }
 
-        Position PlantTilePos;
-        PlantTilePos.x = tilePos.x;
-        PlantTilePos.y = tilePos.y;
+        // Animal
+        float MinDistance = 99999999;
+        cocos2d::Sprite* Closest;
+        for (int i = 0; i < AnimalSprite.size(); i++) {
+            auto SpritePosition = AnimalSprite[i]->getPosition();
+            float Distance =
+                sqrt((SpritePosition.x - pos.x) * (SpritePosition.x - pos.x) +
+                     (SpritePosition.y - pos.y) * (SpritePosition.y - pos.y));
+            CCLOG("Animal Position: %f %f\n", SpritePosition.x,
+                  SpritePosition.y);
+            if (fabs(SpritePosition.x - pos.x) < 20 &&
+                fabs(SpritePosition.y - pos.y) < 20 && Distance < MinDistance) {
+                CCLOG("Sprite clicked!");
+                MinDistance = Distance;
+                Closest = AnimalSprite[i];
+            }
+        }
 
-        // take a Strawberry as an example
-        /*Strawberry* exampleStrawberry;
-        exampleStrawberry = new Strawberry;*/
-
-        Potato* exampleStrawberry;
-        exampleStrawberry = new Potato;
-        CCLOG("Potato");
-
-        CropPlant(PlantTilePos, exampleStrawberry);
+        if (MinDistance < 99999999 && !SpritetoAnimal[Closest]->InfoOpen) {
+            SpritetoAnimal[Closest]->InfoOpen = true;
+            ShowAnimalInfomation(Closest, pos, priority);
+        }
 
         isPortal(pos);
     };
@@ -425,7 +471,7 @@ void Map::load() {
 
 void Map::update(float delta) {
     cocos2d::Vec2 currentPos = getPos();
-    float moveStep = 100.0f * delta; 
+    float moveStep = 80.0f * delta; 
 
     if (isKeyPressedW) {
         currentPos.y += moveStep;

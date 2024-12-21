@@ -107,7 +107,7 @@ public:
     std::string id_;  
     Attribute attribute;
     double attackzone;
-    Bag mybag;
+    //Bag mybag;
     int grade_;
 };
 

@@ -43,6 +43,10 @@ public:
     //CREATE_FUNC(avatarScene);
 
     direction dir;
+    bool isUp = false;
+    bool isDown = false;
+    bool isLeft = false;
+    bool isRight = false;
 };
 
 #endif  // AVATAR_SCENE_H_

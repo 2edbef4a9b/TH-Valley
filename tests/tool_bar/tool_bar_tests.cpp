@@ -41,7 +41,6 @@ public:
             return false;
         }
 
-        scene->addChild(ToolBar::create(), 20);
         // Run.
         director->runWithScene(scene);
 

@@ -36,7 +36,8 @@ public:
 
     void selectTool(int index);
     void updateToolBar();
-
+    std::string getToolName();
+    void outputindex() { CCLOG("Index: %d\n", selectedToolIndex); }
 
 private:
     constexpr static std::string_view kFontPath =

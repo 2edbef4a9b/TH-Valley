@@ -3,6 +3,7 @@
 
 #include "cocos2d.h"
 #include "avatar/avatar.h"
+#include "tool_bar.h"
 
 enum direction { Down = 0, Right = 1, Up = 2, Left = 3 };
 
@@ -10,6 +11,8 @@ namespace th_valley {
 
 class SampleScene : public cocos2d::Scene {
 public:
+    ToolBar* CurrentToolBar;
+
     SampleScene() = default;
     ~SampleScene() override = default;
     SampleScene(const SampleScene& other) = delete;
@@ -31,8 +34,14 @@ public:
     void update(float dt);
 
     cocos2d::Sprite* Haley;
+    std::vector <direction> Alldir;
     bool moved = false;
     bool isattack = false;  // 记录是否发生移动
+    direction dir;
+    bool isUp = false;
+    bool isDown = false;
+    bool isLeft = false;
+    bool isRight = false;
 
     cocos2d::TMXTiledMap* map_;
 
@@ -45,7 +54,6 @@ public:
     static void SetResourcePath(const std::string& path);
 
     CREATE_FUNC(SampleScene);
-    direction dir;
 };
 
 }  // namespace th_valley
