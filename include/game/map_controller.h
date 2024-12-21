@@ -30,8 +30,8 @@ private:
     MapController() = default;
     ~MapController() = default;
 
-    static constexpr std::string kTiledMapPathPrefix = "assets/maps/";
-    static constexpr std::string kTiledMapPathSuffix = ".tmx";
+    const std::string kTiledMapPathPrefix = "assets/maps/";
+    const std::string kTiledMapPathSuffix = ".tmx";
 
     TiledMap* game_tiled_map_;
 };
