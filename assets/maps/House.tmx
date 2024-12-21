@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="12" height="12" tilewidth="16" tileheight="16" infinite="0" nextlayerid="10" nextobjectid="117">
+ <tileset firstgid="1" name="House" tilewidth="16" tileheight="16" tilecount="9025" columns="95">
+  <image source="House.png" width="1520" height="1520"/>
+  <tile id="198">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="199">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="200">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="222">
+   <properties>
+    <property name="Collidable" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="286">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="287">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="288">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="289">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="290">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="291">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="292">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="293">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="294">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="295">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="381">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="388">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="389">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="390">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="1241">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="1242">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="1336">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="1337">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="2090">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="2091">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="2092">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="2093">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="2097">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="2099">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="2100">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="2101">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="2109">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="2185">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="2186">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="2188">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="2189">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="2280">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="2284">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="2375">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="2379">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="2470">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="2474">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="2565">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="2566">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="2567">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="2568">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="2569">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="2570">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="2571">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="2572">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="2660">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="2661">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="2662">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="2663">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="2664">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="2665">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="2755">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="3991">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="3992">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="3993">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="3994">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="4194">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="4195">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="4289">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="4290">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="4384">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+  <tile id="4385">
+   <properties>
+    <property name="Collidable" value="true"/>
+   </properties>
+  </tile>
+ </tileset>
+ <layer id="1" name="Back" width="12" height="12">
+  <data encoding="base64">
+   KwgAACsIAAArCAAAKwgAACsIAAArCAAAKwgAACsIAAArCAAAKwgAACsIAAArCAAAKwgAAMMAAADDAAAAwwAAAMMAAADDAAAAwwAAAMMAAADDAAAAwwAAAMMAAAArCAAAKwgAAMMAAADDAAAAwwAAAMMAAADDAAAAwwAAAMMAAADDAAAAwwAAAMMAAAArCAAAAQAAAFgPAABYDwAAWA8AAFgPAABYDwAAWA8AAFgPAABYDwAAWA8AAFgPAAABAAAAAQAAAFgPAABYDwAAWA8AAFgPAABYDwAAWA8AAFgPAABYDwAAWA8AAFgPAAABAAAAAQAAAFgPAABYDwAAWA8AAFgPAABYDwAAWA8AAFgPAABYDwAAWA8AAFgPAAABAAAAAQAAAFgPAABYDwAAWA8AAFgPAABYDwAAWA8AAFgPAABYDwAAWA8AAFgPAAABAAAAAQAAAFgPAABYDwAAWA8AAFgPAABYDwAAWA8AAFgPAABYDwAAWA8AAFgPAAABAAAAAQAAAFgPAABYDwAAWA8AAFgPAABYDwAAWA8AAFgPAABYDwAAWA8AAFgPAAABAAAAAQAAAFgPAABYDwAAWA8AAFgPAABYDwAAWA8AAFgPAABYDwAAWA8AAFgPAAABAAAAAQAAAFgPAABYDwAAWA8AAFgPAABYDwAAWA8AAFgPAABYDwAAWA8AAFgPAAABAAAAAQAAAFgPAABYDwAAWA8AAFgPAABYDwAAWA8AAFgPAABYDwAAWA8AAFgPAAABAAAA
+  </data>
+ </layer>
+ <layer id="2" name="Back2" width="12" height="12">
+  <data encoding="base64">
+   AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+  </data>
+ </layer>
+ <layer id="3" name="Block" width="12" height="12">
+  <data encoding="base64">
+   AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+  </data>
+ </layer>
+ <layer id="4" name="Interact" width="12" height="12">
+  <data encoding="base64">
+   AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMEAAADBAAAAwQAAAMEAAADBAAAAwQAAAHUEAADBAAAAwQAAAMEAAAAAAAAAAAAAAMEAAADBAAAAwQAAAMEAAADBAAAAwQAAANQEAADBAAAA2g4AANsOAAAAAAAAAAAAACABAAAgAQAAIAEAACABAAAgAQAAIAEAACABAAAgAQAAOQ8AADoPAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAmA8AAJkPAAAAAAAAAAAAAGMQAABkEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMIQAADDEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACERAAAiEQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAogIAAKMCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQMAAAIDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYAMAAGEDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAvwMAAMADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+  </data>
+ </layer>
+ <layer id="5" name="Building" width="12" height="12">
+  <data encoding="base64">
+   AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPALAADxCwAA8gsAAHsEAAB8BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQDAAAAAAAANoEAADbBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACvDAAAAAAAADkFAAA6BQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+  </data>
+ </layer>
+ <layer id="6" name="Paths" width="12" height="12">
+  <data encoding="base64">
+   AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+  </data>
+ </layer>
+ <layer id="7" name="Front" width="12" height="12">
+  <data encoding="base64">
+   NAgAAC0IAAAtCAAALQgAAC0IAAAtCAAALQgAAC0IAAAtCAAALQgAAC0IAAA2CAAA6QgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADtCAAA6QgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADtCAAA6QgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADtCAAA6QgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADtCAAA6QgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADtCAAA6QgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADtCAAA6QgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADtCAAA6QgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADtCAAA6QgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADtCAAABgoAAAcKAAAICgAAAAAAAAkKAAALCgAACwoAAAsKAAALCgAACwoAAAwKAAANCgAAAAAAACsIAABICQAACwoAAKkJAAArCAAAKwgAACsIAAArCAAAKwgAACsIAAAAAAAA
+  </data>
+ </layer>
+ <layer id="8" name="Front2" width="12" height="12">
+  <data encoding="base64">
+   AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+  </data>
+ </layer>
+ <objectgroup id="9" name="Objects">
+  <object id="112" name="Bed" x="147.091" y="124.182" width="26.1818" height="41.0909"/>
+  <object id="115" name="House-Farm" type="Portal" x="48" y="163" width="15.5" height="26.5"/>
+  <object id="116" name="Player" x="137.5" y="118.5" width="21.5" height="35.25">
+   <ellipse/>
+  </object>
+ </objectgroup>
+</map>

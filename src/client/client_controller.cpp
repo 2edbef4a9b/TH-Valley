@@ -1,6 +1,7 @@
 #include "client/client_controller.h"
 
 #include "cocos2d.h"
+#include "frontend/game_scene.h"
 #include "frontend/title_screen.h"
 #include "utility/logger.h"
 
@@ -17,6 +18,7 @@ ClientController& ClientController::GetInstance() {
 }
 
 void ClientController::Update() {
+    auto director = cocos2d::Director::getInstance();
     switch (client_state_) {
         case ClientState::kLoading:
             Logger::GetInstance().LogInfo("GameState Change to Loading");
@@ -26,7 +28,7 @@ void ClientController::Update() {
             break;
         case ClientState::kQuit:
             Logger::GetInstance().LogInfo("GameState Change to Quit");
-            cocos2d::Director::getInstance()->end();
+            director->end();
             break;
         case ClientState::kSettings:
             Logger::GetInstance().LogInfo("GameState Change to Settings");
@@ -36,15 +38,17 @@ void ClientController::Update() {
             break;
         case ClientState::kSinglePlayer:
             Logger::GetInstance().LogInfo("GameState Change to SinglePlayer");
+            director->getOpenGLView()->setDesignResolutionSize(
+                384, 216, ResolutionPolicy::NO_BORDER);
+            director->replaceScene(GameScene::create());
             break;
         case ClientState::kStartUp:
-            SetClientState(ClientState::kTitleScreen);
             Logger::GetInstance().LogInfo("GameState Change to StartUp");
+            SetClientState(ClientState::kTitleScreen);
             break;
         case ClientState::kTitleScreen:
-            cocos2d::Director::getInstance()->replaceScene(
-                TitleScreen::create());
             Logger::GetInstance().LogInfo("GameState Change to TitleScreen");
+            director->replaceScene(TitleScreen::create());
             break;
         default:
             break;

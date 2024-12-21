@@ -16,6 +16,9 @@ public:
 
     bool init() override;
 
+    // add declaration of tiledmap
+    cocos2d::TMXTiledMap* _map;
+
     CREATE_FUNC(SampleScene);
 };
 
