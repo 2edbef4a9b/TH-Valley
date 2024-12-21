@@ -1,3 +1,4 @@
+#include "game/animals.h"
 #include "map.h"
 #include "random"
 #include "ui/CocosGUI.h"
@@ -24,7 +25,8 @@ void Map::initAnimalPosition() {
         AnimalSprite.push_back(MapAnimals[i]->initSprite);
         MapAnimals[i]->initSprite->setPosition(
             cocos2d::Vec2(RandomWidth, RandomHeight));
-        MapAnimals[i]->initSprite->setScale(MapAnimals[i]->scale[MapAnimals[i]->CurrentGrowthStage]);
+        MapAnimals[i]->initSprite->setScale(
+            MapAnimals[i]->scale[MapAnimals[i]->CurrentGrowthStage]);
         CCLOG("Animal at: %d %d\n", RandomWidth, RandomHeight);
         this->addChild(MapAnimals[i]->initSprite);
     }
@@ -91,7 +93,6 @@ void Map::updateAnimalSprites(float dt) {
             CCLOG("Direction: %d\n %f %f\n %d\n", dir, targetX, targetY,
                   SpritetoAnimal[AnimalSprite[i]]->moved);
 
-
             if (SpritetoAnimal[AnimalSprite[i]]->animFrames[dir].empty()) {
                 CCLOG("Animation frames are empty for direction: %d", dir);
             }
@@ -125,11 +126,11 @@ void Map::updateAnimalSprites(float dt) {
                         cocos2d::Vec2(targetX, targetY));
                 },
                 0.1f, "change Target Position");*/
-            //AnimalSprite[i]->runAction(cocos2d::RepeatForever::create(animate));
+            // AnimalSprite[i]->runAction(cocos2d::RepeatForever::create(animate));
 
             auto repeatAnimate = cocos2d::RepeatForever::create(animate);
-            auto moveAction =
-                cocos2d::MoveTo::create(step * 0.1f, cocos2d::Vec2(targetX, targetY));
+            auto moveAction = cocos2d::MoveTo::create(
+                step * 0.1f, cocos2d::Vec2(targetX, targetY));
             auto stopAnimate = cocos2d::CallFunc::create([=]() {
                 AnimalSprite[i]->stopAction(repeatAnimate);  // stop animation
                 AnimalSprite[i]->setTextureRect(
@@ -212,8 +213,8 @@ void Map::ShowAnimalInfomation(cocos2d::Sprite *Animal,
         CCLOG("Stroke button clicked");
         SpritetoAnimal[Animal]->Stroke();
     });
-    //StrokeButton->setTouchEnabled(true);
-    //StrokeButton->setSwallowTouches(true);
+    // StrokeButton->setTouchEnabled(true);
+    // StrokeButton->setSwallowTouches(true);
     middleNode->addChild(StrokeButton, priority);
 
     // Confirm Button
@@ -227,13 +228,14 @@ void Map::ShowAnimalInfomation(cocos2d::Sprite *Animal,
     ConfirmButton->setTitleColor(cocos2d::Color3B::BLACK);
     ConfirmButton->setColor(cocos2d::Color3B::WHITE);
     ConfirmButton->setTitleFontSize(40);
-    ConfirmButton->addClickEventListener([this, middleNode, Animal](cocos2d::Ref *sender) {
+    ConfirmButton->addClickEventListener(
+        [this, middleNode, Animal](cocos2d::Ref *sender) {
             CCLOG("Confirm button clicked");
             middleNode->setVisible(false);
             SpritetoAnimal[Animal]->InfoOpen = false;
             CCLOG("middleNode visibility: %d", middleNode->isVisible());
-    });
-    //ConfirmButton->setTouchEnabled(true);
-    //ConfirmButton->setSwallowTouches(true);
+        });
+    // ConfirmButton->setTouchEnabled(true);
+    // ConfirmButton->setSwallowTouches(true);
     middleNode->addChild(ConfirmButton, priority);
 }

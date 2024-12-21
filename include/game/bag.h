@@ -1,10 +1,10 @@
 #ifndef BAG_H_
 #define BAG_H_
-#include "cocos2d.h"
+#include <string>
 #include <unordered_map>
 #include <vector>
-#include <string>
 
+#include "cocos2d.h"
 
 struct ItemSprite {
     std::string name;
@@ -21,7 +21,6 @@ struct ItemSprite {
           rect(rect) {}
 };
 
-
 class Bag {
 public:
     Bag();
@@ -35,7 +34,7 @@ public:
     void removeItem(const int& key);
     void replaceItem(const int& key,
                      ItemSprite* newItem);  // 更新物品信息
-    void swapItems(int key1, int key2);  // 交换两个物品的位置
+    void swapItems(int key1, int key2);     // 交换两个物品的位置
 
     void bagInit();
     // 新增的 getItems 方法

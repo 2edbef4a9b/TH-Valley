@@ -1,9 +1,6 @@
-#include "bag.h"
+#include "game/bag.h"
 
-
-Bag::Bag() : currentNum_(0), maxNum_(40) {
-    bagInit();
-}
+Bag::Bag() : currentNum_(0), maxNum_(40) { bagInit(); }
 
 Bag::~Bag() {}
 

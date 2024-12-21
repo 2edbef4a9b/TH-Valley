@@ -1,4 +1,4 @@
-#include "tool_bar.h"
+#include "frontend/tool_bar.h"
 
 USING_NS_CC;
 
@@ -23,9 +23,6 @@ bool ToolBar::init() {
     // Load tools
     loadTools();
 
-
-
-
     return true;
 }
 
@@ -37,14 +34,15 @@ void ToolBar::addToolLable() {
         if (i == 9) toolLabel->setString("0");
         toolLabel->setScale(0.2);
         toolLabel->setTextColor(Color4B::GRAY);
-        toolLabel->setAnchorPoint(Vec2(0, 1.5));  // Set anchor point to top-left
+        toolLabel->setAnchorPoint(
+            Vec2(0, 1.5));  // Set anchor point to top-left
         toolLabel->setPosition(
-            Vec2(4 + visible_size_.width / 2 - background_->getContentSize().width / 2 +
-                 i * boxSize, background_->getContentSize().height));
+            Vec2(4 + visible_size_.width / 2 -
+                     background_->getContentSize().width / 2 + i * boxSize,
+                 background_->getContentSize().height));
         this->addChild(toolLabel, 30);
     }
 }
-
 
 void ToolBar::onEnter() {
     Node::onEnter();
@@ -83,7 +81,6 @@ void ToolBar::loadTools() {
         }
     }
 
-
     auto boxSize = background_->getContentSize().width / 10.0;
     const auto& itemSprites = bag_->getItems();
     for (const auto& [index, item] : itemSprites) {
@@ -96,12 +93,11 @@ void ToolBar::loadTools() {
         if (index > 9) continue;
         CCLOG("index in toolBar: %d\n", index);
         auto toolIcon = Sprite::create(item->fileName, item->rect);
-        toolIcon->setAnchorPoint(
-            Vec2(0, 1));  // Set anchor point to top-left
-        toolIcon->setPosition(
-            Vec2(4 + visible_size_.width / 2 -
-                     background_->getContentSize().width / 2 + index * boxSize,
-                 -4 + background_->getContentSize().height));
+        toolIcon->setAnchorPoint(Vec2(0, 1));  // Set anchor point to top-left
+        toolIcon->setPosition(Vec2(4 + visible_size_.width / 2 -
+                                       background_->getContentSize().width / 2 +
+                                       index * boxSize,
+                                   -4 + background_->getContentSize().height));
         this->addChild(toolIcon, 25);
         toolIcons[index] = toolIcon;
 
@@ -154,10 +150,10 @@ void ToolBar::selectTool(int index) {
 
 void ToolBar::updateToolDisplay() {
     for (size_t i = 0; i < toolBorders.size(); ++i) {
-        if (toolBorders[i] != nullptr) toolBorders[i]->setVisible(i == selectedToolIndex);
+        if (toolBorders[i] != nullptr)
+            toolBorders[i]->setVisible(i == selectedToolIndex);
     }
 }
-
 
 void ToolBar::dropCurrentTool() {
     if (selectedToolIndex >= 0 && selectedToolIndex < 10) {
@@ -175,7 +171,6 @@ void ToolBar::dropCurrentTool() {
         CCLOG("Item %s added to bag index %d", item->name.c_str(), index);
     }
     selectedToolIndex = -1;
-
 }
 
 std::string ToolBar::getToolName() {

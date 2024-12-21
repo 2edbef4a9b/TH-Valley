@@ -1,7 +1,6 @@
-#include "bag_gui.h"
+#include "frontend/bag_gui.h"
 
 USING_NS_CC;
-
 
 bool BagGUI::init() {
     if (!Node::init()) {
@@ -13,7 +12,7 @@ bool BagGUI::init() {
 
     // 初始化背景图片
     background_ = Sprite::create("assets/bag/bag_background.png");
-    //background_->setAnchorPoint(Vec2(0, 1));
+    // background_->setAnchorPoint(Vec2(0, 1));
     background_->setPosition(
         Vec2(visible_origin_.x + visible_size_.width / 2,
              visible_origin_.y + visible_size_.height / 2));
@@ -53,7 +52,6 @@ void BagGUI::initBagGUI() {
         CCLOG("2GUI Item %s added to bag index %d", item->name.c_str(), index);
     }
 
-
     int index = 0;
     for (const auto& [index, item] : itemSprites) {
         int row = index / 10;
@@ -66,8 +64,8 @@ void BagGUI::initBagGUI() {
                 background_->getPosition() +
                 Vec2(boxSize / 2 + col * boxSize - boxSize * 5,
                      boxSize / 2 - row * boxSize + boxSize * 1 - 3));
-            CCLOG("Tool icon %s position: (%f, %f)", item->name.c_str(),toolIcon->getPosition().x,
-                  toolIcon->getPosition().y);
+            CCLOG("Tool icon %s position: (%f, %f)", item->name.c_str(),
+                  toolIcon->getPosition().x, toolIcon->getPosition().y);
             this->addChild(toolIcon, 3);
             toolIcon->setVisible(true);
             toolIcons[index] = toolIcon;
@@ -87,7 +85,7 @@ void BagGUI::initBagGUI() {
                          -4 + -toolIcon->getContentSize().height / 2));
                 this->addChild(toolCount);
                 toolCounts[index] = toolCount;
-            } 
+            }
         }
     }
 }
@@ -103,7 +101,7 @@ void BagGUI::onEnter() {
     };
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 
-   // 改回使用 EventListenerMouse
+    // 改回使用 EventListenerMouse
 
     auto mouseListener = EventListenerMouse::create();
     mouseListener->onMouseDown = CC_CALLBACK_1(BagGUI::onMouseDown, this);
@@ -116,7 +114,6 @@ void BagGUI::onEnter() {
 }
 
 void BagGUI::toggleBag() {
-
     if (isBagOpen) {
         displayBagItems();
     } else {
@@ -154,17 +151,16 @@ void BagGUI::createCloseButton() {
                                          [&](Ref* sender) { toggleBag(); });
     closeButton_->setAnchorPoint(Vec2(1, 1));
     closeButton_->setScale(0.3);
-    closeButton_->setPosition(Vec2(
-        background_->getPositionX() + background_->getContentSize().width / 2 - 1,
-        background_->getPositionY() +
-            background_->getContentSize().height / 2 - 1));
-
+    closeButton_->setPosition(
+        Vec2(background_->getPositionX() +
+                 background_->getContentSize().width / 2 - 1,
+             background_->getPositionY() +
+                 background_->getContentSize().height / 2 - 1));
 
     closeButtonMenu_ = Menu::create(closeButton_, nullptr);
     closeButtonMenu_->setPosition(Vec2::ZERO);
     this->addChild(closeButtonMenu_, 2);
     closeButtonMenu_->setVisible(false);
-
 }
 
 void BagGUI::onMouseDown(Event* event) {
@@ -190,7 +186,7 @@ void BagGUI::onMouseDown(Event* event) {
             }
         }
     }
-    //toolBar->loadTools();
+    // toolBar->loadTools();
 }
 
 void BagGUI::onMouseMove(Event* event) {
@@ -199,7 +195,7 @@ void BagGUI::onMouseMove(Event* event) {
     Vec2 location = mouseEvent->getLocationInView();
     location = this->convertToNodeSpace(location);
     selectedItem->setPosition(location);
-    //toolBar->loadTools();
+    // toolBar->loadTools();
 }
 
 void BagGUI::onMouseUp(Event* event) {
@@ -249,8 +245,4 @@ void BagGUI::onMouseUp(Event* event) {
     draggingItemIndex = -1;
     toolBar->loadTools();
     initBagGUI();
-
 }
-
-
-

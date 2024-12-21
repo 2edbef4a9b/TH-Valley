@@ -1,7 +1,8 @@
 #include <cstddef>
 #include <string>
+
+#include "avatar/avatar.h"
 #include "sample/sample_scene.h"
-#include"avatar/avatar.h"
 
 namespace th_valley {
 
@@ -77,8 +78,7 @@ void SampleScene::handleKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode,
         moved = false;
         Haley->setTextureRect(
             cocos2d::Rect(0, dir * 32 + 1, 16, 32));  // Set to idle frame
-    }
-    else {
+    } else {
         dir = Alldir[0];
         CCLOG("Direction: %d\n\n\n", dir);
         animateRunning(dir, 0.06);
@@ -94,7 +94,7 @@ void SampleScene::handleKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode,
         case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_A:
         case cocos2d::EventKeyboard::KeyCode::KEY_A:
             isLeft = true;
-            if(!moved) dir = Left;  // Set direction to left
+            if (!moved) dir = Left;  // Set direction to left
             Alldir.push_back(Left);
             moved = true;  // Mark as moved
             break;
@@ -206,7 +206,7 @@ void SampleScene::handleKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode,
             break;
     }
     if (moved) {
-        //CCLOG("Direction: %d\n", dir);
+        // CCLOG("Direction: %d\n", dir);
         dir = Alldir[0];
         animateRunning(dir, 0.06);
     }
@@ -444,7 +444,7 @@ void SampleScene::attacking(cocos2d::Vec2 tarpos) {
 
 void SampleScene::keyboardreading() {
     // Change the default resource path
-    //SetResourcePath("assets");
+    // SetResourcePath("assets");
     // Create a keyboard listener
     auto keyboardListener = cocos2d::EventListenerKeyboard::create();
     keyboardListener->onKeyPressed =
@@ -513,4 +513,4 @@ void SampleScene::upgradeshow() {
     CCLOG("upgrade!");
 }
 
-}  // namespace thValley
+}  // namespace th_valley

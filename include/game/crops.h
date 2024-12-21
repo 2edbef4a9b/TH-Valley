@@ -5,6 +5,8 @@
 #include <vector>
 
 #include "cocos2d.h"
+#include "game/agriculture.h"
+#include "utility/position.h"
 
 class Crops : public agriculture {
 public:

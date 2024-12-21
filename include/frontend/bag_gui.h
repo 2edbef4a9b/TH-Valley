@@ -1,15 +1,14 @@
 #ifndef BAG_GUI_H_
 #define BAG_GUI_H_
 
+#include <memory>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#include <memory>
-#include <bag.h>
-#include "tool_bar.h"
 
 #include "cocos2d.h"
-
+#include "game/bag.h"
+#include "tool_bar.h"
 
 class BagGUI : public cocos2d::Layer {
 public:
@@ -21,7 +20,7 @@ public:
     BagGUI& operator=(BagGUI&& other) = delete;
     bool init() override;
     void onEnter() override;
-     //void update(float delta) override;
+    // void update(float delta) override;
 
     CREATE_FUNC(BagGUI);
 
@@ -41,7 +40,6 @@ private:
     cocos2d::MenuItemImage* closeButton_;  // 关闭按钮
     cocos2d::Menu* closeButtonMenu_;
 
-
     bool isBagOpen = false;  // 背包是否打开
     void displayBagItems();
     void hideBagItems();
@@ -51,10 +49,9 @@ private:
     void onMouseMove(cocos2d::Event* event);
     void onMouseUp(cocos2d::Event* event);
 
-
-    cocos2d::Vec2 originalPosition;      // 物品的原始位置
-    int draggingItemIndex = -1;          // 正在拖拽物品的索引
-    cocos2d::Sprite* selectedItem = nullptr;      // 当前选中的物品
+    cocos2d::Vec2 originalPosition;           // 物品的原始位置
+    int draggingItemIndex = -1;               // 正在拖拽物品的索引
+    cocos2d::Sprite* selectedItem = nullptr;  // 当前选中的物品
 
     cocos2d::Label* toolCounts[40] = {nullptr};  // Labels for tool counts
     cocos2d::Sprite* toolIcons[40] = {nullptr};
@@ -62,7 +59,6 @@ private:
     void initBagGUI();
 
     std::map<ItemSprite*, cocos2d::Vec2> itemPositions;
-
 };
 
 #endif  // BAG_GUI_H_

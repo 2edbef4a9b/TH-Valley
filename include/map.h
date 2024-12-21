@@ -5,11 +5,11 @@
 #include <unordered_map>
 #include <vector>
 
-#include "agriculture.h"
-#include "bag_gui.h"
 #include "cocos2d.h"
-#include "position.h"
-#include "tool_bar.h"
+#include "frontend/bag_gui.h"
+#include "frontend/tool_bar.h"
+#include "game/agriculture.h"
+#include "utility/position.h"
 
 struct Tile {
     int x, y;

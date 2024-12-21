@@ -1,11 +1,11 @@
-#include "map.h"
-#include "Crops.h"
 #include "cocos2d.h"
+#include "game/crops.h"
+#include "map.h"
 #include "ui/CocosGUI.h"
 
 void Map::CropPlant(const Position& PlantPosition, Crops* Crop) {
     // Position check
-    //static int priority = 3;
+    // static int priority = 3;
     auto PlayerTilePos = tileCoordFromPos(playerPos);
     if (fabs(PlayerTilePos.x - PlantPosition.x) > 1 ||
         fabs(PlayerTilePos.y - PlantPosition.y) > 1) {

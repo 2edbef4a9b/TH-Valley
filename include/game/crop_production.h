@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "game/agriculture.h"
+#include "game/crops.h"
 
 class CropProduction : public agriculture {
 public:

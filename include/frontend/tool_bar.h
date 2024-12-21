@@ -1,12 +1,12 @@
 #ifndef TOOL_BAR_H_
 #define TOOL_BAR_H_
 
-#include "cocos2d.h"
-
+#include <string>
 #include <unordered_map>
 #include <vector>
-#include <string>
-#include "bag.h"
+
+#include "cocos2d.h"
+#include "game/bag.h"
 
 class ToolBar : public cocos2d::Layer {
 public:
@@ -38,7 +38,7 @@ private:
 
     cocos2d::Vec2 draggingToolOffset;
 
-    cocos2d::Sprite* background_;  // background image
+    cocos2d::Sprite* background_;                   // background image
     std::vector<cocos2d::LayerColor*> toolBorders;  // Borders for tools
     std::vector<cocos2d::Label*> toolCounts;        // Labels for tool counts
     cocos2d::Sprite* toolIcons[10] = {nullptr};
@@ -50,9 +50,8 @@ private:
     void updateToolDisplay();
     void dropCurrentTool();
 
-    //std::unordered_map<int, ItemSprite*> itemSprites;  // Container for item sprites
+    // std::unordered_map<int, ItemSprite*> itemSprites;  // Container for item
+    // sprites
 };
-
-
 
 #endif  // TOOL_BAR_H_

@@ -2,10 +2,10 @@
 #define SAMPLE_SCENE_H_
 
 #include "avatar/avatar.h"
-#include "bag.h"
-#include "bag_gui.h"
 #include "cocos2d.h"
-#include "tool_bar.h"
+#include "frontend/bag_gui.h"
+#include "frontend/tool_bar.h"
+#include "game/bag.h"
 
 enum direction { Down = 0, Right = 1, Up = 2, Left = 3 };
 

@@ -1,13 +1,14 @@
 #ifndef WEATHER_H_
 #define WEATHER_H_
 
-#include "cocos2d.h"
-#include "worldtime.h"
 #include <string>
+
+#include "cocos2d.h"
+#include "game/worldtime.h"
 
 class Weather {
 public:
-    const int WeatherTotal = 3 ; // the total types of weather
+    const int WeatherTotal = 3;  // the total types of weather
     WorldTime CurrentTime;
     std::string WeatherType;
     int TypeDuringTime;

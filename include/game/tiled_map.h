@@ -6,8 +6,14 @@
 #include <unordered_map>
 
 #include "cocos2d.h"
+#include "frontend/bag_gui.h"
+#include "frontend/tool_bar.h"
+#include "game/animals.h"
 #include "game/map_controller.h"
 #include "math/CCGeometry.h"
+#include "utility/position.h"
+
+class Crops;
 
 namespace th_valley {
 
@@ -76,6 +82,16 @@ private:
     bool is_key_pressed_s_{false};
     bool is_key_pressed_d_{false};
     bool is_teleporting_{false};
+
+    std::map<Position, Crops*> CropPosition;
+    std::map<Position, cocos2d::Sprite*> SpritePosition;
+    std::map<cocos2d::Sprite*, Animals*> SpritetoAnimal;
+    std::vector<Crops*> MapCrops;
+    std::vector<Animals*> MapAnimals;
+    std::vector<cocos2d::Sprite*> AnimalSprite;
+    ToolBar* MapToolBar{};
+    BagGUI* MapBag{};
+    int priority = 255;
 };
 
 }  // namespace th_valley

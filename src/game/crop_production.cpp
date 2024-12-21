@@ -1,4 +1,5 @@
 #include "game/crop_production.h"
+#include "game/crops.h"
 
 void CropProduction::CropProductionAutoUpdate() {
     for (int i = 0; i < TotalCrops; i++) {

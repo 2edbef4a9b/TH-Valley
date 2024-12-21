@@ -1,4 +1,4 @@
-#include "worldtime.h"
+#include "game/worldtime.h"
 
 void WorldTime::TimeNext() {
     // Second, Minute, Hour Update
@@ -41,7 +41,7 @@ void WorldTime::TimeNext() {
         Year++;
     }
 
-    //SeasonUpdate
+    // SeasonUpdate
     CalculateSeason();
 }
 
