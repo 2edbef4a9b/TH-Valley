@@ -9,7 +9,7 @@
 namespace th_valley {
 
 TiledMap::Portal::Portal(const std::string& portal_name) {
-    std::regex portal_regex(R"((\w+)To(\w+))");
+    std::regex portal_regex(R"((\w+)-(\w+))");
     std::smatch match;
     if (std::regex_match(portal_name, match, portal_regex)) {
         from_map_ = match[1];
@@ -24,11 +24,11 @@ std::string TiledMap::Portal::GetFromMap() const { return from_map_; }
 std::string TiledMap::Portal::GetToMap() const { return to_map_; }
 
 std::string TiledMap::Portal::GetPortalName() const {
-    return from_map_ + "To" + to_map_;
+    return from_map_ + "-" + to_map_;
 }
 
 std::string TiledMap::Portal::GetOppositePortalName() const {
-    return to_map_ + "To" + from_map_;
+    return to_map_ + "-" + from_map_;
 }
 
 TiledMap::Portal TiledMap::Portal::GetOppositePorta() const {

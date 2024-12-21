@@ -71,10 +71,10 @@ private:
     cocos2d::Vec2 playerPos_;
     cocos2d::Sprite* playerSprite_{};
 
-    bool is_key_pressed_w_{};
-    bool is_key_pressed_a_{};
-    bool is_key_pressed_s_{};
-    bool is_key_pressed_d_{};
+    bool is_key_pressed_w_{false};
+    bool is_key_pressed_a_{false};
+    bool is_key_pressed_s_{false};
+    bool is_key_pressed_d_{false};
     bool is_teleporting_{false};
 };
 
