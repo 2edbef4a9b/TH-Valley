@@ -52,10 +52,8 @@ bool SampleApplication::applicationDidFinishLaunching() {
         return false;
     }
 
-
     // Run.
     director->runWithScene(scene);
-    
 
     return true;
 }

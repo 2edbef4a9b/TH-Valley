@@ -2,6 +2,8 @@
 #define GAME_SCENE_H_
 
 #include "cocos2d.h"
+#include "frontend/bag_gui.h"
+#include "frontend/tool_bar.h"
 #include "game/tiled_map.h"
 
 namespace th_valley {
@@ -17,10 +19,15 @@ public:
 
     bool init() override;
 
+    // For accessing the current selected tool.
+    ToolBar* GetToolBar();
+
     CREATE_FUNC(GameScene);
 
 private:
     static constexpr std::string_view kInitialMap = "Farm";
+    BagGUI* bag_gui_;
+    ToolBar* tool_bar_;
 };
 
 }  // namespace th_valley

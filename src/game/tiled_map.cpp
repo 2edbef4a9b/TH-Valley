@@ -3,6 +3,8 @@
 #include <optional>
 #include <regex>
 
+#include "frontend/game_scene.h"
+#include "game/pig.h"
 #include "math/CCGeometry.h"
 #include "utility/logger.h"
 
@@ -77,57 +79,38 @@ bool TiledMap::InitWithTMXFile(const std::string& tmxFile) {
         }
     }
 
-    objectGroup_ = tiled_map_->getObjectGroup("Objects");
-    if (objectGroup_ == nullptr) {
+    object_group_ = tiled_map_->getObjectGroup("Objects");
+    if (object_group_ == nullptr) {
         CCLOG("ObjectGroup 'Objects' not found");
     } else {
         CCLOG("ObjectGroup 'Objects' loaded successfully");
     }
 
-    auto player = objectGroup_->getObject("Player");
+    auto player = object_group_->getObject("Player");
     if (!player.empty()) {
         float x = player.at("x").asFloat();
         float y = player.at("y").asFloat();
-        playerPos_ = cocos2d::Vec2(x, y);
+        player_pos_ = cocos2d::Vec2(x, y);
     } else {
         CCLOG("Player object not found");
-        playerPos_ = cocos2d::Vec2::ZERO;
+        player_pos_ = cocos2d::Vec2::ZERO;
     }
-    CCLOG("Player position set to: %f, %f", playerPos_.x, playerPos_.y);
-    CCLOG("Player position set to Tile: %f, %f", TileCoordFromPos(playerPos_).x,
-          TileCoordFromPos(playerPos_).y);
-    SetViewpointCenter(playerPos_);
+    CCLOG("Player position set to: %f, %f", player_pos_.x, player_pos_.y);
+    CCLOG("Player position set to Tile: %f, %f",
+          TileCoordFromPos(player_pos_).x, TileCoordFromPos(player_pos_).y);
+    SetViewpointCenter(player_pos_);
 
-    // auto texture =
-    //     cocos2d::Director::getInstance()->getTextureCache()->addImage(
-    //         "assets/tilesheets/Sebastian.png");
-
-    // cocos2d::Rect frameRect(0, 0, 16, 32);
-    // auto spriteFrame =
-    //     cocos2d::SpriteFrame::createWithTexture(texture, frameRect);
-    // playerSprite_ = cocos2d::Sprite::createWithSpriteFrame(spriteFrame);
-    // playerSprite_->setAnchorPoint(cocos2d::Vec2(0.5f, 0.0f));
-    // playerSprite_->setPosition(playerPos_);
-    // CCLOG("Player sprite created at %f %f", playerPos_.x, playerPos_.y);
-    // CCLOG("Player sprite created at Tile: %f %f",
-    //       TileCoordFromPos(playerPos_).x, TileCoordFromPos(playerPos_).y);
-    // tiled_map_->addChild(playerSprite_, 2);
-
-    auto texture =
-        cocos2d::Director::getInstance()->getTextureCache()->addImage(
-            "assets/tilesheets/koishi.png");
-
-    cocos2d::Rect frameRect(0, 0, 3072, 3072);
-    auto spriteFrame =
-        cocos2d::SpriteFrame::createWithTexture(texture, frameRect);
-    playerSprite_ = cocos2d::Sprite::createWithSpriteFrame(spriteFrame);
-    playerSprite_->setScale(32.0f / 3072.0f);
-    playerSprite_->setAnchorPoint(cocos2d::Vec2(0.5f, 0.0f));
-    playerSprite_->setPosition(playerPos_);
-    CCLOG("Player sprite created at %f %f", playerPos_.x, playerPos_.y);
+    avatar.InitEntity(tiled_map_);
+    avatar.setPosition(player_pos_);
+    CCLOG("Player sprite created at %f %f", player_pos_.x, player_pos_.y);
     CCLOG("Player sprite created at Tile: %f %f",
-          TileCoordFromPos(playerPos_).x, TileCoordFromPos(playerPos_).y);
-    tiled_map_->addChild(playerSprite_, 2);
+          TileCoordFromPos(player_pos_).x, TileCoordFromPos(player_pos_).y);
+
+    for (int pig_count = 0; pig_count < 10; pig_count++) {
+        Pig* pig = new Pig;
+        MapAnimals.push_back(pig);
+    }
+    initAnimalPosition();
 
     return true;
 }
@@ -184,14 +167,14 @@ void TiledMap::SetPlayerPos(cocos2d::Vec2 pos) {
     pos.x = std::max(0.0F, std::min(pos.x, map_width));
     pos.y = std::max(0.0F, std::min(pos.y, map_height));
 
-    playerPos_ = pos;
+    player_pos_ = pos;
     Logger::GetInstance().LogInfo("Player position set to: {}, {}",
-                                  playerPos_.x, playerPos_.y);
+                                  player_pos_.x, player_pos_.y);
     Logger::GetInstance().LogInfo("Tile: {}, {}",
-                                  TileCoordFromPos(playerPos_).x,
-                                  TileCoordFromPos(playerPos_).y);
-    SetViewpointCenter(playerPos_);
-    playerSprite_->setPosition(playerPos_);
+                                  TileCoordFromPos(player_pos_).x,
+                                  TileCoordFromPos(player_pos_).y);
+    SetViewpointCenter(player_pos_);
+    avatar.setPosition(player_pos_);
 }
 
 void TiledMap::SetTeleportStatus(bool status) { is_teleporting_ = status; }
@@ -214,40 +197,63 @@ void TiledMap::onEnter() {
                                        cocos2d::Event* event) {
         switch (keyCode) {
             case cocos2d::EventKeyboard::KeyCode::KEY_W:
+            case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_W:
                 is_key_pressed_w_ = true;
+                avatar.ChangeDirection(Entity::Direction::kUp);
                 break;
             case cocos2d::EventKeyboard::KeyCode::KEY_S:
+            case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_S:
                 is_key_pressed_s_ = true;
+                avatar.ChangeDirection(Entity::Direction::kDown);
                 break;
             case cocos2d::EventKeyboard::KeyCode::KEY_A:
+            case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_A:
                 is_key_pressed_a_ = true;
+                avatar.ChangeDirection(Entity::Direction::kLeft);
                 break;
             case cocos2d::EventKeyboard::KeyCode::KEY_D:
+            case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_D:
                 is_key_pressed_d_ = true;
+                avatar.ChangeDirection(Entity::Direction::kRight);
                 break;
+            case cocos2d::EventKeyboard::KeyCode::KEY_E:
+            case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_E:
+                if (tiled_map_->getParent()) {
+                    avatar.UseTool(dynamic_cast<GameScene*>(this->getParent())
+                                       ->GetToolBar()
+                                       ->getToolName());
+                } else {
+                    Logger::GetInstance().LogError("Parent node is null");
+                }
             default:
                 break;
         }
+        avatar.RenderMove();
     };
 
     keyListener->onKeyReleased = [this](cocos2d::EventKeyboard::KeyCode keyCode,
                                         cocos2d::Event* event) {
         switch (keyCode) {
             case cocos2d::EventKeyboard::KeyCode::KEY_W:
+            case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_W:
                 is_key_pressed_w_ = false;
                 break;
             case cocos2d::EventKeyboard::KeyCode::KEY_S:
+            case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_S:
                 is_key_pressed_s_ = false;
                 break;
             case cocos2d::EventKeyboard::KeyCode::KEY_A:
+            case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_A:
                 is_key_pressed_a_ = false;
                 break;
             case cocos2d::EventKeyboard::KeyCode::KEY_D:
+            case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_D:
                 is_key_pressed_d_ = false;
                 break;
             default:
                 break;
         }
+        avatar.stopAllActions();
     };
 
     cocos2d::EventDispatcher* dispatcher =
@@ -256,6 +262,7 @@ void TiledMap::onEnter() {
     dispatcher->addEventListenerWithSceneGraphPriority(keyListener, this);
 
     this->scheduleUpdate();
+    avatar.scheduleUpdate();
 }
 
 void TiledMap::update(const float delta) {
@@ -290,6 +297,7 @@ void TiledMap::update(const float delta) {
         is_key_pressed_d_) {
         if (IsCollisionAtAnyLayer(current_pos)) {
             Logger::GetInstance().LogInfo("Collision detected");
+            avatar.SetState(Entity::EntityState::kIdle);
         } else {
             SetPlayerPos(current_pos);
         }
@@ -328,7 +336,7 @@ bool TiledMap::IsCollisionAtAnyLayer(cocos2d::Vec2 pos) {
     return false;
 }
 
-cocos2d::Vec2 TiledMap::GetPos() { return playerPos_; }
+cocos2d::Vec2 TiledMap::GetPos() { return player_pos_; }
 
 cocos2d::Vec2 TiledMap::TileCoordFromPos(cocos2d::Vec2 pos) {
     int x = pos.x / tiled_map_->getTileSize().width;
@@ -337,6 +345,50 @@ cocos2d::Vec2 TiledMap::TileCoordFromPos(cocos2d::Vec2 pos) {
          pos.y) /
         tiled_map_->getTileSize().height;
     return cocos2d::Vec2(x, y);
+}
+
+cocos2d::Vec2 TiledMap::PosFromtileCoord(Position PlantPosition) {
+    cocos2d::Vec2 PicturePosition;
+    PicturePosition.x = PlantPosition.x * tiled_map_->getTileSize().width;
+    PicturePosition.y =
+        (tiled_map_->getMapSize().height * tiled_map_->getTileSize().height) -
+        PlantPosition.y * tiled_map_->getTileSize().height;
+    PicturePosition.x += tiled_map_->getTileSize().width / 2;
+    PicturePosition.y -= tiled_map_->getTileSize().height / 2;
+    return PicturePosition;
+}
+
+int TiledMap::GetTileID(cocos2d::Vec2 tileCoord, std::string LayerName) {
+    auto layer = tiled_map_->getLayer(LayerName);
+    int gid = layer->getTileGIDAt(tileCoord);
+    if (gid == 0) {
+        CCLOG("No tile at this position\n");
+        return 0;
+    }
+    return gid;
+}
+
+bool TiledMap::PropertyCheck(int gid, std::string property) {
+    cocos2d::Value properties = tiled_map_->getPropertiesForGID(gid);
+    if (properties.isNull()) {
+        CCLOG("There is no properties\n");
+        return false;
+    } else {
+        cocos2d::ValueMap propertyMap = properties.asValueMap();
+        auto it = propertyMap.find(property);
+        if (it != propertyMap.end()) {
+            bool isCorrect = it->second.asBool();
+            if (isCorrect) {
+                CCLOG("%s is true\n", property.c_str());
+                return true;
+            } else {
+                CCLOG("%s is false\n", property.c_str());
+                return false;
+            }
+        }
+        CCLOG("Not find property: %s\n", property.c_str());
+        return false;
+    }
 }
 
 std::optional<TiledMap::Portal> TiledMap::GetPortal(
