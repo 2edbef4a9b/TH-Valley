@@ -9,8 +9,12 @@
 #include "frontend/bag_gui.h"
 #include "frontend/tool_bar.h"
 #include "game/animals.h"
+#include "game/avatar.h"
 #include "game/map_controller.h"
 #include "math/CCGeometry.h"
+#include "utility/position.h"
+
+class Crops;
 #include "utility/position.h"
 
 class Crops;
@@ -70,6 +74,10 @@ private:
 
     int GetTileID(cocos2d::Vec2 tileCoord, std::string LayerName);
     bool PropertyCheck(int gid, std::string property);
+    cocos2d::Vec2 PosFromtileCoord(Position pos);
+
+    int GetTileID(cocos2d::Vec2 tileCoord, std::string LayerName);
+    bool PropertyCheck(int gid, std::string property);
 
     std::optional<Portal> GetPortal(
         cocos2d::Vec2 pos, std::string_view ObjectLayerName = "Objects") const;
@@ -77,6 +85,19 @@ private:
     void SetViewpointCenter(cocos2d::Vec2 pos);
     void UpdateTileAt(cocos2d::Vec2 tileCoord, int newGID,
                       std::string LayerName);
+
+    // Crop option
+    void CropPlant(const Position& PlantPosition, Crops* Crop);
+    void CropRemove(const Position& RemovePosition);
+    void CropUpdate(const Position& UpdatePosition);
+    void ShowCropInformation(Crops* Crop, const Position& InfoPosition,
+                             int& priority);
+
+    // Animal option
+    void initAnimalPosition();
+    void updateAnimalSprites(float dt);
+    void ShowAnimalInfomation(cocos2d::Sprite* Animal,
+                              const cocos2d::Vec2& InfoPosition, int& priority);
 
     // Crop option
     void CropPlant(const Position& PlantPosition, Crops* Crop);

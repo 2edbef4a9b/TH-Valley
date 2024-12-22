@@ -3,11 +3,12 @@
 #include <optional>
 #include <regex>
 
+#include "frontend/game_scene.h"
+#include "game/crop_production.h"
 #include "game/pig.h"
+#include "game/vegetables.h"
 #include "math/CCGeometry.h"
 #include "utility/logger.h"
-#include "game/vegetables.h"
-#include "game/crop_production.h"
 
 namespace th_valley {
 
@@ -101,41 +102,16 @@ bool TiledMap::InitWithTMXFile(const std::string& tmxFile) {
           TileCoordFromPos(player_pos_).x, TileCoordFromPos(player_pos_).y);
     SetViewpointCenter(player_pos_);
 
-    // auto texture =
-    //     cocos2d::Director::getInstance()->getTextureCache()->addImage(
-    //         "assets/tilesheets/Sebastian.png");
-
-    // cocos2d::Rect frameRect(0, 0, 16, 32);
-    // auto spriteFrame =
-    //     cocos2d::SpriteFrame::createWithTexture(texture, frameRect);
-    // playerSprite_ = cocos2d::Sprite::createWithSpriteFrame(spriteFrame);
-    // playerSprite_->setAnchorPoint(cocos2d::Vec2(0.5f, 0.0f));
-    // playerSprite_->setPosition(playerPos_);
-    // CCLOG("Player sprite created at %f %f", playerPos_.x, playerPos_.y);
-    // CCLOG("Player sprite created at Tile: %f %f",
-    //       TileCoordFromPos(playerPos_).x, TileCoordFromPos(playerPos_).y);
-    // tiled_map_->addChild(playerSprite_, 2);
-
-    auto texture =
-        cocos2d::Director::getInstance()->getTextureCache()->addImage(
-            "assets/tilesheets/Sebastian.png");
-
-    cocos2d::Rect frameRect(0, 0, 16, 32);
-    auto spriteFrame =
-        cocos2d::SpriteFrame::createWithTexture(texture, frameRect);
-    player_sprite_ = cocos2d::Sprite::createWithSpriteFrame(spriteFrame);
-    //player_sprite_->setScale(32.0f / 3072.0f);
-    player_sprite_->setAnchorPoint(cocos2d::Vec2(0.5f, 0.0f));
-    player_sprite_->setPosition(player_pos_);
+    avatar.InitEntity(tiled_map_);
+    avatar.setPosition(player_pos_);
     CCLOG("Player sprite created at %f %f", player_pos_.x, player_pos_.y);
     CCLOG("Player sprite created at Tile: %f %f",
           TileCoordFromPos(player_pos_).x, TileCoordFromPos(player_pos_).y);
-    tiled_map_->addChild(player_sprite_, 2);
 
-    //for (int pig_count = 0; pig_count < 10; pig_count++) {
-    //    Pig* pig = new Pig;
-    //    MapAnimals.push_back(pig);
-    //}
+    for (int pig_count = 0; pig_count < 10; pig_count++) {
+        Pig* pig = new Pig;
+        MapAnimals.push_back(pig);
+    }
     initAnimalPosition();
 
     return true;
@@ -200,7 +176,7 @@ void TiledMap::SetPlayerPos(cocos2d::Vec2 pos) {
                                   TileCoordFromPos(player_pos_).x,
                                   TileCoordFromPos(player_pos_).y);
     SetViewpointCenter(player_pos_);
-    player_sprite_->setPosition(player_pos_);
+    avatar.setPosition(player_pos_);
 }
 
 void TiledMap::SetTeleportStatus(bool status) { is_teleporting_ = status; }
@@ -211,9 +187,10 @@ void TiledMap::onEnter() {
 
     auto listener = cocos2d::EventListenerMouse::create();
 
-	listener->onMouseDown = [this](cocos2d::Event* event) {
+    listener->onMouseDown = [this](cocos2d::Event* event) {
         auto mouseEvent = dynamic_cast<cocos2d::EventMouse*>(event);
-        auto pos = tiled_map_->convertToNodeSpace(mouseEvent->getLocationInView());
+        auto pos =
+            tiled_map_->convertToNodeSpace(mouseEvent->getLocationInView());
         auto tilePos = TileCoordFromPos(pos);
         CCLOG("Mouse Down Tile: %f, %f", tilePos.x, tilePos.y);
         CCLOG("Mouse Down: %f, %f", pos.x, pos.y);
@@ -298,40 +275,63 @@ void TiledMap::onEnter() {
                                        cocos2d::Event* event) {
         switch (keyCode) {
             case cocos2d::EventKeyboard::KeyCode::KEY_W:
+            case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_W:
                 is_key_pressed_w_ = true;
+                avatar.ChangeDirection(Entity::Direction::kUp);
                 break;
             case cocos2d::EventKeyboard::KeyCode::KEY_S:
+            case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_S:
                 is_key_pressed_s_ = true;
+                avatar.ChangeDirection(Entity::Direction::kDown);
                 break;
             case cocos2d::EventKeyboard::KeyCode::KEY_A:
+            case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_A:
                 is_key_pressed_a_ = true;
+                avatar.ChangeDirection(Entity::Direction::kLeft);
                 break;
             case cocos2d::EventKeyboard::KeyCode::KEY_D:
+            case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_D:
                 is_key_pressed_d_ = true;
+                avatar.ChangeDirection(Entity::Direction::kRight);
                 break;
+            case cocos2d::EventKeyboard::KeyCode::KEY_E:
+            case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_E:
+                if (tiled_map_->getParent()) {
+                    avatar.UseTool(dynamic_cast<GameScene*>(this->getParent())
+                                       ->GetToolBar()
+                                       ->getToolName());
+                } else {
+                    Logger::GetInstance().LogError("Parent node is null");
+                }
             default:
                 break;
         }
+        avatar.RenderMove();
     };
 
     keyListener->onKeyReleased = [this](cocos2d::EventKeyboard::KeyCode keyCode,
                                         cocos2d::Event* event) {
         switch (keyCode) {
             case cocos2d::EventKeyboard::KeyCode::KEY_W:
+            case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_W:
                 is_key_pressed_w_ = false;
                 break;
             case cocos2d::EventKeyboard::KeyCode::KEY_S:
+            case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_S:
                 is_key_pressed_s_ = false;
                 break;
             case cocos2d::EventKeyboard::KeyCode::KEY_A:
+            case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_A:
                 is_key_pressed_a_ = false;
                 break;
             case cocos2d::EventKeyboard::KeyCode::KEY_D:
+            case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_D:
                 is_key_pressed_d_ = false;
                 break;
             default:
                 break;
         }
+        avatar.stopAllActions();
     };
 
     cocos2d::EventDispatcher* dispatcher =
@@ -340,6 +340,7 @@ void TiledMap::onEnter() {
     dispatcher->addEventListenerWithSceneGraphPriority(keyListener, this);
 
     this->scheduleUpdate();
+    avatar.scheduleUpdate();
 }
 
 void TiledMap::update(const float delta) {
@@ -370,11 +371,12 @@ void TiledMap::update(const float delta) {
         current_pos.x += move_step;
     }
 
-    //CCLOG("current_pos: %d %d", current_pos.x, current_pos.y);
+    // CCLOG("current_pos: %d %d", current_pos.x, current_pos.y);
     if (is_key_pressed_w_ || is_key_pressed_s_ || is_key_pressed_a_ ||
         is_key_pressed_d_) {
         if (IsCollisionAtAnyLayer(current_pos)) {
             Logger::GetInstance().LogInfo("Collision detected");
+            avatar.SetState(Entity::EntityState::kIdle);
         } else {
             SetPlayerPos(current_pos);
         }
@@ -434,7 +436,6 @@ cocos2d::Vec2 TiledMap::PosFromtileCoord(Position PlantPosition) {
     PicturePosition.y -= tiled_map_->getTileSize().height / 2;
     return PicturePosition;
 }
-
 
 int TiledMap::GetTileID(cocos2d::Vec2 tileCoord, std::string LayerName) {
     auto layer = tiled_map_->getLayer(LayerName);

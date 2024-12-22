@@ -1,9 +1,9 @@
 #include <gtest/gtest.h>
 
+#include "frontend/bag_gui.h"
+#include "frontend/tool_bar.h"
 #include "sample/sample_application.h"
 #include "sample/sample_scene.h"
-#include "frontend/tool_bar.h"
-#include "frontend/bag_gui.h"
 
 class BagGUITestsApp : public th_valley::SampleApplication {
 public:
@@ -42,12 +42,12 @@ public:
 
         // Create a scene. It's an autorelease object.
         auto *scene = th_valley::SampleScene::create();
-        //scene->CurrentToolBar = toolBar;
+        // scene->CurrentToolBar = toolBar;
         if (scene == nullptr) {
             return false;
         }
 
-        //Bag->setVisible(false);
+        // Bag->setVisible(false);
 
         /*scene->addChild(toolBar, 20);
         scene->addChild(Bag, 21);*/

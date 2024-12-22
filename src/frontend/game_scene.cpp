@@ -23,4 +23,6 @@ bool GameScene::init() {
     return true;
 }
 
+ToolBar* GameScene::GetToolBar() { return tool_bar_; }
+
 }  // namespace th_valley

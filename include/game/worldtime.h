@@ -1,8 +1,9 @@
 #ifndef WORLDTIME_H_
 #define WORLDTIME_H_
 
-#include "cocos2d.h"
 #include <string>
+
+#include "cocos2d.h"
 
 class WorldTime {
 public:
