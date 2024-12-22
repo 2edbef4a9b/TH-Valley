@@ -6,6 +6,8 @@
 #include "game/pig.h"
 #include "math/CCGeometry.h"
 #include "utility/logger.h"
+#include "game/vegetables.h"
+#include "game/crop_production.h"
 
 namespace th_valley {
 
@@ -116,13 +118,13 @@ bool TiledMap::InitWithTMXFile(const std::string& tmxFile) {
 
     auto texture =
         cocos2d::Director::getInstance()->getTextureCache()->addImage(
-            "assets/tilesheets/koishi.png");
+            "assets/tilesheets/Sebastian.png");
 
-    cocos2d::Rect frameRect(0, 0, 3072, 3072);
+    cocos2d::Rect frameRect(0, 0, 16, 32);
     auto spriteFrame =
         cocos2d::SpriteFrame::createWithTexture(texture, frameRect);
     player_sprite_ = cocos2d::Sprite::createWithSpriteFrame(spriteFrame);
-    player_sprite_->setScale(32.0f / 3072.0f);
+    //player_sprite_->setScale(32.0f / 3072.0f);
     player_sprite_->setAnchorPoint(cocos2d::Vec2(0.5f, 0.0f));
     player_sprite_->setPosition(player_pos_);
     CCLOG("Player sprite created at %f %f", player_pos_.x, player_pos_.y);
@@ -130,10 +132,10 @@ bool TiledMap::InitWithTMXFile(const std::string& tmxFile) {
           TileCoordFromPos(player_pos_).x, TileCoordFromPos(player_pos_).y);
     tiled_map_->addChild(player_sprite_, 2);
 
-    for (int pig_count = 0; pig_count < 10; pig_count++) {
-        Pig* pig = new Pig;
-        MapAnimals.push_back(pig);
-    }
+    //for (int pig_count = 0; pig_count < 10; pig_count++) {
+    //    Pig* pig = new Pig;
+    //    MapAnimals.push_back(pig);
+    //}
     initAnimalPosition();
 
     return true;
@@ -209,6 +211,81 @@ void TiledMap::onEnter() {
 
     auto listener = cocos2d::EventListenerMouse::create();
 
+	listener->onMouseDown = [this](cocos2d::Event* event) {
+        auto mouseEvent = dynamic_cast<cocos2d::EventMouse*>(event);
+        auto pos = tiled_map_->convertToNodeSpace(mouseEvent->getLocationInView());
+        auto tilePos = TileCoordFromPos(pos);
+        CCLOG("Mouse Down Tile: %f, %f", tilePos.x, tilePos.y);
+        CCLOG("Mouse Down: %f, %f", pos.x, pos.y);
+
+        for (const auto& layer : map_layer_) {
+            if (layer.second != nullptr) {
+                int gid = layer.second->getTileGIDAt(tilePos);
+                CCLOG("Checking layer: %s, gid: %d", layer.first.c_str(), gid);
+                IsCollision(pos, layer.first);
+            }
+        }
+
+        // Plant
+        int gid = GetTileID(tilePos, "Back");
+        if (PropertyCheck(gid, "Cultivable") &&
+            MapToolBar->getToolName() == "Hoe") {
+            if (MapToolBar != nullptr)
+                MapToolBar->outputindex();
+            else
+                CCLOG("MapToolBar is nullptr");
+            auto PlayerTilePos = TileCoordFromPos(GetPos());
+            CCLOG("player_pos_: %f %f", GetPos().x, GetPos().y);
+            CCLOG("tile_pos_: %f %f", tilePos.x, tilePos.y);
+            if (fabs(PlayerTilePos.x - tilePos.x) > 1 ||
+                fabs(PlayerTilePos.y - tilePos.y) > 1) {
+                CCLOG("Too far to cultivate");
+            } else {
+                UpdateTileAt(tilePos, 557, "Back");
+                CCLOG("Tile is cultivable\n");
+            }
+        } else {
+            Position PlantTilePos;
+            PlantTilePos.x = tilePos.x;
+            PlantTilePos.y = tilePos.y;
+
+            // take a Strawberry as an example
+            /*Strawberry* exampleStrawberry;
+            exampleStrawberry = new Strawberry;*/
+
+            Potato* exampleStrawberry;
+            exampleStrawberry = new Potato;
+            GlobalTime->TimeShow();
+            GlobalCropProduction->AllCrops.push_back(exampleStrawberry);
+            CCLOG("Potato");
+
+            CropPlant(PlantTilePos, exampleStrawberry);
+        }
+
+        // Animal
+        float MinDistance = 99999999;
+        cocos2d::Sprite* Closest;
+        for (int i = 0; i < AnimalSprite.size(); i++) {
+            auto SpritePosition = AnimalSprite[i]->getPosition();
+            float Distance =
+                sqrt((SpritePosition.x - pos.x) * (SpritePosition.x - pos.x) +
+                     (SpritePosition.y - pos.y) * (SpritePosition.y - pos.y));
+            CCLOG("Animal Position: %f %f\n", SpritePosition.x,
+                  SpritePosition.y);
+            if (fabs(SpritePosition.x - pos.x) < 20 &&
+                fabs(SpritePosition.y - pos.y) < 20 && Distance < MinDistance) {
+                CCLOG("Sprite clicked!");
+                MinDistance = Distance;
+                Closest = AnimalSprite[i];
+            }
+        }
+
+        if (MinDistance < 99999999 && !SpritetoAnimal[Closest]->InfoOpen) {
+            SpritetoAnimal[Closest]->InfoOpen = true;
+            ShowAnimalInfomation(Closest, pos, priority);
+        }
+    };
+
     listener->onMouseMove = [this](cocos2d::Event* event) {
         auto mouseEvent = dynamic_cast<cocos2d::EventMouse*>(event);
         auto pos =
@@ -267,12 +344,12 @@ void TiledMap::onEnter() {
 
 void TiledMap::update(const float delta) {
     cocos2d::Vec2 current_pos = GetPos();
-    const float move_step = 100.0F * delta;
+    const float move_step = 80.0F * delta;
     auto portal = GetPortal(current_pos);
     if (portal.has_value()) {
         if (!is_teleporting_) {
             MapController::GetInstance().TriggerTeleport(
-                portal->GetPortalName());
+                portal->GetPortalName(), MapToolBar, MapBag);
             is_teleporting_ = true;
             return;
         }
@@ -293,6 +370,7 @@ void TiledMap::update(const float delta) {
         current_pos.x += move_step;
     }
 
+    //CCLOG("current_pos: %d %d", current_pos.x, current_pos.y);
     if (is_key_pressed_w_ || is_key_pressed_s_ || is_key_pressed_a_ ||
         is_key_pressed_d_) {
         if (IsCollisionAtAnyLayer(current_pos)) {

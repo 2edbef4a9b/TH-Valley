@@ -42,6 +42,9 @@ public:
     TiledMap(TiledMap&& other) = delete;
     TiledMap& operator=(TiledMap&& other) = delete;
 
+    ToolBar* MapToolBar{};
+    BagGUI* MapBag{};
+
     static TiledMap* create(const std::string& tmxFile);
 
     bool InitWithTMXFile(const std::string& tmxFile);
@@ -91,8 +94,8 @@ private:
     cocos2d::TMXTiledMap* tiled_map_{};
     std::unordered_map<std::string, cocos2d::TMXLayer*> map_layer_;
     cocos2d::TMXObjectGroup* object_group_{};
-    cocos2d::Vec2 player_pos_;
     cocos2d::Sprite* player_sprite_{};
+    cocos2d::Vec2 player_pos_;
 
     bool is_key_pressed_w_{false};
     bool is_key_pressed_a_{false};
@@ -106,8 +109,6 @@ private:
     std::vector<Crops*> MapCrops;
     std::vector<Animals*> MapAnimals;
     std::vector<cocos2d::Sprite*> AnimalSprite;
-    ToolBar* MapToolBar{};
-    BagGUI* MapBag{};
     int priority = 255;
 };
 

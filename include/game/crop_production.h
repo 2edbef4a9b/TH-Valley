@@ -21,4 +21,6 @@ public:
     void CropProductionAutoUpdate();
 };
 
+extern CropProduction *GlobalCropProduction;
+
 #endif  // CROP_PRODUCTION_H_

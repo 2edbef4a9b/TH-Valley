@@ -6,8 +6,14 @@
 
 class agriculture {
 protected:
-    WorldTime *CurrentTime;
-    Weather *CurrentWeather;
+    WorldTime* CurrentTime;
+    Weather* CurrentWeather;
+
+public:
+    void getWorldInformation(WorldTime* Time, Weather* weather) {
+        CurrentTime = Time;
+        CurrentWeather = weather;
+    }
 };
 
 #endif  // AGRICULTURE_H_

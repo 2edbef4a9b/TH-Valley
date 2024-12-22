@@ -55,7 +55,7 @@ void TiledMap::CropPlant(const Position& PlantPosition, Crops* Crop) {
     SpritePosition[PlantPosition] = CropPicture;
     MapCrops.push_back(Crop);
 
-    this->addChild(CropPicture, 1);
+    tiled_map_->addChild(CropPicture, 1);
 }
 
 void TiledMap::CropRemove(const Position& RemovePosition) {
@@ -103,7 +103,7 @@ void TiledMap::ShowCropInformation(Crops* Crop, const Position& InfoPosition,
     infoBox->setPosition(
         cocos2d::Vec2(PicturePosition.x, PicturePosition.y + 40));
     infoBox->setScale(0.64);
-    this->addChild(infoBox, priority);
+    tiled_map_->addChild(infoBox, priority);
 
     // Title Define
     size_t kFontSize = 50;
@@ -112,7 +112,7 @@ void TiledMap::ShowCropInformation(Crops* Crop, const Position& InfoPosition,
     InfoTitle->setScale(0.1);
     InfoTitle->setPosition(
         cocos2d::Vec2(PicturePosition.x - 20, PicturePosition.y + 50));
-    this->addChild(InfoTitle, ++priority);
+    tiled_map_->addChild(InfoTitle, ++priority);
 
     // Button Define
     auto HavestButton = cocos2d::ui::Button::create(
@@ -135,7 +135,7 @@ void TiledMap::ShowCropInformation(Crops* Crop, const Position& InfoPosition,
     Stage->setPosition(
         cocos2d::Vec2(PicturePosition.x + 20, PicturePosition.y + 50));
     Stage->setTextColor(cocos2d::Color4B::GRAY);
-    this->addChild(Stage, priority);
+    tiled_map_->addChild(Stage, priority);
 
     // DeathInfo Define
     kFontSize = 50;
@@ -145,7 +145,7 @@ void TiledMap::ShowCropInformation(Crops* Crop, const Position& InfoPosition,
     DeathInfo->setPosition(
         cocos2d::Vec2(PicturePosition.x + 20, PicturePosition.y + 40));
     DeathInfo->setTextColor(cocos2d::Color4B::RED);
-    this->addChild(DeathInfo, priority);
+    tiled_map_->addChild(DeathInfo, priority);
 
     // Situation Define
     kFontSize = 50;
@@ -159,7 +159,7 @@ void TiledMap::ShowCropInformation(Crops* Crop, const Position& InfoPosition,
     Situation->setPosition(
         cocos2d::Vec2(PicturePosition.x + 20, PicturePosition.y + 35));
     Situation->setTextColor(cocos2d::Color4B::ORANGE);
-    this->addChild(Situation, priority);
+    tiled_map_->addChild(Situation, priority);
 
     // Print Special Situation
     if (Crop->GrowthSituation[0] != "Death") {
@@ -204,7 +204,7 @@ void TiledMap::ShowCropInformation(Crops* Crop, const Position& InfoPosition,
             if (Title == "Remove") CropRemove(InfoPosition);
             // Here do harvest
         });
-    this->addChild(HavestButton, priority);
+    tiled_map_->addChild(HavestButton, priority);
 
     // WaterButton
     WaterButton->setScale(0.15);
@@ -219,7 +219,7 @@ void TiledMap::ShowCropInformation(Crops* Crop, const Position& InfoPosition,
         [this, WaterButton, infoBox, InfoTitle, Crop](cocos2d::Ref* sender) {
             Crop->CropWatering();
         });
-    this->addChild(WaterButton, priority);
+    tiled_map_->addChild(WaterButton, priority);
     if (Crop->GrowthSituation[0] == "Death") WaterButton->setVisible(false);
 
     // FertilizeButton
@@ -235,7 +235,7 @@ void TiledMap::ShowCropInformation(Crops* Crop, const Position& InfoPosition,
         [this, infoBox, InfoTitle, Crop](cocos2d::Ref* sender) {
             Crop->CropFertilize();
         });
-    this->addChild(FertilizeButton, priority);
+    tiled_map_->addChild(FertilizeButton, priority);
     if (Crop->GrowthSituation[0] == "Death") FertilizeButton->setVisible(false);
 
     // Close Button
@@ -265,7 +265,7 @@ void TiledMap::ShowCropInformation(Crops* Crop, const Position& InfoPosition,
                 Situation->setVisible(false);
             }
         });
-    this->addChild(CloseButton, priority++);
+    tiled_map_->addChild(CloseButton, priority++);
 }
 
 }  // namespace th_valley

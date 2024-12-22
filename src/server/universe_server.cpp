@@ -3,6 +3,11 @@
 #include <chrono>
 
 #include "utility/logger.h"
+#include "game/animals.h"
+#include "game/crops.h"
+#include "game/crop_production.h"
+#include "game/farm_house.h"
+#include "game/worldtime.h"
 
 namespace th_valley {
 
@@ -39,6 +44,25 @@ void UniverseServer::RunMainLoop() {
 
 void UniverseServer::Update() {
     // Update game state here.
+    CCLOG("STRAT UPDATE");
+
+    GlobalTime->TimeNext();
+    GlobalTime->TimeShow();
+
+    GlobalWeather->WeatherAutomaticUpdate(*GlobalTime);
+    GlobalWeather->WeatherShow();
+
+    GlobalCropProduction->getWorldInformation(GlobalTime, GlobalWeather);
+    for (int CropCount = 0; CropCount < GlobalCropProduction->AllCrops.size();
+         CropCount++) {
+        GlobalCropProduction->AllCrops[CropCount]->CropAutomaticUpdate();
+    }
+
+    for (int AnimalCount = 0; AnimalCount < GlobalFarmHouse->AllAnimals.size();
+         AnimalCount++) {
+        GlobalFarmHouse->AllAnimals[AnimalCount]->AnimalAutomaticUpdate();
+    }
+
     Logger::GetInstance().LogInfo("{}: Updating game state.", GetServerName());
     Logger::GetInstance().LogInfo(
         "Koishi is behind you. Koishi is behind you. Koishi is behind you.");

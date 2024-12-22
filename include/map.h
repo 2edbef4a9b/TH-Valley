@@ -69,6 +69,7 @@ public:
      * @return cocos2d::Vec2
      */
     cocos2d::Vec2 tileCoordFromPos(cocos2d::Vec2 pos);
+    cocos2d::Vec2 PosFromtileCoord(Position PlantPosition);
     /**
      * @brief �ж��Ƿ�����ײ
      * @param cocos2d::Vec2 pos ���ص�����  string LayerName ������

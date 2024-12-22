@@ -8,6 +8,18 @@
 
 #include "utility/logger.h"
 
+#include "game/animals.h"
+#include "game/crops.h"
+#include "game/crop_production.h"
+#include "game/farm_house.h"
+#include "game/worldtime.h"
+
+WorldTime* GlobalTime = new WorldTime;
+Weather* GlobalWeather = new Weather;
+CropProduction* GlobalCropProduction = new CropProduction;
+FarmHouse* GlobalFarmHouse = new FarmHouse;
+
+
 namespace th_valley {
 
 void NetworkClient::Connect(const std::string_view host,

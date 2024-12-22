@@ -2,8 +2,8 @@
 
 #include "sample/sample_application.h"
 #include "sample/sample_scene.h"
-#include "tool_bar.h"
-#include "bag_gui.h"
+#include "frontend/tool_bar.h"
+#include "frontend/bag_gui.h"
 
 class BagGUITestsApp : public th_valley::SampleApplication {
 public:

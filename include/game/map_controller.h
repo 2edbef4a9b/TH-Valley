@@ -20,9 +20,11 @@ public:
     MapController(MapController&& other) = delete;
     MapController& operator=(MapController&& other) = delete;
 
-    void LoadTiledMap(const std::string& tiled_map, cocos2d::Node* parent);
+    void LoadTiledMap(const std::string& tiled_map, cocos2d::Node* parent,
+                      ToolBar* map_toolbar_, BagGUI* bag_gui_);
     void SaveTiledMap(TiledMap* tiled_map);
-    void TriggerTeleport(const std::string& portal_name);
+    void TriggerTeleport(const std::string& portal_name, ToolBar* map_toolbar_,
+                         BagGUI* map_bag_gui_);
 
     static MapController& GetInstance();
 

@@ -18,7 +18,7 @@ bool GameScene::init() {
     this->addChild(tool_bar_, 21);
     this->addChild(bag_gui_, 20);
 
-    MapController::GetInstance().LoadTiledMap(kInitialMap.data(), this);
+    MapController::GetInstance().LoadTiledMap(kInitialMap.data(), this, tool_bar_, bag_gui_);
 
     return true;
 }

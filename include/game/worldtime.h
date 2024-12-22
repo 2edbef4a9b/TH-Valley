@@ -11,7 +11,7 @@ public:
     int isContinue;
     WorldTime() {
         Year = 0;
-        Month = 0;
+        Month = 3;
         Day = 0;
         Hour = 0;
         Minute = 0;
@@ -27,5 +27,7 @@ public:
     void TimeNext();
     void TimeShow();
 };
+
+extern WorldTime *GlobalTime;
 
 #endif
