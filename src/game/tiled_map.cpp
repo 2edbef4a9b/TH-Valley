@@ -100,7 +100,7 @@ bool TiledMap::InitWithTMXFile(const std::string& tmxFile) {
     SetViewpointCenter(player_pos_);
 
     avatar.InitEntity(tiled_map_);
-    avatar.SetPosition(player_pos_);
+    avatar.setPosition(player_pos_);
     CCLOG("Player sprite created at %f %f", player_pos_.x, player_pos_.y);
     CCLOG("Player sprite created at Tile: %f %f",
           TileCoordFromPos(player_pos_).x, TileCoordFromPos(player_pos_).y);
@@ -173,7 +173,7 @@ void TiledMap::SetPlayerPos(cocos2d::Vec2 pos) {
                                   TileCoordFromPos(player_pos_).x,
                                   TileCoordFromPos(player_pos_).y);
     SetViewpointCenter(player_pos_);
-    avatar.SetPosition(player_pos_);
+    avatar.setPosition(player_pos_);
 }
 
 void TiledMap::SetTeleportStatus(bool status) { is_teleporting_ = status; }

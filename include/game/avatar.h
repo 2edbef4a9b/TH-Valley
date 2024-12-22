@@ -17,7 +17,8 @@ public:
     Avatar(Avatar&& other) = delete;
     Avatar& operator=(Avatar&& other) = delete;
 
-    void InitEntity(cocos2d::Node* parent) override;
+    bool init() override;
+
     void ChangeDirection(Direction direction) override;
 
 private:
@@ -29,7 +30,7 @@ private:
     };
 
     void InitTexture(std::string_view avatar_name);
-    AvatarTexture avatar_texture_;
+    AvatarTexture avatar_texture_{};
 };
 
 }  // namespace th_valley

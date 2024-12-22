@@ -9,7 +9,7 @@
 
 namespace th_valley {
 
-class Entity : public cocos2d::Node {
+class Entity : public cocos2d::Sprite {
 public:
     enum class Direction {
         kUp,
@@ -38,17 +38,13 @@ public:
     void SetDirection(Direction direction);
     Direction GetDirection() const;
 
+    bool init() override;
+
     virtual void InitEntity(cocos2d::Node* parent);
     virtual void ChangeDirection(Direction direction);
-    void SetPosition(const cocos2d::Vec2& position);
-
-protected:
-    cocos2d::Sprite* GetSprite() const;
-    void SetSprite(cocos2d::Sprite* sprite);
 
 private:
     cocos2d::Vec2 position_;
-    cocos2d::Sprite* sprite_{};
     EntityData entity_data_;
     EntityState state_{EntityState::kIdle};
     Direction direction_{Direction::kDown};

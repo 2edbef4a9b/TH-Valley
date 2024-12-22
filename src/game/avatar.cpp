@@ -1,22 +1,25 @@
 #include "game/avatar.h"
 
 #include "2d/CCSprite.h"
+#include "game/entity.h"
 
 namespace th_valley {
 
-void Avatar::InitEntity(cocos2d::Node* parent) {
-    auto* sprite = cocos2d::Sprite::create();
-    SetSprite(sprite);
+bool Avatar::init() {
+    if (!cocos2d::Sprite::init()) {
+        return false;
+    }
+    if (!Entity::init()) {
+        return false;
+    }
     InitTexture("koishi");
-    ChangeDirection(Direction::kLeft);
-    sprite->setScale(32.0F / 128.0F);
-    sprite->setAnchorPoint(cocos2d::Vec2(0.5F, 0.0F));
-    parent->addChild(sprite, 2);
+    SetDirection(Direction::kDown);
+    return true;
 }
 
 void Avatar::ChangeDirection(Direction direction) {
     SetDirection(direction);
-    auto* new_texture = GetSprite()->getTexture();
+    auto* new_texture = this->getTexture();
     switch (direction) {
         case Direction::kUp:
             new_texture = avatar_texture_.up;
@@ -38,7 +41,7 @@ void Avatar::ChangeDirection(Direction direction) {
         cocos2d::Rect frame_rect(0, 0, 128, 128);
         auto* sprite_frame =
             cocos2d::SpriteFrame::createWithTexture(new_texture, frame_rect);
-        GetSprite()->setSpriteFrame(sprite_frame);
+        this->setSpriteFrame(sprite_frame);
     }
 }
 

@@ -10,51 +10,51 @@ void Entity::SetDirection(Direction direction) { direction_ = direction; }
 
 Entity::Direction Entity::GetDirection() const { return direction_; }
 
-void Entity::InitEntity(cocos2d::Node* parent) {
+bool Entity::init() {
+    if (!cocos2d::Sprite::init()) {
+        return false;
+    }
     auto* texture =
         cocos2d::Director::getInstance()->getTextureCache()->addImage(
-            "assets/tilesheets/koishi.png");
+            "assets/avatar/koishi_left.png");
+    auto* sprite_frame = cocos2d::SpriteFrame::createWithTexture(
+        texture, cocos2d::Rect(0, 0, 128, 128));
+    this->setSpriteFrame(sprite_frame);
+    this->setScale(32.0F / 128.0F);
+    this->setAnchorPoint(cocos2d::Vec2(0.5F, 0.0F));
 
-    cocos2d::Rect frame_rect(0, 0, 3072, 3072);
-    auto* sprite_frame =
-        cocos2d::SpriteFrame::createWithTexture(texture, frame_rect);
-    sprite_ = cocos2d::Sprite::createWithSpriteFrame(sprite_frame);
-    sprite_->setScale(32.0F / 3072.0F);
-    sprite_->setAnchorPoint(cocos2d::Vec2(0.5f, 0.0f));
-    parent->addChild(sprite_, 2);
+    return true;
+}
+
+void Entity::InitEntity(cocos2d::Node* parent) {
+    if (!init()) {
+        return;
+    }
+    parent->addChild(this, 2);
 }
 
 void Entity::ChangeDirection(Direction direction) {
     direction_ = direction;
     switch (direction_) {
         case Direction::kUp:
-            sprite_->setRotation(0);
-            sprite_->setFlippedX(false);
+            this->setRotation(0);
+            this->setFlippedX(false);
             break;
         case Direction::kDown:
-            sprite_->setRotation(0);
-            sprite_->setFlippedX(false);
+            this->setRotation(0);
+            this->setFlippedX(false);
             break;
         case Direction::kLeft:
-            sprite_->setRotation(0);
-            sprite_->setFlippedX(false);
+            this->setRotation(0);
+            this->setFlippedX(false);
             break;
         case Direction::kRight:
-            sprite_->setRotation(0);
-            sprite_->setFlippedX(true);
+            this->setRotation(0);
+            this->setFlippedX(true);
             break;
         default:
             break;
     }
 }
-
-void Entity::SetPosition(const cocos2d::Vec2& position) {
-    position_ = position;
-    sprite_->setPosition(position_);
-}
-
-cocos2d::Sprite* Entity::GetSprite() const { return sprite_; }
-
-void Entity::SetSprite(cocos2d::Sprite* sprite) { sprite_ = sprite; }
 
 }  // namespace th_valley
