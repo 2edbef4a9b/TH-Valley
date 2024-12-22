@@ -1,8 +1,9 @@
 #ifndef WORLDTIME_H_
 #define WORLDTIME_H_
 
-#include "cocos2d.h"
 #include <string>
+
+#include "cocos2d.h"
 
 class WorldTime {
 public:
@@ -11,7 +12,7 @@ public:
     int isContinue;
     WorldTime() {
         Year = 0;
-        Month = 0;
+        Month = 3;
         Day = 0;
         Hour = 0;
         Minute = 0;
@@ -27,5 +28,7 @@ public:
     void TimeNext();
     void TimeShow();
 };
+
+extern WorldTime GlobalTime;
 
 #endif

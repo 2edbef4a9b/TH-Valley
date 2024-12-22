@@ -28,6 +28,7 @@ public:
     std::string getToolName();
     void loadTools();
     void outputindex() { CCLOG("Index: %d\n", selectedToolIndex); }
+    int getToolIndex() { return selectedToolIndex; }
 
 private:
     constexpr static std::string_view kFontPath =

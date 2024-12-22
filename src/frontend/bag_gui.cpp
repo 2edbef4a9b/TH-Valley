@@ -48,9 +48,10 @@ void BagGUI::initBagGUI() {
 
     const auto& itemSprites = bag_->getItems();
     auto boxSize = background_->getContentSize().width / 10.0;
-    for (const auto& [index, item] : itemSprites) {
-        CCLOG("2GUI Item %s added to bag index %d", item->name.c_str(), index);
-    }
+    // for (const auto& [index, item] : itemSprites) {
+    //     CCLOG("2GUI Item %s added to bag index %d", item->name.c_str(),
+    //     index);
+    // }
 
     int index = 0;
     for (const auto& [index, item] : itemSprites) {
@@ -237,9 +238,9 @@ void BagGUI::onMouseUp(Event* event) {
     }
 
     CCLOG("Current itemSprites content:");
-    for (const auto& [key, value] : itemSprites) {
-        CCLOG("Index: %d, Item: %s", key, value->name.c_str());
-    }
+    // for (const auto& [key, value] : itemSprites) {
+    //     CCLOG("Index: %d, Item: %s", key, value->name.c_str());
+    // }
 
     selectedItem = nullptr;
     draggingItemIndex = -1;

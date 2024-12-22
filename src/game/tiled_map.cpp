@@ -4,7 +4,9 @@
 #include <regex>
 
 #include "frontend/game_scene.h"
+#include "game/crop_production.h"
 #include "game/pig.h"
+#include "game/vegetables.h"
 #include "math/CCGeometry.h"
 #include "utility/logger.h"
 
@@ -106,12 +108,6 @@ bool TiledMap::InitWithTMXFile(const std::string& tmxFile) {
     CCLOG("Player sprite created at Tile: %f %f",
           TileCoordFromPos(player_pos_).x, TileCoordFromPos(player_pos_).y);
 
-    for (int pig_count = 0; pig_count < 10; pig_count++) {
-        Pig* pig = new Pig;
-        MapAnimals.push_back(pig);
-    }
-    initAnimalPosition();
-
     return true;
 }
 
@@ -131,6 +127,14 @@ void TiledMap::Save() {
 
 void TiledMap::Load() {
     // Implementation for load
+}
+
+void TiledMap::SpawnAnimal(int count) {
+    for (int pig_count = 0; pig_count < count; pig_count++) {
+        Pig* pig = new Pig;
+        MapAnimals.push_back(pig);
+    }
+    initAnimalPosition();
 }
 
 cocos2d::Rect TiledMap::GetPortalRect(Portal portal,
@@ -185,6 +189,88 @@ void TiledMap::onEnter() {
 
     auto listener = cocos2d::EventListenerMouse::create();
 
+    listener->onMouseDown = [this](cocos2d::Event* event) {
+        auto mouseEvent = dynamic_cast<cocos2d::EventMouse*>(event);
+        auto pos =
+            tiled_map_->convertToNodeSpace(mouseEvent->getLocationInView());
+        auto tilePos = TileCoordFromPos(pos);
+        CCLOG("Mouse Down Tile: %f, %f", tilePos.x, tilePos.y);
+        CCLOG("Mouse Down: %f, %f", pos.x, pos.y);
+
+        for (const auto& layer : map_layer_) {
+            if (layer.second != nullptr) {
+                int gid = layer.second->getTileGIDAt(tilePos);
+                CCLOG("Checking layer: %s, gid: %d", layer.first.c_str(), gid);
+                IsCollision(pos, layer.first);
+            }
+        }
+
+        int gid = GetTileID(tilePos, "Back");
+        auto MapToolBar =
+            dynamic_cast<GameScene*>(this->getParent())->GetToolBar();
+        if (PropertyCheck(gid, "Cultivable") &&
+            MapToolBar->getToolName() == "Hoe") {
+            if (MapToolBar != nullptr)
+                MapToolBar->outputindex();
+            else
+                CCLOG("MapToolBar is nullptr");
+
+            auto PlayerTilePos = TileCoordFromPos(GetPos());
+            CCLOG("player_pos_: %f %f", GetPos().x, GetPos().y);
+            CCLOG("tile_pos_: %f %f", tilePos.x, tilePos.y);
+            if (fabs(PlayerTilePos.x - tilePos.x) > 1 ||
+                fabs(PlayerTilePos.y - tilePos.y) > 1) {
+                CCLOG("Too far to cultivate");
+            } else {
+                UpdateTileAt(tilePos, 557, "Back");
+                CCLOG("Tile is cultivable\n");
+            }
+        } else {
+            Position PlantTilePos;
+            PlantTilePos.x = tilePos.x;
+            PlantTilePos.y = tilePos.y;
+
+            // take a Strawberry as an example
+
+            // Potato* exampleStrawberry;
+            // exampleStrawberry = new Potato;
+            // GlobalTime.TimeShow();
+            // CCLOG("Potato");
+
+            if (MapToolBar->getToolName() == "StrawberrySeed") {
+                CropPlant(PlantTilePos, new Strawberry);
+
+            } else if (MapToolBar->getToolName() == "CarrotSeed") {
+                CropPlant(PlantTilePos, new Carrot);
+            } else if (MapToolBar->getToolName() == "PotatoSeed") {
+                CropPlant(PlantTilePos, new Potato);
+            }
+        }
+
+        // Animal
+        float MinDistance = 99999999;
+        cocos2d::Sprite* Closest;
+        for (int i = 0; i < AnimalSprite.size(); i++) {
+            auto SpritePosition = AnimalSprite[i]->getPosition();
+            float Distance =
+                sqrt((SpritePosition.x - pos.x) * (SpritePosition.x - pos.x) +
+                     (SpritePosition.y - pos.y) * (SpritePosition.y - pos.y));
+            CCLOG("Animal Position: %f %f\n", SpritePosition.x,
+                  SpritePosition.y);
+            if (fabs(SpritePosition.x - pos.x) < 20 &&
+                fabs(SpritePosition.y - pos.y) < 20 && Distance < MinDistance) {
+                CCLOG("Sprite clicked!");
+                MinDistance = Distance;
+                Closest = AnimalSprite[i];
+            }
+        }
+
+        if (MinDistance < 99999999 && !SpritetoAnimal[Closest]->InfoOpen) {
+            SpritetoAnimal[Closest]->InfoOpen = true;
+            ShowAnimalInfomation(Closest, pos, priority);
+        }
+    };
+
     listener->onMouseMove = [this](cocos2d::Event* event) {
         auto mouseEvent = dynamic_cast<cocos2d::EventMouse*>(event);
         auto pos =
@@ -199,22 +285,27 @@ void TiledMap::onEnter() {
             case cocos2d::EventKeyboard::KeyCode::KEY_W:
             case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_W:
                 is_key_pressed_w_ = true;
-                avatar.ChangeDirection(Entity::Direction::kUp);
+                // avatar.ChangeDirection(Entity::Direction::kUp);
+                AllDirection.push_back(Entity::Direction::kUp);
                 break;
             case cocos2d::EventKeyboard::KeyCode::KEY_S:
             case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_S:
                 is_key_pressed_s_ = true;
-                avatar.ChangeDirection(Entity::Direction::kDown);
+                // avatar.ChangeDirection(Entity::Direction::kDown);
+                AllDirection.push_back(Entity::Direction::kDown);
                 break;
             case cocos2d::EventKeyboard::KeyCode::KEY_A:
             case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_A:
                 is_key_pressed_a_ = true;
-                avatar.ChangeDirection(Entity::Direction::kLeft);
+                // avatar.ChangeDirection(Entity::Direction::kLeft);
+                AllDirection.push_back(Entity::Direction::kLeft);
+                Logger::GetInstance().LogInfo("A key pressed");
                 break;
             case cocos2d::EventKeyboard::KeyCode::KEY_D:
             case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_D:
                 is_key_pressed_d_ = true;
-                avatar.ChangeDirection(Entity::Direction::kRight);
+                // avatar.ChangeDirection(Entity::Direction::kRight);
+                AllDirection.push_back(Entity::Direction::kRight);
                 break;
             case cocos2d::EventKeyboard::KeyCode::KEY_E:
             case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_E:
@@ -228,32 +319,71 @@ void TiledMap::onEnter() {
             default:
                 break;
         }
-        avatar.RenderMove();
+        if (is_key_pressed_a_ || is_key_pressed_d_ || is_key_pressed_s_ ||
+            is_key_pressed_w_) {
+            avatar.ChangeDirection(AllDirection[0]);
+            avatar.RenderMove();
+        }
     };
 
     keyListener->onKeyReleased = [this](cocos2d::EventKeyboard::KeyCode keyCode,
                                         cocos2d::Event* event) {
+        std::vector<Entity::Direction>::iterator iterator;
         switch (keyCode) {
             case cocos2d::EventKeyboard::KeyCode::KEY_W:
             case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_W:
                 is_key_pressed_w_ = false;
+                for (iterator = AllDirection.begin();
+                     iterator != AllDirection.end(); iterator++) {
+                    if (*iterator == Entity::Direction::kUp) {
+                        break;
+                    }
+                }
+                AllDirection.erase(iterator);
                 break;
             case cocos2d::EventKeyboard::KeyCode::KEY_S:
             case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_S:
                 is_key_pressed_s_ = false;
+                for (iterator = AllDirection.begin();
+                     iterator != AllDirection.end(); iterator++) {
+                    if (*iterator == Entity::Direction::kDown) {
+                        break;
+                    }
+                }
+                AllDirection.erase(iterator);
                 break;
             case cocos2d::EventKeyboard::KeyCode::KEY_A:
             case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_A:
                 is_key_pressed_a_ = false;
+                for (iterator = AllDirection.begin();
+                     iterator != AllDirection.end(); iterator++) {
+                    if (*iterator == Entity::Direction::kLeft) {
+                        break;
+                    }
+                }
+                AllDirection.erase(iterator);
                 break;
             case cocos2d::EventKeyboard::KeyCode::KEY_D:
             case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_D:
                 is_key_pressed_d_ = false;
+                for (iterator = AllDirection.begin();
+                     iterator != AllDirection.end(); iterator++) {
+                    if (*iterator == Entity::Direction::kRight) {
+                        break;
+                    }
+                }
+                AllDirection.erase(iterator);
                 break;
             default:
                 break;
         }
         avatar.stopAllActions();
+        if (AllDirection.size() == 0) {
+            avatar.SetState(Entity::EntityState::kIdle);
+        } else {
+            avatar.ChangeDirection(AllDirection[0]);
+            avatar.RenderMove();
+        }
     };
 
     cocos2d::EventDispatcher* dispatcher =
@@ -267,7 +397,7 @@ void TiledMap::onEnter() {
 
 void TiledMap::update(const float delta) {
     cocos2d::Vec2 current_pos = GetPos();
-    const float move_step = 100.0F * delta;
+    const float move_step = 80.0F * delta;
     auto portal = GetPortal(current_pos);
     if (portal.has_value()) {
         if (!is_teleporting_) {
@@ -293,6 +423,7 @@ void TiledMap::update(const float delta) {
         current_pos.x += move_step;
     }
 
+    // CCLOG("current_pos: %d %d", current_pos.x, current_pos.y);
     if (is_key_pressed_w_ || is_key_pressed_s_ || is_key_pressed_a_ ||
         is_key_pressed_d_) {
         if (IsCollisionAtAnyLayer(current_pos)) {
@@ -449,5 +580,7 @@ void TiledMap::UpdateTileAt(cocos2d::Vec2 tileCoord, int newGID,
     CCLOG("Tile updated at %f, %f with GID: %d", tileCoord.x, tileCoord.y,
           newGID);
 }
+
+std::vector<Entity::Direction> TiledMap::AllDirection;
 
 }  // namespace th_valley

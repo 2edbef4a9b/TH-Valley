@@ -17,7 +17,11 @@ void MapController::LoadTiledMap(const std::string& tiled_map,
         return;
     }
     Logger::GetInstance().LogInfo("Loaded TiledMap: {}", tiled_map);
+
     parent->addChild(game_tiled_map_, 1);
+    if (tiled_map == "Ranch") {
+        game_tiled_map_->SpawnAnimal(5);
+    }
 }
 
 void MapController::TriggerTeleport(const std::string& portal_name) {

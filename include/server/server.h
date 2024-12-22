@@ -21,9 +21,9 @@ public:
 
     void StartUp();
     void ShutDown();
+    [[nodiscard]] bool IsRunning() const;
 
 protected:
-    [[nodiscard]] bool IsRunning() const;
     [[nodiscard]] std::string_view GetServerName() const;
     void SetServerName(std::string_view server_name);
 

@@ -11,7 +11,7 @@ void Weather::WeatherAutomaticUpdate(WorldTime Time) {
     CurrentTime = Time;
 
     // Rainy Update
-    const int Duration = 100;
+    const int Duration = 60 * 60 * 24 * 1;
     std::string LastType = WeatherType;
     if (WeatherType != "Rainy") {
         std::random_device rd;

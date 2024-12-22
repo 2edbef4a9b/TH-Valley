@@ -23,4 +23,6 @@ public:
     void WeatherAutomaticUpdate(WorldTime Time);
 };
 
+extern Weather GlobalWeather;
+
 #endif

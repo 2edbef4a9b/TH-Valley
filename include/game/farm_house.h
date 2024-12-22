@@ -7,7 +7,7 @@
 #include "game/animals.h"
 #include "utility/position.h"
 
-class FarmHouse : public Agriculture {
+class FarmHouse : public agriculture {
 public:
     int TotalAnimals;
     int Level;
@@ -25,5 +25,7 @@ public:
     std::pair<std::string, int> ProductionOutput();
     void FarmHouseAutomaticUpdate();
 };
+
+extern FarmHouse GlobalFarmHouse;
 
 #endif  // FARM_HOUSE_H_

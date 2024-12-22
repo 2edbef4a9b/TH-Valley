@@ -8,7 +8,7 @@
 #include "game/agriculture.h"
 #include "utility/position.h"
 
-class Animals : public Agriculture {
+class Animals : public agriculture {
 public:
     // Animal Information
     std::string AnimalName;

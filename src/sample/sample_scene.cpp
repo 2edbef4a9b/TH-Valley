@@ -18,6 +18,7 @@ bool SampleScene::init() {
         auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
         auto mapSize = _map->getContentSize();
 
+        _map->setPosition(cocos2d::Vec2(0, 0));
         _map->setVisible(true);
         this->addChild(_map);
     } else

@@ -28,6 +28,7 @@ void ClientController::Update() {
             break;
         case ClientState::kQuit:
             Logger::GetInstance().LogInfo("GameState Change to Quit");
+            StopUniverseServer();
             director->end();
             break;
         case ClientState::kSettings:
@@ -41,6 +42,7 @@ void ClientController::Update() {
             director->getOpenGLView()->setDesignResolutionSize(
                 384, 216, ResolutionPolicy::NO_BORDER);
             director->replaceScene(GameScene::create());
+            StartUniverseServer();
             break;
         case ClientState::kStartUp:
             Logger::GetInstance().LogInfo("GameState Change to StartUp");
@@ -52,6 +54,23 @@ void ClientController::Update() {
             break;
         default:
             break;
+    }
+}
+
+void ClientController::StartUniverseServer() {
+    single_player_thread_ = std::thread([this]() {
+        universe_server_.StartUp();
+        server_io_context_.run();
+    });
+}
+
+void ClientController::StopUniverseServer() {
+    if (universe_server_.IsRunning()) {
+        universe_server_.ShutDown();
+        server_io_context_.stop();
+    }
+    if (single_player_thread_.joinable()) {
+        single_player_thread_.join();
     }
 }
 

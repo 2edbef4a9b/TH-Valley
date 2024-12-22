@@ -67,25 +67,26 @@ void Bag::swapItems(int key1, int key2) {
 
 void Bag::bagInit() {
     ItemSprite* Axe = new ItemSprite(
-        "Axe", 1, "Used for chopping wood", "assets/tilesheets/tools.png",
+        "Axe", 1, "Used for chopping wood", "assets/TileSheets/tools.png",
         cocos2d::Rect(0 + 5 * 16, 32 + 4 * 32, 16, 16));
     items_[0] = Axe;
     ItemSprite* Hoe = new ItemSprite(
-        "Hoe", 3, "Used for chopping wood", "assets/tilesheets/tools.png",
+        "Hoe", 3, "Used for chopping wood", "assets/TileSheets/tools.png",
         cocos2d::Rect(0 + 5 * 16, 32 + 0 * 32, 16, 16));
     items_[1] = Hoe;
-    ItemSprite* A = new ItemSprite(
-        "Axe", 1, "Used for chopping wood", "assets/tilesheets/tools.png",
-        cocos2d::Rect(0 + 5 * 16, 32 + 4 * 32, 16, 16));
-    items_[9] = A;
-    ItemSprite* H = new ItemSprite(
-        "Hoe", 3, "Used for chopping wood", "assets/tilesheets/tools.png",
-        cocos2d::Rect(0 + 5 * 16, 32 + 0 * 32, 16, 16));
-    items_[15] = H;
-    ItemSprite* h = new ItemSprite(
-        "Hoe", 3, "Used for chopping wood", "assets/tilesheets/tools.png",
-        cocos2d::Rect(0 + 5 * 16, 32 + 0 * 32, 16, 16));
-    items_[38] = h;
+
+    ItemSprite* StrawberrySeed =
+        new ItemSprite("StrawberrySeed", 53, "Used for planting strawberries",
+                       "assets/Crops/crops.png", cocos2d::Rect(1, 593, 13, 14));
+    items_[2] = StrawberrySeed;
+    ItemSprite* CarrotSeed =
+        new ItemSprite("CarrotSeed", 68, "Used for planting carrots",
+                       "assets/Crops/crops.png", cocos2d::Rect(2, 785, 11, 13));
+    items_[15] = CarrotSeed;
+    ItemSprite* PotatoSeed =
+        new ItemSprite("PotatoSeed", 64, "Used for planting potatoes",
+                       "assets/Crops/crops.png", cocos2d::Rect(130, 54, 10, 7));
+    items_[38] = PotatoSeed;
 
     for (const auto& [i, item] : items_) {
         CCLOG("Item %s added to bag index %d", item->name.c_str(), i);

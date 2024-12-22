@@ -25,227 +25,181 @@ void Avatar::update(float delta) { Entity::update(delta); }
 
 void Avatar::UseTool(std::string_view tool) {
     Logger::GetInstance().LogInfo("Use tool: {}", tool);
-    constexpr double kScale = 3;
+    constexpr double kScale = 1.0;
     Direction direction = GetDirection();
     cocos2d::Vec2 tarpos =
         this->getParent()->convertToWorldSpace(this->getPosition());
     tarpos.x *= 0.122;
     tarpos.y *= 0.122;
-    cocos2d::Sprite* tempavatar;
-    cocos2d::Sprite* Scene[6];
-    int pro = 2;
+
     if (tool == "Fishingrod") {
-        CCLOG("=======");
-        CCLOG("fishing");
-        CCLOG("=======");
-        tarpos.x += 4;
-        tarpos.y -= 4;
-        Scene[0] = cocos2d::Sprite::create("assets/tool/tools.png",
-                                           cocos2d::Rect(0, 295, 35, 31));
-        Scene[1] = cocos2d::Sprite::create("assets/tool/tools.png",
-                                           cocos2d::Rect(55, 295, 35, 31));
-        Scene[2] = cocos2d::Sprite::create("assets/tool/tools.png",
-                                           cocos2d::Rect(102, 295, 35, 31));
-        Scene[3] = cocos2d::Sprite::create("assets/tool/tools.png",
-                                           cocos2d::Rect(160, 295, 35, 31));
-        Scene[4] = cocos2d::Sprite::create("assets/tool/tools.png",
-                                           cocos2d::Rect(210, 295, 35, 31));
-        Scene[5] = cocos2d::Sprite::create("assets/tool/tools.png",
-                                           cocos2d::Rect(256, 295, 35, 31));
-
-        for (int i = 0; i < 5; ++i) {
-            Scene[i]->setPosition(
-                cocos2d::Vec2(tarpos.x - 2, tarpos.y));  // 设置位置
-            Scene[i]->setOpacity(0);                     // 初始透明度为0
-            Scene[i]->setScale(kScale);
-            this->addChild(Scene[i]);
-
-            auto fadeIn = cocos2d::FadeIn::create(0.1f);    // 0.5秒淡入
-            auto delay = cocos2d::DelayTime::create(0.8f);  // 停留1秒
-            auto fadeOut = cocos2d::FadeOut::create(0.1f);  // 0.5秒淡出
-
-            // 增加基于索引的延迟
-            auto sequence = cocos2d::Sequence::create(
-                cocos2d::DelayTime::create(i * 0.8f), fadeIn, delay, fadeOut,
-                cocos2d::CallFunc::create([scenePtr = Scene[i]]() {
-                    if (scenePtr) {
-                        scenePtr->removeFromParent();  // 动作完成后移除
-                    }
-                }),
-                nullptr);
-
-            Scene[i]->runAction(sequence);  // 运行动作序列
-        }
-        Scene[5]->setPosition(
-            cocos2d::Vec2(tarpos.x - 5, tarpos.y + 3.5));  // 设置位置
-        Scene[5]->setOpacity(0);  // 初始透明度为0
-        Scene[5]->setScale(kScale);
-        this->addChild(Scene[5]);
-
-        auto fadeIn = cocos2d::FadeIn::create(0.1f);    // 0.5秒淡入
-        auto delay = cocos2d::DelayTime::create(2.0f);  // 停留1秒
-        auto fadeOut = cocos2d::FadeOut::create(0.1f);  // 0.5秒淡出
-
-        // 增加基于索引的延迟
-        auto sequence = cocos2d::Sequence::create(
-            cocos2d::DelayTime::create(5 * 0.8f), fadeIn, delay, fadeOut,
-            cocos2d::CallFunc::create([scenePtr = Scene[5]]() {
-                if (scenePtr) {
-                    scenePtr->removeFromParent();  // 动作完成后移除
-                }
-            }),
-            nullptr);
-
-        Scene[5]->runAction(sequence);  // 运行动作序列
+        UseFishingRod(tarpos, kScale);
     } else if (tool == "WateringCan") {
-        if (direction == Direction::kUp) {
-            tarpos.y += 8;
-            pro = 1;
-        }
-        if (direction == Direction::kDown) {
-            tarpos.y -= 8;
-        }
-        if (direction == Direction::kRight) {
-            tarpos.x += 8;
-            tarpos.y -= 4;
-        }
-        if (direction == Direction::kLeft) {
-            tarpos.x -= 8;
-            tarpos.y -= 4;
-            pro = 1;
-        }
-        CCLOG("=======");
-        CCLOG("wataring");
-        CCLOG("=======");
-        tempavatar = cocos2d::Sprite::create("assets/tool/tools.png",
-                                             cocos2d::Rect(241, 217, 15, 23));
-        if (direction == Direction::kUp) {
-            tempavatar = cocos2d::Sprite::create(
-                "assets/tool/tools.png",
-                cocos2d::Rect(239 - 16, 239 - 18, 16, 18));
-        } else if (direction == Direction::kLeft) {
-            tempavatar = cocos2d::Sprite::create(
-                "assets/tool/tools.png",
-                cocos2d::Rect(289 - 20, 240 - 19, 20, 19));
-            tempavatar->setFlippedX(true);
-        } else if (direction == Direction::kRight) {
-            tempavatar = cocos2d::Sprite::create(
-                "assets/tool/tools.png",
-                cocos2d::Rect(289 - 20, 240 - 19, 20, 19));
-        }
-        tempavatar->setPosition(cocos2d::Vec2(tarpos.x, tarpos.y));  // 设置位置
-        tempavatar->setOpacity(0);  // 初始透明度为0
-        tempavatar->setScale(kScale);
-        this->addChild(tempavatar, pro);
-        auto fadeIn = cocos2d::FadeIn::create(0.05f);    // 0.5秒淡入
-        auto delay = cocos2d::DelayTime::create(1.0f);   // 停留1秒
-        auto fadeOut = cocos2d::FadeOut::create(0.05f);  // 0.5秒淡出
-
-        // 动作序列
-        auto sequence = cocos2d::Sequence::create(
-            fadeIn, delay, fadeOut, cocos2d::CallFunc::create([tempavatar]() {
-                tempavatar->removeFromParent();  // 动作完成后移除
-            }),
-            nullptr);
-        tempavatar->runAction(sequence);  // 运行动作序列
+        UseWateringCan(tarpos, direction, kScale);
     } else {
-        int y = 0;
-        if (tool == "Hoe") {
-            y = 156 - 125;
-            if (direction == Direction::kUp) {
-                tarpos.y += 8;
-                pro = 1;
-            }
-            if (direction == Direction::kDown) {
-                tarpos.y -= 8;
-            }
-            if (direction == Direction::kRight) {
-                tarpos.x += 4;
-            }
-            if (direction == Direction::kLeft) {
-                tarpos.x -= 4;
-                pro = 1;
-            }
-            CCLOG("=======");
-            CCLOG("cultivating");
-            CCLOG("=======");
-        } else if (tool == "Axe") {
-            y = 156;
-            if (direction == Direction::kUp) {
-                tarpos.y += 8;
-                pro = 1;
-            }
-            if (direction == Direction::kDown) {
-                tarpos.y -= 8;
-            }
-            if (direction == Direction::kRight) {
-                tarpos.x += 4;
-            }
-            if (direction == Direction::kLeft) {
-                tarpos.x -= 4;
-                pro = 1;
-            }
-            CCLOG("=======");
-            CCLOG("cutting");
-            CCLOG("=======");
-        } else if (tool == "Draft") {
-            y = 156 - 67;
-            if (direction == Direction::kUp) {
-                tarpos.y += 8;
-                pro = 1;
-            }
-            if (direction == Direction::kDown) {
-                tarpos.y -= 8;
-            }
-            if (direction == Direction::kRight) {
-                tarpos.x += 4;
-            }
-            if (direction == Direction::kLeft) {
-                tarpos.x -= 4;
-                pro = 1;
-            }
-            CCLOG("=======");
-            CCLOG("mining");
-            CCLOG("=======");
-        } else if (tool == "WateringCan") {
-        }
-        if (y != 0)
-        // 动作序列：淡入，停留，淡出
-        {
-            tempavatar = cocos2d::Sprite::create("assets/tool/tools.png",
-                                                 cocos2d::Rect(242, y, 11, 22));
-            if (direction == Direction::kUp) {
-                tempavatar = cocos2d::Sprite::create(
-                    "assets/tool/tools.png", cocos2d::Rect(291, y, 12, 25));
-            } else if (direction == Direction::kLeft) {
-                tempavatar = cocos2d::Sprite::create(
-                    "assets/tool/tools.png", cocos2d::Rect(302, y, 19, 19));
-                tempavatar->setFlippedX(true);
-            } else if (direction == Direction::kRight) {
-                tempavatar = cocos2d::Sprite::create(
-                    "assets/tool/tools.png", cocos2d::Rect(302, y, 19, 19));
-            }
-            tempavatar->setPosition(cocos2d::Vec2(tarpos.x,
-                                                  tarpos.y));  // 设置位置
-            tempavatar->setOpacity(0);  // 初始透明度为0
-            tempavatar->setScale(kScale);
-            this->addChild(tempavatar, 2);
-            auto fadeIn = cocos2d::FadeIn::create(0.05f);    // 0.5秒淡入
-            auto delay = cocos2d::DelayTime::create(0.08f);  // 停留1秒
-            auto fadeOut = cocos2d::FadeOut::create(0.05f);  // 0.5秒淡出
-
-            // 动作序列
-            auto sequence = cocos2d::Sequence::create(
-                fadeIn, delay, fadeOut,
-                cocos2d::CallFunc::create([tempavatar]() {
-                    tempavatar->removeFromParent();  // 动作完成后移除
-                }),
-                nullptr);
-            tempavatar->runAction(sequence);  // 运行动作序列
-        } else {
-            CCLOG("error : wrong action");
-        }
+        UseOtherTools(tool, tarpos, direction, kScale);
     }
+}
+
+void Avatar::UseFishingRod(cocos2d::Vec2 tarpos, double kScale) {
+    cocos2d::Sprite* Scene[6];
+    tarpos.x += 4;
+    tarpos.y -= 4;
+    Scene[0] = cocos2d::Sprite::create("assets/tool/tools.png",
+                                       cocos2d::Rect(0, 295, 35, 31));
+    Scene[1] = cocos2d::Sprite::create("assets/tool/tools.png",
+                                       cocos2d::Rect(55, 295, 35, 31));
+    Scene[2] = cocos2d::Sprite::create("assets/tool/tools.png",
+                                       cocos2d::Rect(102, 295, 35, 31));
+    Scene[3] = cocos2d::Sprite::create("assets/tool/tools.png",
+                                       cocos2d::Rect(160, 295, 35, 31));
+    Scene[4] = cocos2d::Sprite::create("assets/tool/tools.png",
+                                       cocos2d::Rect(210, 295, 35, 31));
+    Scene[5] = cocos2d::Sprite::create("assets/tool/tools.png",
+                                       cocos2d::Rect(256, 295, 35, 31));
+
+    for (int i = 0; i < 5; ++i) {
+        Scene[i]->setPosition(cocos2d::Vec2(tarpos.x - 2, tarpos.y));
+        Scene[i]->setOpacity(0);
+        Scene[i]->setScale(kScale);
+        this->addChild(Scene[i]);
+
+        auto fadeIn = cocos2d::FadeIn::create(0.1f);
+        auto delay = cocos2d::DelayTime::create(0.8f);
+        auto fadeOut = cocos2d::FadeOut::create(0.1f);
+
+        auto lambda = [scenePtr = Scene[i]]() {
+            if (scenePtr) {
+                scenePtr->removeFromParent();
+            }
+        };
+        auto sequence = cocos2d::Sequence::create(
+            cocos2d::DelayTime::create(i * 0.8f), fadeIn, delay, fadeOut,
+            cocos2d::CallFunc::create(lambda), nullptr);
+
+        Scene[i]->runAction(sequence);
+    }
+    Scene[5]->setPosition(cocos2d::Vec2(tarpos.x - 5, tarpos.y + 3.5));
+    Scene[5]->setOpacity(0);
+    Scene[5]->setScale(kScale);
+    this->addChild(Scene[5]);
+
+    auto fadeIn = cocos2d::FadeIn::create(0.1f);
+    auto delay = cocos2d::DelayTime::create(2.0f);
+    auto fadeOut = cocos2d::FadeOut::create(0.1f);
+
+    auto lambda = [scenePtr = Scene[5]]() {
+        if (scenePtr) {
+            scenePtr->removeFromParent();
+        }
+    };
+    auto sequence = cocos2d::Sequence::create(
+        cocos2d::DelayTime::create(5 * 0.8f), fadeIn, delay, fadeOut,
+        cocos2d::CallFunc::create(lambda), nullptr);
+
+    Scene[5]->runAction(sequence);
+}
+
+void Avatar::UseWateringCan(cocos2d::Vec2 tarpos, Direction direction,
+                            double kScale) {
+    int pro = 2;
+    if (direction == Direction::kUp) {
+        tarpos.y += 8;
+        pro = 1;
+    } else if (direction == Direction::kDown) {
+        tarpos.y -= 8;
+    } else if (direction == Direction::kRight) {
+        tarpos.x += 8;
+        tarpos.y -= 4;
+    } else if (direction == Direction::kLeft) {
+        tarpos.x -= 8;
+        tarpos.y -= 4;
+        pro = 1;
+    }
+
+    cocos2d::Sprite* tempavatar = cocos2d::Sprite::create(
+        "assets/tool/tools.png", cocos2d::Rect(241, 217, 15, 23));
+    if (direction == Direction::kUp) {
+        tempavatar = cocos2d::Sprite::create(
+            "assets/tool/tools.png", cocos2d::Rect(239 - 16, 239 - 18, 16, 18));
+    } else if (direction == Direction::kLeft) {
+        tempavatar = cocos2d::Sprite::create(
+            "assets/tool/tools.png", cocos2d::Rect(289 - 20, 240 - 19, 20, 19));
+        tempavatar->setFlippedX(true);
+    } else if (direction == Direction::kRight) {
+        tempavatar = cocos2d::Sprite::create(
+            "assets/tool/tools.png", cocos2d::Rect(289 - 20, 240 - 19, 20, 19));
+    }
+
+    tempavatar->setPosition(cocos2d::Vec2(tarpos.x, tarpos.y));
+    tempavatar->setOpacity(0);
+    tempavatar->setScale(kScale);
+    this->addChild(tempavatar, pro);
+
+    auto fadeIn = cocos2d::FadeIn::create(0.05f);
+    auto delay = cocos2d::DelayTime::create(1.0f);
+    auto fadeOut = cocos2d::FadeOut::create(0.05f);
+
+    auto lambda = [tempavatar]() { tempavatar->removeFromParent(); };
+    auto sequence = cocos2d::Sequence::create(
+        fadeIn, delay, fadeOut, cocos2d::CallFunc::create(lambda), nullptr);
+    tempavatar->runAction(sequence);
+}
+
+void Avatar::UseOtherTools(std::string_view tool, cocos2d::Vec2 tarpos,
+                           Direction direction, double kScale) {
+    int y = 0;
+    int pro = 2;
+    if (tool == "Hoe") {
+        y = 156 - 125;
+    } else if (tool == "Axe") {
+        y = 156;
+    } else if (tool == "Draft") {
+        y = 156 - 67;
+    } else {
+        CCLOG("error : wrong action");
+        return;
+    }
+
+    if (direction == Direction::kUp) {
+        tarpos.y += 8;
+        pro = 1;
+    } else if (direction == Direction::kDown) {
+        tarpos.y -= 8;
+    } else if (direction == Direction::kRight) {
+        tarpos.x += 4;
+    } else if (direction == Direction::kLeft) {
+        tarpos.x -= 4;
+        pro = 1;
+    }
+
+    cocos2d::Sprite* tempavatar = cocos2d::Sprite::create(
+        "assets/tool/tools.png", cocos2d::Rect(242, y, 11, 22));
+    if (direction == Direction::kUp) {
+        tempavatar = cocos2d::Sprite::create("assets/tool/tools.png",
+                                             cocos2d::Rect(291, y, 12, 25));
+    } else if (direction == Direction::kLeft) {
+        tempavatar = cocos2d::Sprite::create("assets/tool/tools.png",
+                                             cocos2d::Rect(302, y, 19, 19));
+        tempavatar->setFlippedX(true);
+    } else if (direction == Direction::kRight) {
+        tempavatar = cocos2d::Sprite::create("assets/tool/tools.png",
+                                             cocos2d::Rect(302, y, 19, 19));
+    }
+
+    tempavatar->setPosition(cocos2d::Vec2(tarpos.x, tarpos.y));
+    tempavatar->setOpacity(0);
+    tempavatar->setScale(kScale);
+    this->addChild(tempavatar, pro);
+
+    auto fadeIn = cocos2d::FadeIn::create(0.05f);
+    auto delay = cocos2d::DelayTime::create(0.08f);
+    auto fadeOut = cocos2d::FadeOut::create(0.05f);
+
+    auto lambda = [tempavatar]() { tempavatar->removeFromParent(); };
+    auto sequence = cocos2d::Sequence::create(
+        fadeIn, delay, fadeOut, cocos2d::CallFunc::create(lambda), nullptr);
+    tempavatar->runAction(sequence);
 }
 
 // void avatarScene::Attacking(std::string weaponTypes) {

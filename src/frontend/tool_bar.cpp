@@ -83,12 +83,13 @@ void ToolBar::loadTools() {
 
     auto boxSize = background_->getContentSize().width / 10.0;
     const auto& itemSprites = bag_->getItems();
-    for (const auto& [index, item] : itemSprites) {
-        CCLOG("Item %s added to bag index %d", item->name.c_str(), index);
-    }
+    // for (const auto& [index, item] : itemSprites) {
+    //     CCLOG("Item %s added to bag index %d", item->name.c_str(), index);
+    // }
 
     int displayCount = 0;
     for (const auto& [index, item] : itemSprites) {
+        if (item == nullptr) continue;
         if (displayCount >= 10) break;
         if (index > 9) continue;
         CCLOG("index in toolBar: %d\n", index);

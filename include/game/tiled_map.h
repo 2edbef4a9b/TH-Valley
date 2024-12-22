@@ -10,6 +10,7 @@
 #include "frontend/tool_bar.h"
 #include "game/animals.h"
 #include "game/avatar.h"
+#include "game/entity.h"
 #include "game/map_controller.h"
 #include "math/CCGeometry.h"
 #include "utility/position.h"
@@ -49,6 +50,7 @@ public:
     void CreateMiniMap();
     void Save();
     void Load();
+    void SpawnAnimal(int count);
 
     cocos2d::Rect GetPortalRect(Portal portal,
                                 std::string_view ObjectLayerName = "Objects");
@@ -99,10 +101,10 @@ private:
     std::map<Position, cocos2d::Sprite*> SpritePosition;
     std::map<cocos2d::Sprite*, Animals*> SpritetoAnimal;
     std::vector<Crops*> MapCrops;
+    std::vector<cocos2d::Sprite*> CropsSprite;
     std::vector<Animals*> MapAnimals;
     std::vector<cocos2d::Sprite*> AnimalSprite;
-    ToolBar* MapToolBar{};
-    BagGUI* MapBag{};
+    static std::vector<Entity::Direction> AllDirection;
 
     int priority = 255;
     bool is_key_pressed_w_{false};

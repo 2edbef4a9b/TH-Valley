@@ -8,7 +8,7 @@
 #include "game/agriculture.h"
 #include "utility/position.h"
 
-class Crops : public Agriculture {
+class Crops : public agriculture {
 public:
     // Crops Information
     std::string CropName;

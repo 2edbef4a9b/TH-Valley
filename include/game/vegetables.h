@@ -94,10 +94,12 @@ public:
     Potato() {
         CropName = "Potato";
         CropType = "Vegetable";
-        CurrentGrowthStage = 3;
+        CurrentGrowthStage = 0;
         MaxGrowthStage = 3;
-        GrowthDuration = {60 * 60 * 24 * 1, 60 * 60 * 24 * 1, 60 * 60 * 24 * 1,
-                          60 * 60 * 24 * 7};
+        // GrowthDuration = {60 * 60 * 24 * 1, 60 * 60 * 24 * 1, 60 * 60 * 24 *
+        // 1,
+        //                 60 * 60 * 24 * 7};
+        GrowthDuration = {50, 50, 50, 50};
         GrowthStage = {"Seed", "Seedling", "Maturation", "Ripened"};
         frameRect.resize(4);
         frameRect[0].setRect(130, 54, 10, 7);
