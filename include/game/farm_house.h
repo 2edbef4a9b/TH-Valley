@@ -26,6 +26,6 @@ public:
     void FarmHouseAutomaticUpdate();
 };
 
-extern FarmHouse *GlobalFarmHouse;
+extern FarmHouse GlobalFarmHouse;
 
 #endif  // FARM_HOUSE_H_

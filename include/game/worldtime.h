@@ -29,6 +29,6 @@ public:
     void TimeShow();
 };
 
-extern WorldTime *GlobalTime;
+extern WorldTime GlobalTime;
 
 #endif

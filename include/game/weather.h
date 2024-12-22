@@ -23,6 +23,6 @@ public:
     void WeatherAutomaticUpdate(WorldTime Time);
 };
 
-extern Weather *GlobalWeather;
+extern Weather GlobalWeather;
 
 #endif

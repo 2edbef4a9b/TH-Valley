@@ -1,5 +1,7 @@
 #include "game/crops.h"
 
+#include "game/worldtime.h"
+
 void Crops::UpdateSituation(const std::string &Situation, const bool &Compare,
                             bool &isSituation, const int &toDeath) {
     if (Compare) {
@@ -9,8 +11,9 @@ void Crops::UpdateSituation(const std::string &Situation, const bool &Compare,
             std::vector<std::string>::iterator it;
             for (it = GrowthSituation.begin(); it != GrowthSituation.end();
                  it++) {
-                if (*it == Situation) GrowthSituation.erase(it);
+                if (*it == Situation) break;
             }
+            GrowthSituation.erase(it);
         }
     } else {
         if (!isSituation) {
@@ -36,21 +39,21 @@ void Crops::CropAutomaticUpdate() {
 
     // Watering Check
     WaterRequirement += 1;
-    if (CurrentWeather->WeatherType == "Rainy") WaterRequirement = 0;
+    if (GlobalWeather.WeatherType == "Rainy") WaterRequirement = 0;
     UpdateSituation("Drought", WaterRequirement < MaxWaterRequirement,
-                    isDrought, 500);
+                    isDrought, 50000);
 
     // Season Check
     bool SeasonCheck = 0;
     for (int i = 0; i < SeasonRequirement.size(); i++) {
-        if (SeasonRequirement[i] == CurrentTime->Season) SeasonCheck = 1;
+        if (SeasonRequirement[i] == GlobalTime.Season) SeasonCheck = 1;
     }
-    UpdateSituation("WrongSeason", SeasonCheck, isWrongSeason, 500);
+    UpdateSituation("WrongSeason", SeasonCheck, isWrongSeason, 50000);
 
     // Frozen Check
     // CCLOG("Compare: %d\n", CurrentWeather->Temperature);
-    UpdateSituation("Frozen", CurrentWeather->Temperature >= MinTemperature,
-                    isFrozen, 300);
+    UpdateSituation("Frozen", GlobalWeather.Temperature >= MinTemperature,
+                    isFrozen, 30000);
 
     // Pest Check
     int PestCheck = 1;
@@ -58,15 +61,15 @@ void Crops::CropAutomaticUpdate() {
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> dist(1, 1000);
     int RandomNumber = dist(gen);
-    if (RandomNumber == 1 && CurrentWeather->Temperature >= 15 &&
-        CurrentWeather->Temperature <= 40) {
+    if (RandomNumber == 1 && GlobalWeather.Temperature >= 15 &&
+        GlobalWeather.Temperature <= 40) {
         PestCheck = 0;
     }
-    UpdateSituation("Pest", PestCheck, isPest, 300);
+    UpdateSituation("Pest", PestCheck, isPest, 30000);
 
     // Rot Check
     int RotCheck = !((CurrentGrowthStage == MaxGrowthStage) &&
-                     (GrowthDuration[CurrentGrowthStage] <= -500));
+                     (GrowthDuration[CurrentGrowthStage] <= -50000));
     UpdateSituation("Rot", RotCheck, isRot, 0);
 
     // Deal special situation of the crop
@@ -107,7 +110,7 @@ void Crops::CropWatering() { WaterRequirement = 0; }
 
 void Crops::CropFertilize() {
     GrowthSpeed = 2;
-    FertilizerDuration = 100;
+    FertilizerDuration = 10000;
     isFertilize = 1;
 }
 

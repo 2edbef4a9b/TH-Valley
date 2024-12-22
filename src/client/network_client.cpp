@@ -6,19 +6,17 @@
 #include <thread>
 #include <utility>
 
-#include "utility/logger.h"
-
 #include "game/animals.h"
-#include "game/crops.h"
 #include "game/crop_production.h"
+#include "game/crops.h"
 #include "game/farm_house.h"
 #include "game/worldtime.h"
+#include "utility/logger.h"
 
-WorldTime* GlobalTime = new WorldTime;
-Weather* GlobalWeather = new Weather;
-CropProduction* GlobalCropProduction = new CropProduction;
-FarmHouse* GlobalFarmHouse = new FarmHouse;
-
+WorldTime GlobalTime{};
+Weather GlobalWeather{};
+CropProduction GlobalCropProduction{};
+FarmHouse GlobalFarmHouse{};
 
 namespace th_valley {
 

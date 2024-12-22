@@ -6,13 +6,13 @@
 
 class agriculture {
 protected:
-    WorldTime* CurrentTime;
-    Weather* CurrentWeather;
+    WorldTime* CurrentTime = new WorldTime();
+    Weather* CurrentWeather = new Weather();
 
 public:
     void getWorldInformation(WorldTime* Time, Weather* weather) {
-        CurrentTime = Time;
-        CurrentWeather = weather;
+        // CurrentTime = Time;
+        // CurrentWeather = weather;
     }
 };
 
