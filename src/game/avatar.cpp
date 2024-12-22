@@ -1,5 +1,7 @@
 #include "game/avatar.h"
 
+#include <utility/logger.h>
+
 #include "2d/CCSprite.h"
 #include "game/entity.h"
 
@@ -12,9 +14,27 @@ bool Avatar::init() {
     if (!Entity::init()) {
         return false;
     }
+    InitAnimation("koishi");
     InitTexture("koishi");
     SetDirection(Direction::kDown);
     return true;
+}
+
+void Avatar::update(float delta) { Entity::update(delta); }
+
+void Avatar::RenderAction(std::string_view action) {
+    if (action == "move") {
+        RenderMove();
+    }
+}
+
+void Avatar::RenderMove() {
+    auto* animation = move_animations_.at(0);
+    auto* repeat = cocos2d::RepeatForever::create(animation);
+    if (repeat == nullptr) {
+        Logger::GetInstance().LogError("RepeatForever is nullptr");
+    }
+    this->runAction(repeat);
 }
 
 void Avatar::ChangeDirection(Direction direction) {
@@ -42,6 +62,27 @@ void Avatar::ChangeDirection(Direction direction) {
         auto* sprite_frame =
             cocos2d::SpriteFrame::createWithTexture(new_texture, frame_rect);
         this->setSpriteFrame(sprite_frame);
+    }
+}
+
+void Avatar::InitAnimation(std::string_view avatar_name) {
+    cocos2d::Vector<cocos2d::SpriteFrame*> anime_frames;
+    for (int direction = 0; direction < 4; direction++) {
+        for (int index = 0; index < 4; index++) {
+            // Define the rectangle for each frame
+            cocos2d::Rect frame_rect(index * 16, direction * 32, 16, 32);
+            auto* frame = cocos2d::SpriteFrame::create(
+                "assets/tilesheets/Haley.png", frame_rect);
+            if (frame) {
+                anime_frames.pushBack(
+                    frame);  // Add frame to the vector if it is valid
+            }
+        }
+
+        auto* animation = cocos2d::Animation::createWithSpriteFrames(
+            anime_frames, 0.1F);  // Create an animation with the frames.
+        auto* animate = cocos2d::Animate::create(animation);
+        move_animations_.push_back(animate);
     }
 }
 

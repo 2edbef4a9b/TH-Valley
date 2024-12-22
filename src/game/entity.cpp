@@ -1,5 +1,7 @@
 #include "game/entity.h"
 
+#include "utility/logger.h"
+
 namespace th_valley {
 
 void Entity::SetState(EntityState state) { state_ = state; }
@@ -24,6 +26,13 @@ bool Entity::init() {
     this->setAnchorPoint(cocos2d::Vec2(0.5F, 0.0F));
 
     return true;
+}
+
+void Entity::update(float delta) {
+    constexpr float kMoveSpeed = 100.0F;
+    if (state_ == EntityState::kAction) {
+        Logger::GetInstance().LogInfo("Action");
+    }
 }
 
 void Entity::InitEntity(cocos2d::Node* parent) {

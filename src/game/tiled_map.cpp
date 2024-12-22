@@ -196,40 +196,50 @@ void TiledMap::onEnter() {
                                        cocos2d::Event* event) {
         switch (keyCode) {
             case cocos2d::EventKeyboard::KeyCode::KEY_W:
+            case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_W:
                 is_key_pressed_w_ = true;
                 break;
             case cocos2d::EventKeyboard::KeyCode::KEY_S:
+            case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_S:
                 is_key_pressed_s_ = true;
                 break;
             case cocos2d::EventKeyboard::KeyCode::KEY_A:
+            case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_A:
                 is_key_pressed_a_ = true;
                 break;
             case cocos2d::EventKeyboard::KeyCode::KEY_D:
+            case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_D:
                 is_key_pressed_d_ = true;
                 break;
             default:
                 break;
         }
+        avatar.RenderAction("move");
     };
 
     keyListener->onKeyReleased = [this](cocos2d::EventKeyboard::KeyCode keyCode,
                                         cocos2d::Event* event) {
         switch (keyCode) {
             case cocos2d::EventKeyboard::KeyCode::KEY_W:
+            case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_W:
                 is_key_pressed_w_ = false;
                 break;
             case cocos2d::EventKeyboard::KeyCode::KEY_S:
+            case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_S:
                 is_key_pressed_s_ = false;
                 break;
             case cocos2d::EventKeyboard::KeyCode::KEY_A:
+            case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_A:
                 is_key_pressed_a_ = false;
                 break;
             case cocos2d::EventKeyboard::KeyCode::KEY_D:
+            case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_D:
                 is_key_pressed_d_ = false;
                 break;
             default:
                 break;
         }
+        avatar.stopAllActions();
     };
 
     cocos2d::EventDispatcher* dispatcher =
@@ -238,6 +248,7 @@ void TiledMap::onEnter() {
     dispatcher->addEventListenerWithSceneGraphPriority(keyListener, this);
 
     this->scheduleUpdate();
+    avatar.scheduleUpdate();
 }
 
 void TiledMap::update(const float delta) {
@@ -276,6 +287,7 @@ void TiledMap::update(const float delta) {
         is_key_pressed_d_) {
         if (IsCollisionAtAnyLayer(current_pos)) {
             Logger::GetInstance().LogInfo("Collision detected");
+            avatar.SetState(Entity::EntityState::kIdle);
         } else {
             SetPlayerPos(current_pos);
         }

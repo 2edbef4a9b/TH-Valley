@@ -1,6 +1,8 @@
 #ifndef ENTITY_H_
 #define ENTITY_H_
 
+#include <string_view>
+
 #include "2d/CCNode.h"
 #include "2d/CCSprite.h"
 #include "cocos2d.h"
@@ -39,6 +41,7 @@ public:
     Direction GetDirection() const;
 
     bool init() override;
+    void update(float delta) override;
 
     virtual void InitEntity(cocos2d::Node* parent);
     virtual void ChangeDirection(Direction direction);
