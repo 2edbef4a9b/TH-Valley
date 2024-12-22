@@ -14,9 +14,9 @@ bool Avatar::init() {
     if (!Entity::init()) {
         return false;
     }
-    InitAnimation("koishi");
     InitTexture("koishi");
-    SetDirection(Direction::kDown);
+    InitAnimation("koishi");
+    ChangeDirection(Direction::kDown);
     return true;
 }
 
@@ -29,17 +29,25 @@ void Avatar::RenderAction(std::string_view action) {
 }
 
 void Avatar::RenderMove() {
-    auto* animation = move_animations_.at(0);
+    Logger::GetInstance().LogInfo("Current direction: {}",
+                                  static_cast<int>(GetDirection()));
+    auto* animation = move_animations_.at(static_cast<int>(GetDirection()));
     auto* repeat = cocos2d::RepeatForever::create(animation);
     if (repeat == nullptr) {
         Logger::GetInstance().LogError("RepeatForever is nullptr");
+        return;
     }
     this->runAction(repeat);
 }
 
 void Avatar::ChangeDirection(Direction direction) {
+    const Direction current_direction = GetDirection();
+    if (current_direction == direction) {
+        return;
+    }
+
     SetDirection(direction);
-    auto* new_texture = this->getTexture();
+    auto* new_texture = avatar_texture_.down;
     switch (direction) {
         case Direction::kUp:
             new_texture = avatar_texture_.up;
@@ -57,17 +65,15 @@ void Avatar::ChangeDirection(Direction direction) {
             break;
     }
 
-    if (new_texture) {
-        cocos2d::Rect frame_rect(0, 0, 128, 128);
-        auto* sprite_frame =
-            cocos2d::SpriteFrame::createWithTexture(new_texture, frame_rect);
-        this->setSpriteFrame(sprite_frame);
-    }
+    cocos2d::Rect frame_rect(0, 0, 128, 128);
+    auto* sprite_frame =
+        cocos2d::SpriteFrame::createWithTexture(new_texture, frame_rect);
+    this->setSpriteFrame(sprite_frame);
 }
 
 void Avatar::InitAnimation(std::string_view avatar_name) {
-    cocos2d::Vector<cocos2d::SpriteFrame*> anime_frames;
     for (int direction = 0; direction < 4; direction++) {
+        cocos2d::Vector<cocos2d::SpriteFrame*> anime_frames;
         for (int index = 0; index < 4; index++) {
             // Define the rectangle for each frame
             cocos2d::Rect frame_rect(index * 16, direction * 32, 16, 32);
@@ -82,6 +88,7 @@ void Avatar::InitAnimation(std::string_view avatar_name) {
         auto* animation = cocos2d::Animation::createWithSpriteFrames(
             anime_frames, 0.1F);  // Create an animation with the frames.
         auto* animate = cocos2d::Animate::create(animation);
+        animate->retain();
         move_animations_.push_back(animate);
     }
 }

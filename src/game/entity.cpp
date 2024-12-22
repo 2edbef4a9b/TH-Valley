@@ -39,7 +39,7 @@ void Entity::InitEntity(cocos2d::Node* parent) {
     if (!init()) {
         return;
     }
-    parent->addChild(this, 2);
+    parent->addChild(this, 0);
 }
 
 void Entity::ChangeDirection(Direction direction) {

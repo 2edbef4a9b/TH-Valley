@@ -198,23 +198,27 @@ void TiledMap::onEnter() {
             case cocos2d::EventKeyboard::KeyCode::KEY_W:
             case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_W:
                 is_key_pressed_w_ = true;
+                avatar.ChangeDirection(Entity::Direction::kUp);
                 break;
             case cocos2d::EventKeyboard::KeyCode::KEY_S:
             case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_S:
                 is_key_pressed_s_ = true;
+                avatar.ChangeDirection(Entity::Direction::kDown);
                 break;
             case cocos2d::EventKeyboard::KeyCode::KEY_A:
             case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_A:
                 is_key_pressed_a_ = true;
+                avatar.ChangeDirection(Entity::Direction::kLeft);
                 break;
             case cocos2d::EventKeyboard::KeyCode::KEY_D:
             case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_D:
                 is_key_pressed_d_ = true;
+                avatar.ChangeDirection(Entity::Direction::kRight);
                 break;
             default:
                 break;
         }
-        avatar.RenderAction("move");
+        avatar.RenderMove();
     };
 
     keyListener->onKeyReleased = [this](cocos2d::EventKeyboard::KeyCode keyCode,
@@ -268,19 +272,15 @@ void TiledMap::update(const float delta) {
 
     if (is_key_pressed_w_) {
         current_pos.y += move_step;
-        avatar.ChangeDirection(Entity::Direction::kUp);
     }
     if (is_key_pressed_s_) {
         current_pos.y -= move_step;
-        avatar.ChangeDirection(Entity::Direction::kDown);
     }
     if (is_key_pressed_a_) {
         current_pos.x -= move_step;
-        avatar.ChangeDirection(Entity::Direction::kLeft);
     }
     if (is_key_pressed_d_) {
         current_pos.x += move_step;
-        avatar.ChangeDirection(Entity::Direction::kRight);
     }
 
     if (is_key_pressed_w_ || is_key_pressed_s_ || is_key_pressed_a_ ||

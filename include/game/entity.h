@@ -14,10 +14,10 @@ namespace th_valley {
 class Entity : public cocos2d::Sprite {
 public:
     enum class Direction {
-        kUp,
         kDown,
-        kLeft,
         kRight,
+        kUp,
+        kLeft,
     };
 
     enum class EntityState {
