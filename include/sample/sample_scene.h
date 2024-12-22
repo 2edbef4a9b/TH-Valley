@@ -13,9 +13,7 @@ public:
     SampleScene& operator=(const SampleScene& other) = delete;
     SampleScene(SampleScene&& other) = delete;
     SampleScene& operator=(SampleScene&& other) = delete;
-
     bool init() override;
-
     CREATE_FUNC(SampleScene);
 };
 

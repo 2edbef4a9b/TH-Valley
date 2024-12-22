@@ -155,6 +155,7 @@ public:
 
         return true;
     }
+    bool isplay = false;
 };
 
 class TalkBoxTests : public ::testing::Test {
