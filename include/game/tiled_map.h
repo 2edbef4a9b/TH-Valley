@@ -50,6 +50,7 @@ public:
     void CreateMiniMap();
     void Save();
     void Load();
+    void SpawnAnimal(int count);
 
     cocos2d::Rect GetPortalRect(Portal portal,
                                 std::string_view ObjectLayerName = "Objects");
@@ -103,7 +104,7 @@ private:
     std::vector<cocos2d::Sprite*> CropsSprite;
     std::vector<Animals*> MapAnimals;
     std::vector<cocos2d::Sprite*> AnimalSprite;
-    std::vector<Entity::Direction> AllDirection;
+    static std::vector<Entity::Direction> AllDirection;
 
     int priority = 255;
     bool is_key_pressed_w_{false};

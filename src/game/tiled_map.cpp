@@ -108,12 +108,6 @@ bool TiledMap::InitWithTMXFile(const std::string& tmxFile) {
     CCLOG("Player sprite created at Tile: %f %f",
           TileCoordFromPos(player_pos_).x, TileCoordFromPos(player_pos_).y);
 
-    for (int pig_count = 0; pig_count < 10; pig_count++) {
-        Pig* pig = new Pig;
-        MapAnimals.push_back(pig);
-    }
-    initAnimalPosition();
-
     return true;
 }
 
@@ -133,6 +127,14 @@ void TiledMap::Save() {
 
 void TiledMap::Load() {
     // Implementation for load
+}
+
+void TiledMap::SpawnAnimal(int count) {
+    for (int pig_count = 0; pig_count < count; pig_count++) {
+        Pig* pig = new Pig;
+        MapAnimals.push_back(pig);
+    }
+    initAnimalPosition();
 }
 
 cocos2d::Rect TiledMap::GetPortalRect(Portal portal,
@@ -229,15 +231,20 @@ void TiledMap::onEnter() {
             PlantTilePos.y = tilePos.y;
 
             // take a Strawberry as an example
-            /*Strawberry* exampleStrawberry;
-            exampleStrawberry = new Strawberry;*/
 
-            Potato* exampleStrawberry;
-            exampleStrawberry = new Potato;
-            GlobalTime.TimeShow();
-            CCLOG("Potato");
+            // Potato* exampleStrawberry;
+            // exampleStrawberry = new Potato;
+            // GlobalTime.TimeShow();
+            // CCLOG("Potato");
 
-            CropPlant(PlantTilePos, exampleStrawberry);
+            if (MapToolBar->getToolName() == "StrawberrySeed") {
+                CropPlant(PlantTilePos, new Strawberry);
+
+            } else if (MapToolBar->getToolName() == "CarrotSeed") {
+                CropPlant(PlantTilePos, new Carrot);
+            } else if (MapToolBar->getToolName() == "PotatoSeed") {
+                CropPlant(PlantTilePos, new Potato);
+            }
         }
 
         // Animal
@@ -573,5 +580,7 @@ void TiledMap::UpdateTileAt(cocos2d::Vec2 tileCoord, int newGID,
     CCLOG("Tile updated at %f, %f with GID: %d", tileCoord.x, tileCoord.y,
           newGID);
 }
+
+std::vector<Entity::Direction> TiledMap::AllDirection;
 
 }  // namespace th_valley
