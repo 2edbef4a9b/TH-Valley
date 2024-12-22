@@ -86,7 +86,7 @@ void TiledMap::CropUpdate(const Position& UpdatePosition) {
     auto Picture = SpritePosition[UpdatePosition];
     Crops* Crop = CropPosition[UpdatePosition];
     auto newPicture =
-        cocos2d::Sprite::create("assets/TileSheets/crops.png",
+        cocos2d::Sprite::create("assets/tilesheets/crops.png",
                                 Crop->frameRect[Crop->CurrentGrowthStage]);
     Picture = newPicture;
     delete newPicture;

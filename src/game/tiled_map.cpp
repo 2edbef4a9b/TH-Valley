@@ -99,36 +99,11 @@ bool TiledMap::InitWithTMXFile(const std::string& tmxFile) {
           TileCoordFromPos(player_pos_).x, TileCoordFromPos(player_pos_).y);
     SetViewpointCenter(player_pos_);
 
-    // auto texture =
-    //     cocos2d::Director::getInstance()->getTextureCache()->addImage(
-    //         "assets/tilesheets/Sebastian.png");
-
-    // cocos2d::Rect frameRect(0, 0, 16, 32);
-    // auto spriteFrame =
-    //     cocos2d::SpriteFrame::createWithTexture(texture, frameRect);
-    // playerSprite_ = cocos2d::Sprite::createWithSpriteFrame(spriteFrame);
-    // playerSprite_->setAnchorPoint(cocos2d::Vec2(0.5f, 0.0f));
-    // playerSprite_->setPosition(playerPos_);
-    // CCLOG("Player sprite created at %f %f", playerPos_.x, playerPos_.y);
-    // CCLOG("Player sprite created at Tile: %f %f",
-    //       TileCoordFromPos(playerPos_).x, TileCoordFromPos(playerPos_).y);
-    // tiled_map_->addChild(playerSprite_, 2);
-
-    auto texture =
-        cocos2d::Director::getInstance()->getTextureCache()->addImage(
-            "assets/tilesheets/koishi.png");
-
-    cocos2d::Rect frameRect(0, 0, 3072, 3072);
-    auto spriteFrame =
-        cocos2d::SpriteFrame::createWithTexture(texture, frameRect);
-    avatar.SetSprite(cocos2d::Sprite::createWithSpriteFrame(spriteFrame));
-    avatar.GetSprite()->setScale(32.0f / 3072.0f);
-    avatar.GetSprite()->setAnchorPoint(cocos2d::Vec2(0.5f, 0.0f));
+    avatar.InitEntity(tiled_map_);
     avatar.SetPosition(player_pos_);
     CCLOG("Player sprite created at %f %f", player_pos_.x, player_pos_.y);
     CCLOG("Player sprite created at Tile: %f %f",
           TileCoordFromPos(player_pos_).x, TileCoordFromPos(player_pos_).y);
-    tiled_map_->addChild(avatar.GetSprite(), 2);
 
     for (int pig_count = 0; pig_count < 10; pig_count++) {
         Pig* pig = new Pig;
@@ -282,19 +257,19 @@ void TiledMap::update(const float delta) {
 
     if (is_key_pressed_w_) {
         current_pos.y += move_step;
-        avatar.SetDirection(Entity::Direction::kUp);
+        avatar.ChangeDirection(Entity::Direction::kUp);
     }
     if (is_key_pressed_s_) {
         current_pos.y -= move_step;
-        avatar.SetDirection(Entity::Direction::kDown);
+        avatar.ChangeDirection(Entity::Direction::kDown);
     }
     if (is_key_pressed_a_) {
         current_pos.x -= move_step;
-        avatar.SetDirection(Entity::Direction::kLeft);
+        avatar.ChangeDirection(Entity::Direction::kLeft);
     }
     if (is_key_pressed_d_) {
         current_pos.x += move_step;
-        avatar.SetDirection(Entity::Direction::kRight);
+        avatar.ChangeDirection(Entity::Direction::kRight);
     }
 
     if (is_key_pressed_w_ || is_key_pressed_s_ || is_key_pressed_a_ ||

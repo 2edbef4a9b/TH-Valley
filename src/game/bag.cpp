@@ -67,23 +67,23 @@ void Bag::swapItems(int key1, int key2) {
 
 void Bag::bagInit() {
     ItemSprite* Axe = new ItemSprite(
-        "Axe", 1, "Used for chopping wood", "assets/TileSheets/tools.png",
+        "Axe", 1, "Used for chopping wood", "assets/tilesheets/tools.png",
         cocos2d::Rect(0 + 5 * 16, 32 + 4 * 32, 16, 16));
     items_[0] = Axe;
     ItemSprite* Hoe = new ItemSprite(
-        "Hoe", 3, "Used for chopping wood", "assets/TileSheets/tools.png",
+        "Hoe", 3, "Used for chopping wood", "assets/tilesheets/tools.png",
         cocos2d::Rect(0 + 5 * 16, 32 + 0 * 32, 16, 16));
     items_[1] = Hoe;
     ItemSprite* A = new ItemSprite(
-        "Axe", 1, "Used for chopping wood", "assets/TileSheets/tools.png",
+        "Axe", 1, "Used for chopping wood", "assets/tilesheets/tools.png",
         cocos2d::Rect(0 + 5 * 16, 32 + 4 * 32, 16, 16));
     items_[9] = A;
     ItemSprite* H = new ItemSprite(
-        "Hoe", 3, "Used for chopping wood", "assets/TileSheets/tools.png",
+        "Hoe", 3, "Used for chopping wood", "assets/tilesheets/tools.png",
         cocos2d::Rect(0 + 5 * 16, 32 + 0 * 32, 16, 16));
     items_[15] = H;
     ItemSprite* h = new ItemSprite(
-        "Hoe", 3, "Used for chopping wood", "assets/TileSheets/tools.png",
+        "Hoe", 3, "Used for chopping wood", "assets/tilesheets/tools.png",
         cocos2d::Rect(0 + 5 * 16, 32 + 0 * 32, 16, 16));
     items_[38] = h;
 

@@ -1,6 +1,7 @@
 #ifndef ENTITY_H_
 #define ENTITY_H_
 
+#include "2d/CCNode.h"
 #include "2d/CCSprite.h"
 #include "cocos2d.h"
 #include "game/entity_data.h"
@@ -17,6 +18,13 @@ public:
         kRight,
     };
 
+    enum class EntityState {
+        kIdle,
+        kMove,
+        kAction,
+        kDead,
+    };
+
     Entity() = default;
     ~Entity() override = default;
 
@@ -25,19 +33,20 @@ public:
     Entity(Entity&& other) = delete;
     Entity& operator=(Entity&& other) = delete;
 
-    cocos2d::Sprite* GetSprite() const;
+    void SetState(EntityState state);
+    EntityState GetState() const;
     void SetDirection(Direction direction);
-    void SetSprite(cocos2d::Sprite* sprite);
+    Direction GetDirection() const;
+
+    virtual void InitEntity(cocos2d::Node* parent);
+    virtual void ChangeDirection(Direction direction);
     void SetPosition(const cocos2d::Vec2& position);
 
-private:
-    enum class EntityState {
-        kIdle,
-        kMove,
-        kAction,
-        kDead,
-    };
+protected:
+    cocos2d::Sprite* GetSprite() const;
+    void SetSprite(cocos2d::Sprite* sprite);
 
+private:
     cocos2d::Vec2 position_;
     cocos2d::Sprite* sprite_{};
     EntityData entity_data_;

@@ -1,6 +1,8 @@
 #ifndef AVATAR_H_
 #define AVATAR_H_
 
+#include <string_view>
+
 #include "game/entity.h"
 
 namespace th_valley {
@@ -15,7 +17,19 @@ public:
     Avatar(Avatar&& other) = delete;
     Avatar& operator=(Avatar&& other) = delete;
 
+    void InitEntity(cocos2d::Node* parent) override;
+    void ChangeDirection(Direction direction) override;
+
 private:
+    struct AvatarTexture {
+        cocos2d::Texture2D* left;
+        cocos2d::Texture2D* right;
+        cocos2d::Texture2D* up;
+        cocos2d::Texture2D* down;
+    };
+
+    void InitTexture(std::string_view avatar_name);
+    AvatarTexture avatar_texture_;
 };
 
 }  // namespace th_valley
