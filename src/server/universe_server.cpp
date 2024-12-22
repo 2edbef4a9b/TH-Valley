@@ -47,15 +47,15 @@ void UniverseServer::Update() {
     CCLOG("STRAT UPDATE");
 
     GlobalTime.TimeNext();
-    GlobalTime.TimeShow();
+   // GlobalTime.TimeShow();
 
     GlobalWeather.WeatherAutomaticUpdate(GlobalTime);
-    GlobalWeather.WeatherShow();
+   // GlobalWeather.WeatherShow();
 
     GlobalCropProduction.getWorldInformation(&GlobalTime, &GlobalWeather);
     for (int CropCount = 0; CropCount < GlobalCropProduction.AllCrops.size();
-         CropCount++) {
-        GlobalCropProduction.AllCrops[CropCount]->CropAutomaticUpdate();
+          CropCount++) {
+         if (GlobalCropProduction.AllCrops[CropCount] != nullptr) GlobalCropProduction.AllCrops[CropCount]->CropAutomaticUpdate();
     }
 
     for (int AnimalCount = 0; AnimalCount < GlobalFarmHouse.AllAnimals.size();

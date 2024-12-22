@@ -1,7 +1,7 @@
 #include "game/crops.h"
 
 #include "game/worldtime.h"
-
+#include <cocos2d.h>
 void Crops::UpdateSituation(const std::string &Situation, const bool &Compare,
                             bool &isSituation, const int &toDeath) {
     if (Compare) {
@@ -41,19 +41,19 @@ void Crops::CropAutomaticUpdate() {
     WaterRequirement += 1;
     if (GlobalWeather.WeatherType == "Rainy") WaterRequirement = 0;
     UpdateSituation("Drought", WaterRequirement < MaxWaterRequirement,
-                    isDrought, 50000);
+                    isDrought, 60 * 60 * 24 * 1);
 
     // Season Check
     bool SeasonCheck = 0;
     for (int i = 0; i < SeasonRequirement.size(); i++) {
         if (SeasonRequirement[i] == GlobalTime.Season) SeasonCheck = 1;
     }
-    UpdateSituation("WrongSeason", SeasonCheck, isWrongSeason, 50000);
+    UpdateSituation("WrongSeason", SeasonCheck, isWrongSeason, 60 * 60 * 24 * 1);
 
     // Frozen Check
     // CCLOG("Compare: %d\n", CurrentWeather->Temperature);
     UpdateSituation("Frozen", GlobalWeather.Temperature >= MinTemperature,
-                    isFrozen, 30000);
+                    isFrozen, 60 * 60 * 24 * 1);
 
     // Pest Check
     int PestCheck = 1;
@@ -65,11 +65,11 @@ void Crops::CropAutomaticUpdate() {
         GlobalWeather.Temperature <= 40) {
         PestCheck = 0;
     }
-    UpdateSituation("Pest", PestCheck, isPest, 30000);
+    UpdateSituation("Pest", PestCheck, isPest, 60 * 60 * 24 * 1);
 
     // Rot Check
     int RotCheck = !((CurrentGrowthStage == MaxGrowthStage) &&
-                     (GrowthDuration[CurrentGrowthStage] <= -50000));
+                     (GrowthDuration[CurrentGrowthStage] <= -60 * 60 * 24 * 3));
     UpdateSituation("Rot", RotCheck, isRot, 0);
 
     // Deal special situation of the crop
@@ -100,6 +100,8 @@ void Crops::CropAutomaticUpdate() {
         GrowthDuration[CurrentGrowthStage] -= GrowthSpeed;
         if (GrowthDuration[CurrentGrowthStage] <= 0) {
             CurrentGrowthStage++;
+            CropSprite->setTextureRect(frameRect[CurrentGrowthStage]);
+            CCLOG("Have updated");
         }
     } else {
         GrowthDuration[CurrentGrowthStage] -= 1;

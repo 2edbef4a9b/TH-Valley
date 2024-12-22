@@ -235,7 +235,6 @@ void TiledMap::onEnter() {
             Potato* exampleStrawberry;
             exampleStrawberry = new Potato;
             GlobalTime.TimeShow();
-            GlobalCropProduction.AllCrops.push_back(exampleStrawberry);
             CCLOG("Potato");
 
             CropPlant(PlantTilePos, exampleStrawberry);

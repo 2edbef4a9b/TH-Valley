@@ -1,3 +1,5 @@
+#include <game/crop_production.h>
+
 #include "cocos2d.h"
 #include "game/crops.h"
 #include "game/tiled_map.h"
@@ -39,7 +41,7 @@ void TiledMap::CropPlant(const Position& PlantPosition, Crops* Crop) {
 
     CCLOG("Can be planted");
 
-    auto CropPicture = Crop->CropSprite;
+    //auto CropPicture = Crop->CropSprite;
 
     // Picture Position Calculate
     cocos2d::Vec2 PicturePosition;
@@ -49,13 +51,14 @@ void TiledMap::CropPlant(const Position& PlantPosition, Crops* Crop) {
           tiled_map_->getTileSize().height);
     CCLOG("PicturePosition: %f %f\n", PicturePosition.x, PicturePosition.y);
     CCLOG("PlantPosition: %f %f\n", PlantPosition.x, PlantPosition.y);
-    CropPicture->setPosition(PicturePosition);
+    Crop->CropSprite->setPosition(PicturePosition);
 
     CropPosition[PlantPosition] = Crop;
-    SpritePosition[PlantPosition] = CropPicture;
+    SpritePosition[PlantPosition] = Crop->CropSprite;
     MapCrops.push_back(Crop);
-
-    tiled_map_->addChild(CropPicture, 1);
+    GlobalCropProduction.AllCrops.push_back(Crop);
+    CropsSprite.push_back(Crop->CropSprite);
+    tiled_map_->addChild(Crop->CropSprite, 1);
 }
 
 void TiledMap::CropRemove(const Position& RemovePosition) {

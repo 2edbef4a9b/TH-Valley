@@ -99,6 +99,7 @@ private:
     std::map<Position, cocos2d::Sprite*> SpritePosition;
     std::map<cocos2d::Sprite*, Animals*> SpritetoAnimal;
     std::vector<Crops*> MapCrops;
+    std::vector<cocos2d::Sprite*> CropsSprite;
     std::vector<Animals*> MapAnimals;
     std::vector<cocos2d::Sprite*> AnimalSprite;
 
