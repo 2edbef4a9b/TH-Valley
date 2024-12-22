@@ -278,22 +278,27 @@ void TiledMap::onEnter() {
             case cocos2d::EventKeyboard::KeyCode::KEY_W:
             case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_W:
                 is_key_pressed_w_ = true;
-                avatar.ChangeDirection(Entity::Direction::kUp);
+                // avatar.ChangeDirection(Entity::Direction::kUp);
+                AllDirection.push_back(Entity::Direction::kUp);
                 break;
             case cocos2d::EventKeyboard::KeyCode::KEY_S:
             case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_S:
                 is_key_pressed_s_ = true;
-                avatar.ChangeDirection(Entity::Direction::kDown);
+                // avatar.ChangeDirection(Entity::Direction::kDown);
+                AllDirection.push_back(Entity::Direction::kDown);
                 break;
             case cocos2d::EventKeyboard::KeyCode::KEY_A:
             case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_A:
                 is_key_pressed_a_ = true;
-                avatar.ChangeDirection(Entity::Direction::kLeft);
+                // avatar.ChangeDirection(Entity::Direction::kLeft);
+                AllDirection.push_back(Entity::Direction::kLeft);
+                Logger::GetInstance().LogInfo("A key pressed");
                 break;
             case cocos2d::EventKeyboard::KeyCode::KEY_D:
             case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_D:
                 is_key_pressed_d_ = true;
-                avatar.ChangeDirection(Entity::Direction::kRight);
+                // avatar.ChangeDirection(Entity::Direction::kRight);
+                AllDirection.push_back(Entity::Direction::kRight);
                 break;
             case cocos2d::EventKeyboard::KeyCode::KEY_E:
             case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_E:
@@ -307,32 +312,71 @@ void TiledMap::onEnter() {
             default:
                 break;
         }
-        avatar.RenderMove();
+        if (is_key_pressed_a_ || is_key_pressed_d_ || is_key_pressed_s_ ||
+            is_key_pressed_w_) {
+            avatar.ChangeDirection(AllDirection[0]);
+            avatar.RenderMove();
+        }
     };
 
     keyListener->onKeyReleased = [this](cocos2d::EventKeyboard::KeyCode keyCode,
                                         cocos2d::Event* event) {
+        std::vector<Entity::Direction>::iterator iterator;
         switch (keyCode) {
             case cocos2d::EventKeyboard::KeyCode::KEY_W:
             case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_W:
                 is_key_pressed_w_ = false;
+                for (iterator = AllDirection.begin();
+                     iterator != AllDirection.end(); iterator++) {
+                    if (*iterator == Entity::Direction::kUp) {
+                        break;
+                    }
+                }
+                AllDirection.erase(iterator);
                 break;
             case cocos2d::EventKeyboard::KeyCode::KEY_S:
             case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_S:
                 is_key_pressed_s_ = false;
+                for (iterator = AllDirection.begin();
+                     iterator != AllDirection.end(); iterator++) {
+                    if (*iterator == Entity::Direction::kDown) {
+                        break;
+                    }
+                }
+                AllDirection.erase(iterator);
                 break;
             case cocos2d::EventKeyboard::KeyCode::KEY_A:
             case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_A:
                 is_key_pressed_a_ = false;
+                for (iterator = AllDirection.begin();
+                     iterator != AllDirection.end(); iterator++) {
+                    if (*iterator == Entity::Direction::kLeft) {
+                        break;
+                    }
+                }
+                AllDirection.erase(iterator);
                 break;
             case cocos2d::EventKeyboard::KeyCode::KEY_D:
             case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_D:
                 is_key_pressed_d_ = false;
+                for (iterator = AllDirection.begin();
+                     iterator != AllDirection.end(); iterator++) {
+                    if (*iterator == Entity::Direction::kRight) {
+                        break;
+                    }
+                }
+                AllDirection.erase(iterator);
                 break;
             default:
                 break;
         }
         avatar.stopAllActions();
+        if (AllDirection.size() == 0) {
+            avatar.SetState(Entity::EntityState::kIdle);
+        } else {
+            avatar.ChangeDirection(AllDirection[0]);
+            avatar.RenderMove();
+        }
     };
 
     cocos2d::EventDispatcher* dispatcher =

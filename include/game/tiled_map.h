@@ -10,6 +10,7 @@
 #include "frontend/tool_bar.h"
 #include "game/animals.h"
 #include "game/avatar.h"
+#include "game/entity.h"
 #include "game/map_controller.h"
 #include "math/CCGeometry.h"
 #include "utility/position.h"
@@ -102,6 +103,7 @@ private:
     std::vector<cocos2d::Sprite*> CropsSprite;
     std::vector<Animals*> MapAnimals;
     std::vector<cocos2d::Sprite*> AnimalSprite;
+    std::vector<Entity::Direction> AllDirection;
 
     int priority = 255;
     bool is_key_pressed_w_{false};
