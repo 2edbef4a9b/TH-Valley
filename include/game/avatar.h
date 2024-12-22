@@ -24,6 +24,12 @@ public:
     void update(float delta) override;
 
     void UseTool(std::string_view tool);
+    void UseFishingRod(cocos2d::Vec2 tarpos, double kScale);
+    void UseWateringCan(cocos2d::Vec2 tarpos, Direction direction,
+                        double kScale);
+    void UseOtherTools(std::string_view tool, cocos2d::Vec2 tarpos,
+                       Direction direction, double kScale);
+
     void RenderMove();
     void ChangeDirection(Direction direction) override;
 
