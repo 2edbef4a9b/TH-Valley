@@ -9,6 +9,7 @@
 #include "frontend/bag_gui.h"
 #include "frontend/tool_bar.h"
 #include "game/animals.h"
+#include "game/avatar.h"
 #include "game/map_controller.h"
 #include "math/CCGeometry.h"
 #include "utility/position.h"
@@ -92,13 +93,7 @@ private:
     std::unordered_map<std::string, cocos2d::TMXLayer*> map_layer_;
     cocos2d::TMXObjectGroup* object_group_{};
     cocos2d::Vec2 player_pos_;
-    cocos2d::Sprite* player_sprite_{};
-
-    bool is_key_pressed_w_{false};
-    bool is_key_pressed_a_{false};
-    bool is_key_pressed_s_{false};
-    bool is_key_pressed_d_{false};
-    bool is_teleporting_{false};
+    Avatar avatar{};
 
     std::map<Position, Crops*> CropPosition;
     std::map<Position, cocos2d::Sprite*> SpritePosition;
@@ -108,7 +103,13 @@ private:
     std::vector<cocos2d::Sprite*> AnimalSprite;
     ToolBar* MapToolBar{};
     BagGUI* MapBag{};
+
     int priority = 255;
+    bool is_key_pressed_w_{false};
+    bool is_key_pressed_a_{false};
+    bool is_key_pressed_s_{false};
+    bool is_key_pressed_d_{false};
+    bool is_teleporting_{false};
 };
 
 }  // namespace th_valley

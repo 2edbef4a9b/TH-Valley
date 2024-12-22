@@ -8,8 +8,15 @@
 
 namespace th_valley {
 
-class Entity : public cocos2d::Sprite {
+class Entity : public cocos2d::Node {
 public:
+    enum class Direction {
+        kUp,
+        kDown,
+        kLeft,
+        kRight,
+    };
+
     Entity() = default;
     ~Entity() override = default;
 
@@ -17,6 +24,11 @@ public:
     Entity& operator=(const Entity& other) = delete;
     Entity(Entity&& other) = delete;
     Entity& operator=(Entity&& other) = delete;
+
+    cocos2d::Sprite* GetSprite() const;
+    void SetDirection(Direction direction);
+    void SetSprite(cocos2d::Sprite* sprite);
+    void SetPosition(const cocos2d::Vec2& position);
 
 private:
     enum class EntityState {
@@ -26,13 +38,11 @@ private:
         kDead,
     };
 
-    void update(float delta_time) override;
-
     cocos2d::Vec2 position_;
-    cocos2d::Vec2 velocity_;
     cocos2d::Sprite* sprite_{};
     EntityData entity_data_;
     EntityState state_{EntityState::kIdle};
+    Direction direction_{Direction::kDown};
 };
 
 }  // namespace th_valley

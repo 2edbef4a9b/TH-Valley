@@ -121,14 +121,14 @@ bool TiledMap::InitWithTMXFile(const std::string& tmxFile) {
     cocos2d::Rect frameRect(0, 0, 3072, 3072);
     auto spriteFrame =
         cocos2d::SpriteFrame::createWithTexture(texture, frameRect);
-    player_sprite_ = cocos2d::Sprite::createWithSpriteFrame(spriteFrame);
-    player_sprite_->setScale(32.0f / 3072.0f);
-    player_sprite_->setAnchorPoint(cocos2d::Vec2(0.5f, 0.0f));
-    player_sprite_->setPosition(player_pos_);
+    avatar.SetSprite(cocos2d::Sprite::createWithSpriteFrame(spriteFrame));
+    avatar.GetSprite()->setScale(32.0f / 3072.0f);
+    avatar.GetSprite()->setAnchorPoint(cocos2d::Vec2(0.5f, 0.0f));
+    avatar.SetPosition(player_pos_);
     CCLOG("Player sprite created at %f %f", player_pos_.x, player_pos_.y);
     CCLOG("Player sprite created at Tile: %f %f",
           TileCoordFromPos(player_pos_).x, TileCoordFromPos(player_pos_).y);
-    tiled_map_->addChild(player_sprite_, 2);
+    tiled_map_->addChild(avatar.GetSprite(), 2);
 
     for (int pig_count = 0; pig_count < 10; pig_count++) {
         Pig* pig = new Pig;
@@ -198,7 +198,7 @@ void TiledMap::SetPlayerPos(cocos2d::Vec2 pos) {
                                   TileCoordFromPos(player_pos_).x,
                                   TileCoordFromPos(player_pos_).y);
     SetViewpointCenter(player_pos_);
-    player_sprite_->setPosition(player_pos_);
+    avatar.SetPosition(player_pos_);
 }
 
 void TiledMap::SetTeleportStatus(bool status) { is_teleporting_ = status; }
@@ -282,15 +282,19 @@ void TiledMap::update(const float delta) {
 
     if (is_key_pressed_w_) {
         current_pos.y += move_step;
+        avatar.SetDirection(Entity::Direction::kUp);
     }
     if (is_key_pressed_s_) {
         current_pos.y -= move_step;
+        avatar.SetDirection(Entity::Direction::kDown);
     }
     if (is_key_pressed_a_) {
         current_pos.x -= move_step;
+        avatar.SetDirection(Entity::Direction::kLeft);
     }
     if (is_key_pressed_d_) {
         current_pos.x += move_step;
+        avatar.SetDirection(Entity::Direction::kRight);
     }
 
     if (is_key_pressed_w_ || is_key_pressed_s_ || is_key_pressed_a_ ||
@@ -356,7 +360,6 @@ cocos2d::Vec2 TiledMap::PosFromtileCoord(Position PlantPosition) {
     PicturePosition.y -= tiled_map_->getTileSize().height / 2;
     return PicturePosition;
 }
-
 
 int TiledMap::GetTileID(cocos2d::Vec2 tileCoord, std::string LayerName) {
     auto layer = tiled_map_->getLayer(LayerName);

@@ -6,7 +6,7 @@
 #include "game/agriculture.h"
 #include "game/crops.h"
 
-class CropProduction : public agriculture {
+class CropProduction : public Agriculture {
 public:
     int PlayerCropLevel;
     int TotalCrops;

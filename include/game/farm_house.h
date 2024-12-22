@@ -7,7 +7,7 @@
 #include "game/animals.h"
 #include "utility/position.h"
 
-class FarmHouse : public agriculture {
+class FarmHouse : public Agriculture {
 public:
     int TotalAnimals;
     int Level;

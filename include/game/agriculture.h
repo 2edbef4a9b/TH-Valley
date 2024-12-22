@@ -4,7 +4,7 @@
 #include "game/weather.h"
 #include "game/worldtime.h"
 
-class agriculture {
+class Agriculture {
 protected:
     WorldTime *CurrentTime;
     Weather *CurrentWeather;
