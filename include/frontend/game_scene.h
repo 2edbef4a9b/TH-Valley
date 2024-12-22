@@ -19,6 +19,9 @@ public:
 
     bool init() override;
 
+    // For accessing the current selected tool.
+    ToolBar* GetToolBar();
+
     CREATE_FUNC(GameScene);
 
 private:

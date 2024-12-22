@@ -3,6 +3,7 @@
 #include <optional>
 #include <regex>
 
+#include "frontend/game_scene.h"
 #include "game/pig.h"
 #include "math/CCGeometry.h"
 #include "utility/logger.h"
@@ -215,6 +216,15 @@ void TiledMap::onEnter() {
                 is_key_pressed_d_ = true;
                 avatar.ChangeDirection(Entity::Direction::kRight);
                 break;
+            case cocos2d::EventKeyboard::KeyCode::KEY_E:
+            case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_E:
+                if (tiled_map_->getParent()) {
+                    avatar.UseTool(dynamic_cast<GameScene*>(this->getParent())
+                                       ->GetToolBar()
+                                       ->getToolName());
+                } else {
+                    Logger::GetInstance().LogError("Parent node is null");
+                }
             default:
                 break;
         }

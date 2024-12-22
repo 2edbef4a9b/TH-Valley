@@ -23,7 +23,7 @@ public:
     bool init() override;
     void update(float delta) override;
 
-    void RenderAction(std::string_view action);
+    void UseTool(std::string_view tool);
     void RenderMove();
     void ChangeDirection(Direction direction) override;
 
