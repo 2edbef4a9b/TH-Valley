@@ -33,7 +33,7 @@ void TiledMap::initAnimalPosition() {
         MapAnimals[i]->initSprite->setScale(
             MapAnimals[i]->scale[MapAnimals[i]->CurrentGrowthStage]);
         CCLOG("Animal at: %d %d\n", RandomWidth, RandomHeight);
-        this->addChild(MapAnimals[i]->initSprite);
+        tiled_map_->addChild(MapAnimals[i]->initSprite);
     }
 
     this->schedule(CC_SCHEDULE_SELECTOR(TiledMap::updateAnimalSprites), 5.0f);
