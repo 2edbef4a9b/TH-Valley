@@ -8,11 +8,9 @@
 namespace th_valley {
 
 void MapController::LoadTiledMap(const std::string& tiled_map,
-                                 cocos2d::Node* parent, ToolBar* map_toolbar_, BagGUI* map_bag_gui_) {
+                                 cocos2d::Node* parent) {
     game_tiled_map_ =
         TiledMap::create(kTiledMapPathPrefix + tiled_map + kTiledMapPathSuffix);
-    game_tiled_map_->MapToolBar = map_toolbar_;
-    game_tiled_map_->MapBag = map_bag_gui_;
     if (game_tiled_map_ == nullptr) {
         Logger::GetInstance().LogError("Failed to load TiledMap: {}",
                                        tiled_map);
@@ -22,9 +20,7 @@ void MapController::LoadTiledMap(const std::string& tiled_map,
     parent->addChild(game_tiled_map_, 1);
 }
 
-void MapController::TriggerTeleport(const std::string& portal_name,
-                                    ToolBar* map_toolbar_,
-                                    BagGUI* map_bag_gui_) {
+void MapController::TriggerTeleport(const std::string& portal_name) {
     const TiledMap::Portal portal(portal_name);
 
     // Check if the map file exists.
@@ -46,7 +42,7 @@ void MapController::TriggerTeleport(const std::string& portal_name,
     parent->removeChild(game_tiled_map_);
 
     // Load the new map and set the player's position.
-    LoadTiledMap(portal.GetToMap(), parent, map_toolbar_, map_bag_gui_);
+    LoadTiledMap(portal.GetToMap(), parent);
     const auto portal_rect =
         game_tiled_map_->GetPortalRect(portal.GetOppositePorta());
 

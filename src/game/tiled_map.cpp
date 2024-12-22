@@ -203,14 +203,16 @@ void TiledMap::onEnter() {
             }
         }
 
-        // Plant
         int gid = GetTileID(tilePos, "Back");
+        auto MapToolBar =
+            dynamic_cast<GameScene*>(this->getParent())->GetToolBar();
         if (PropertyCheck(gid, "Cultivable") &&
             MapToolBar->getToolName() == "Hoe") {
             if (MapToolBar != nullptr)
                 MapToolBar->outputindex();
             else
                 CCLOG("MapToolBar is nullptr");
+
             auto PlayerTilePos = TileCoordFromPos(GetPos());
             CCLOG("player_pos_: %f %f", GetPos().x, GetPos().y);
             CCLOG("tile_pos_: %f %f", tilePos.x, tilePos.y);
@@ -350,7 +352,7 @@ void TiledMap::update(const float delta) {
     if (portal.has_value()) {
         if (!is_teleporting_) {
             MapController::GetInstance().TriggerTeleport(
-                portal->GetPortalName(), MapToolBar, MapBag);
+                portal->GetPortalName());
             is_teleporting_ = true;
             return;
         }

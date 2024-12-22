@@ -15,9 +15,6 @@
 #include "utility/position.h"
 
 class Crops;
-#include "utility/position.h"
-
-class Crops;
 
 namespace th_valley {
 
@@ -46,9 +43,6 @@ public:
     TiledMap(TiledMap&& other) = delete;
     TiledMap& operator=(TiledMap&& other) = delete;
 
-    ToolBar* MapToolBar{};
-    BagGUI* MapBag{};
-
     static TiledMap* create(const std::string& tmxFile);
 
     bool InitWithTMXFile(const std::string& tmxFile);
@@ -74,10 +68,6 @@ private:
 
     int GetTileID(cocos2d::Vec2 tileCoord, std::string LayerName);
     bool PropertyCheck(int gid, std::string property);
-    cocos2d::Vec2 PosFromtileCoord(Position pos);
-
-    int GetTileID(cocos2d::Vec2 tileCoord, std::string LayerName);
-    bool PropertyCheck(int gid, std::string property);
 
     std::optional<Portal> GetPortal(
         cocos2d::Vec2 pos, std::string_view ObjectLayerName = "Objects") const;
@@ -99,30 +89,11 @@ private:
     void ShowAnimalInfomation(cocos2d::Sprite* Animal,
                               const cocos2d::Vec2& InfoPosition, int& priority);
 
-    // Crop option
-    void CropPlant(const Position& PlantPosition, Crops* Crop);
-    void CropRemove(const Position& RemovePosition);
-    void CropUpdate(const Position& UpdatePosition);
-    void ShowCropInformation(Crops* Crop, const Position& InfoPosition,
-                             int& priority);
-
-    // Animal option
-    void initAnimalPosition();
-    void updateAnimalSprites(float dt);
-    void ShowAnimalInfomation(cocos2d::Sprite* Animal,
-                              const cocos2d::Vec2& InfoPosition, int& priority);
-
     cocos2d::TMXTiledMap* tiled_map_{};
     std::unordered_map<std::string, cocos2d::TMXLayer*> map_layer_;
     cocos2d::TMXObjectGroup* object_group_{};
-    cocos2d::Sprite* player_sprite_{};
     cocos2d::Vec2 player_pos_;
-
-    bool is_key_pressed_w_{false};
-    bool is_key_pressed_a_{false};
-    bool is_key_pressed_s_{false};
-    bool is_key_pressed_d_{false};
-    bool is_teleporting_{false};
+    Avatar avatar{};
 
     std::map<Position, Crops*> CropPosition;
     std::map<Position, cocos2d::Sprite*> SpritePosition;
@@ -130,7 +101,13 @@ private:
     std::vector<Crops*> MapCrops;
     std::vector<Animals*> MapAnimals;
     std::vector<cocos2d::Sprite*> AnimalSprite;
+
     int priority = 255;
+    bool is_key_pressed_w_{false};
+    bool is_key_pressed_a_{false};
+    bool is_key_pressed_s_{false};
+    bool is_key_pressed_d_{false};
+    bool is_teleporting_{false};
 };
 
 }  // namespace th_valley
