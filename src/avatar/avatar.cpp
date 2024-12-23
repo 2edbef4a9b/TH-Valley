@@ -85,18 +85,14 @@ bool Avatar::inattackzone(Avatar* other) {
 }
 
 void Avatar::experiencegain(double exp)  {
-    if (grade_==10)
-    {
-        return;
-    }
-    else
+    if (grade_<10)
     {
         experience += exp;
         if (experience >=
             attribute.experiencelist.at(int(attribute.experiencelist.at(0)))) {
-
             if (grade_ < 10) {
-                experience -= attribute.experiencelist.at(int(attribute.experiencelist.at(0)));
+                experience -= attribute.experiencelist.at(
+                    int(attribute.experiencelist.at(0)));
             }
         }
     }
