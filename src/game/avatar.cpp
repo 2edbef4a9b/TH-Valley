@@ -27,7 +27,7 @@ void Avatar::update(float delta) { Entity::update(delta); }
 
 void Avatar::UseTool(std::string_view tool) {
     Logger::GetInstance().LogInfo("Use tool: {}", tool);
-    constexpr double kScale = 1.0;
+    constexpr double kScale = 5.0;
     Direction direction = GetDirection();
     cocos2d::Vec2 tarpos =
         this->getParent()->convertToWorldSpace(this->getPosition());
