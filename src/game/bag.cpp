@@ -42,6 +42,14 @@ void Bag::removeItem(const int& key) {
     }
 }
 
+void Bag::ReduceItem(const int key) {
+    auto it = items_.find(key);
+    if (it != items_.end()) {
+        it->second->quantity--;
+        if (it->second->quantity == 0) removeItem(key);
+    }
+}
+
 void Bag::replaceItem(const int& key, ItemSprite* newItem) {
     if (newItem == nullptr) return;
     auto it = items_.find(key);
@@ -76,7 +84,7 @@ void Bag::bagInit() {
     items_[1] = Hoe;
 
     ItemSprite* StrawberrySeed =
-        new ItemSprite("StrawberrySeed", 53, "Used for planting strawberries",
+        new ItemSprite("StrawberrySeed", 12, "Used for planting strawberries",
                        "assets/Crops/crops.png", cocos2d::Rect(1, 593, 13, 14));
     items_[2] = StrawberrySeed;
     ItemSprite* CarrotSeed =

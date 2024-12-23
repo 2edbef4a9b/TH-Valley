@@ -8,7 +8,7 @@ public:
     Strawberry() {
         CropName = "Strawberry";
         CropType = "Fruit";
-        CurrentGrowthStage = 3;
+        CurrentGrowthStage = 0;
         MaxGrowthStage = 3;
         GrowthDuration = {60 * 60 * 24 * 3, 60 * 60 * 24 * 3, 60 * 60 * 24 * 1,
                           60 * 60 * 24 * 7};

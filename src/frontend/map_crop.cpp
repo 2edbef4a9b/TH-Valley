@@ -4,12 +4,15 @@
 #include "game/crops.h"
 #include "game/tiled_map.h"
 #include "ui/CocosGUI.h"
+#include "frontend/tool_bar.h"
+#include "frontend/game_scene.h"
 
 namespace th_valley {
 
 void TiledMap::CropPlant(const Position& PlantPosition, Crops* Crop) {
     // Position check
     // static int priority = 3;
+    auto MapToolBar = dynamic_cast<GameScene*>(this->getParent())->GetToolBar();
     auto PlayerTilePos = TileCoordFromPos(player_pos_);
     if (fabs(PlayerTilePos.x - PlantPosition.x) > 1 ||
         fabs(PlayerTilePos.y - PlantPosition.y) > 1) {
@@ -58,7 +61,9 @@ void TiledMap::CropPlant(const Position& PlantPosition, Crops* Crop) {
     MapCrops.push_back(Crop);
     GlobalCropProduction.AllCrops.push_back(Crop);
     CropsSprite.push_back(Crop->CropSprite);
-    tiled_map_->addChild(Crop->CropSprite, 1);
+    tiled_map_->addChild(Crop->CropSprite, -1);
+    MapToolBar->bag_->ReduceItem(MapToolBar->selectedToolIndex);
+    MapToolBar->loadTools();
 }
 
 void TiledMap::CropRemove(const Position& RemovePosition) {

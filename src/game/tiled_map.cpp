@@ -239,7 +239,6 @@ void TiledMap::onEnter() {
 
             if (MapToolBar->getToolName() == "StrawberrySeed") {
                 CropPlant(PlantTilePos, new Strawberry);
-
             } else if (MapToolBar->getToolName() == "CarrotSeed") {
                 CropPlant(PlantTilePos, new Carrot);
             } else if (MapToolBar->getToolName() == "PotatoSeed") {
