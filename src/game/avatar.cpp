@@ -2,6 +2,8 @@
 
 #include <utility/logger.h>
 
+#include <unordered_map>
+
 #include "2d/CCSprite.h"
 #include "CCDirector.h"
 #include "game/entity.h"
@@ -283,16 +285,12 @@ void Avatar::UseOtherTools(std::string_view tool, cocos2d::Vec2 tarpos,
 // }
 
 void Avatar::RenderMove() {
-    Logger::GetInstance().LogInfo(
-        "Current "
-        "direction: {}",
-        static_cast<int>(GetDirection()));
+    Logger::GetInstance().LogInfo("Current direction: {}",
+                                  static_cast<int>(GetDirection()));
     auto* animation = move_animations_.at(static_cast<int>(GetDirection()));
     auto* repeat = cocos2d::RepeatForever::create(animation);
     if (repeat == nullptr) {
-        Logger::GetInstance().LogError(
-            "RepeatForever "
-            "is nullptr");
+        Logger::GetInstance().LogError("RepeatForever is nullptr");
         return;
     }
     this->runAction(repeat);
@@ -330,23 +328,55 @@ void Avatar::ChangeDirection(Direction direction) {
 }
 
 void Avatar::InitAnimation(std::string_view avatar_name) {
-    for (int direction = 0; direction < 4; direction++) {
-        cocos2d::Vector<cocos2d::SpriteFrame*> anime_frames;
-        for (int index = 0; index < 4; index++) {
-            cocos2d::Rect frame_rect(index * 16, direction * 32, 16, 32);
-            auto* frame = cocos2d::SpriteFrame::create(
-                "assets/tilesheets/Haley.png", frame_rect);
-            if (frame) {
-                anime_frames.pushBack(
-                    frame);  // Add frame to the vector if it is valid
-            }
-        }
+    // for (int direction = 0; direction < 4; direction++) {
+    //     cocos2d::Vector<cocos2d::SpriteFrame*> anime_frames;
+    //     for (int index = 0; index < 4; index++) {
+    //         cocos2d::Rect frame_rect(index * 16, direction * 32, 16, 32);
+    //         auto* frame = cocos2d::SpriteFrame::create(
+    //             "assets/tilesheets/Haley.png", frame_rect);
+    //         if (frame) {
+    //             anime_frames.pushBack(
+    //                 frame);  // Add frame to the vector if it is valid
+    //         }
+    //     }
 
-        auto* animation = cocos2d::Animation::createWithSpriteFrames(
-            anime_frames, 0.1F);  // Create an animation with the frames.
+    //     auto* animation = cocos2d::Animation::createWithSpriteFrames(
+    //         anime_frames, 0.1F);  // Create an animation with the frames.
+    //     auto* animate = cocos2d::Animate::create(animation);
+    //     animate->retain();
+    //     move_animations_.push_back(animate);
+    // }
+    const std::unordered_map<Entity::Direction, std::string> direction_map = {
+        {Entity::Direction::kUp, "_up"},
+        {Entity::Direction::kDown, "_down"},
+        {Entity::Direction::kLeft, "_left"},
+        {Entity::Direction::kRight, "_right"}};
+
+    move_animations_.resize(4);
+    cocos2d::Vector<cocos2d::SpriteFrame*> anime_frames;
+    cocos2d::Rect frame_rect(0, 0, 128, 128);
+
+    for (const auto& [direction, suffix] : direction_map) {
+        anime_frames.clear();
+        auto* frame1 = cocos2d::SpriteFrame::create(
+            "assets/avatar/" + std::string(avatar_name) + suffix + ".png",
+            frame_rect);
+        auto* frame2 = cocos2d::SpriteFrame::create(
+            "assets/avatar/" + std::string(avatar_name) + suffix + "_move1.png",
+            frame_rect);
+        auto* frame3 = cocos2d::SpriteFrame::create(
+            "assets/avatar/" + std::string(avatar_name) + suffix + "_move2.png",
+            frame_rect);
+
+        anime_frames.pushBack(frame1);
+        anime_frames.pushBack(frame2);
+        anime_frames.pushBack(frame3);
+
+        auto* animation =
+            cocos2d::Animation::createWithSpriteFrames(anime_frames, 0.2f);
         auto* animate = cocos2d::Animate::create(animation);
         animate->retain();
-        move_animations_.push_back(animate);
+        move_animations_[static_cast<int>(direction)] = animate;
     }
 }
 

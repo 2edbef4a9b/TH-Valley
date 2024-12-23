@@ -22,7 +22,7 @@ bool Entity::init() {
     auto* sprite_frame = cocos2d::SpriteFrame::createWithTexture(
         texture, cocos2d::Rect(0, 0, 128, 128));
     this->setSpriteFrame(sprite_frame);
-    // this->setScale(32.0F / 128.0F);
+    this->setScale(32.0F / 128.0F);
     this->setAnchorPoint(cocos2d::Vec2(0.5F, 0.0F));
 
     return true;
