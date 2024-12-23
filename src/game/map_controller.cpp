@@ -4,6 +4,7 @@
 
 #include "game/tiled_map.h"
 #include "utility/logger.h"
+#include "game/NPC.h"
 
 namespace th_valley {
 
@@ -22,6 +23,19 @@ void MapController::LoadTiledMap(const std::string& tiled_map,
     if (tiled_map == "Ranch") {
         game_tiled_map_->SpawnAnimal(5);
     }
+    if (tiled_map == "Town") {
+        Sandy* sandy = new Sandy;
+        Abigail* abigail = new Abigail;
+        Alex* alex = new Alex;
+        Elliott* elliott = new Elliott;
+        Evelyn* evelyn = new Evelyn;
+        game_tiled_map_->SpawnCitizen(sandy);
+        game_tiled_map_->SpawnCitizen(abigail);
+        game_tiled_map_->SpawnCitizen(alex);
+        game_tiled_map_->SpawnCitizen(elliott);
+        game_tiled_map_->SpawnCitizen(evelyn);
+    }
+    game_tiled_map_->initCitizenPosition();
 }
 
 void MapController::TriggerTeleport(const std::string& portal_name) {

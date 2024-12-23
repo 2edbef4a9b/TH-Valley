@@ -137,6 +137,10 @@ void TiledMap::SpawnAnimal(int count) {
     initAnimalPosition();
 }
 
+void TiledMap::SpawnCitizen(Citizen* citizen) {
+    MapCitizens.push_back(citizen);
+}
+
 cocos2d::Rect TiledMap::GetPortalRect(Portal portal,
                                       std::string_view ObjectLayerName) {
     auto* object_group = tiled_map_->getObjectGroup(ObjectLayerName.data());
