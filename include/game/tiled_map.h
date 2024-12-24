@@ -63,6 +63,8 @@ public:
     // Save and Load
     void Save(const std::string& file_name);
     void Load(const std::string& file_name);
+    void SavePlayerInfo();
+    void LoadPlayerInfo();
     void SetMapName(const std::string& map_name);
 
 private:

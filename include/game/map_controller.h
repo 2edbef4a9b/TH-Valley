@@ -24,12 +24,17 @@ public:
 
     void LoadTiledMap(const std::string& tiled_map, cocos2d::Node* parent);
     void SaveTiledMap(TiledMap* tiled_map, const std::string& map_name);
+    void SetPlayerPos(cocos2d::Vec2 pos);
 
-    void LoadPlayer(const std::string& player_name);
-    void SavePlayer(const std::string& player_name);
+    void LoadPlayerInfo();
+    void SavePlayerInfo();
 
     void TriggerTeleport(const std::string& portal_name);
     void LoadRain(const std::string& tiled_map);
+
+    std::string GetPlayerName() const { return player_name_; }
+    std::string GetPlayerMap() const { return player_map_; }
+    cocos2d::Vec2 GetPlayerPos() const { return player_pos_; }
 
     static MapController& GetInstance();
 

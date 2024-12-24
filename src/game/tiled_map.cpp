@@ -368,6 +368,7 @@ void TiledMap::onEnter() {
                     Logger::GetInstance().LogError("Parent node is null");
                 }*/
             case cocos2d::EventKeyboard::KeyCode::KEY_ESCAPE:
+                SavePlayerInfo();
                 ClientController::GetInstance().SetClientState(
                     ClientController::ClientState::kTitleScreen);
                 break;
@@ -764,6 +765,90 @@ void TiledMap::Load(const std::string& file_name) {
                     }
                 }
             }
+        }
+    } else {
+        Logger::GetInstance().LogError("Failed to open file for loading: {}",
+                                       save_path);
+    }
+}
+
+void TiledMap::SavePlayerInfo() {
+    std::string save_path =
+        cocos2d::FileUtils::getInstance()->getDefaultResourceRootPath() +
+        "saves/player_state.json";
+
+    // Create a JSON document
+    rapidjson::Document document;
+    document.SetObject();
+    rapidjson::Document::AllocatorType& allocator = document.GetAllocator();
+
+    // Add map name
+    document.AddMember(
+        "map_name", rapidjson::Value(map_name_.c_str(), allocator), allocator);
+
+    // Add player position
+    rapidjson::Value player_pos(rapidjson::kObjectType);
+    player_pos.AddMember("x", player_pos_.x, allocator);
+    player_pos.AddMember("y", player_pos_.y, allocator);
+    document.AddMember("player_pos", player_pos, allocator);
+
+    // Write the JSON document to a file
+    FILE* fp = fopen(save_path.c_str(), "wb");
+    if (fp) {
+        char writeBuffer[65536];
+        rapidjson::FileWriteStream os(fp, writeBuffer, sizeof(writeBuffer));
+        rapidjson::PrettyWriter<rapidjson::FileWriteStream> writer(os);
+        document.Accept(writer);
+        fclose(fp);
+    } else {
+        Logger::GetInstance().LogError("Failed to open file for saving: {}",
+                                       save_path);
+    }
+}
+
+void TiledMap::LoadPlayerInfo() {
+    std::string save_path =
+        cocos2d::FileUtils::getInstance()->getDefaultResourceRootPath() +
+        "saves/player_state.json";
+
+    // Open the JSON file
+    FILE* fp = fopen(save_path.c_str(), "rb");
+    if (fp) {
+        char readBuffer[65536];
+        rapidjson::FileReadStream is(fp, readBuffer, sizeof(readBuffer));
+        rapidjson::Document document;
+        document.ParseStream(is);
+        fclose(fp);
+
+        if (document.HasParseError()) {
+            Logger::GetInstance().LogError("Failed to parse JSON file: {}",
+                                           save_path);
+            return;
+        }
+
+        // Load map name
+        if (document.HasMember("map_name") && document["map_name"].IsString()) {
+            map_name_ = document["map_name"].GetString();
+        } else {
+            Logger::GetInstance().LogError(
+                "Map name not found in JSON file: {}", save_path);
+        }
+
+        // Load player position
+        if (document.HasMember("player_pos") &&
+            document["player_pos"].IsObject()) {
+            const rapidjson::Value& player_pos = document["player_pos"];
+            if (player_pos.HasMember("x") && player_pos["x"].IsFloat() &&
+                player_pos.HasMember("y") && player_pos["y"].IsFloat()) {
+                player_pos_.x = player_pos["x"].GetFloat();
+                player_pos_.y = player_pos["y"].GetFloat();
+            } else {
+                Logger::GetInstance().LogError(
+                    "Player position not found in JSON file: {}", save_path);
+            }
+        } else {
+            Logger::GetInstance().LogError(
+                "Player position not found in JSON file: {}", save_path);
         }
     } else {
         Logger::GetInstance().LogError("Failed to open file for loading: {}",
