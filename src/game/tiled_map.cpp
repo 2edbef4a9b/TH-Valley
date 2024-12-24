@@ -299,8 +299,26 @@ void TiledMap::onEnter() {
 
         if (MinDistance < 99999999 &&
             !SpritetoCitizen[ClosestCitizen]->InfoOpen) {
-            SpritetoCitizen[ClosestCitizen]->ShowTalkBox(this->getParent());
+            if (SpritetoCitizen[ClosestCitizen]->CitizenName == "Sebastian") {
+                SpritetoCitizen[ClosestCitizen]->ShowTalkBox(
+                    this->getParent(), MapToolBar->bag_,
+                    SpritetoCitizen[ClosestCitizen]->CitizenName);
+            } else {
+                if (MapToolBar->getToolName() == "Strawberry") {
+                    MapToolBar->bag_->ReduceItem(MapToolBar->selectedToolIndex);
+                    MapToolBar->bag_->EarnMoney(140);
+                }
+                if (MapToolBar->getToolName() == "Potato") {
+                    MapToolBar->bag_->ReduceItem(MapToolBar->selectedToolIndex);
+                    MapToolBar->bag_->EarnMoney(70);
+                }
+                if (MapToolBar->getToolName() == "Carrot") {
+                    MapToolBar->bag_->ReduceItem(MapToolBar->selectedToolIndex);
+                    MapToolBar->bag_->EarnMoney(70);
+                }
+            }
         }
+        MapToolBar->loadTools();
     };
 
     listener->onMouseMove = [this](cocos2d::Event* event) {

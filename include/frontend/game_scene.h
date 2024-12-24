@@ -17,6 +17,7 @@ public:
     GameScene(GameScene&& other) = delete;
     GameScene& operator=(GameScene&& other) = delete;
 
+    void showBasicInfomation();
     bool init() override;
 
     // For accessing the current selected tool.

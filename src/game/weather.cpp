@@ -17,10 +17,10 @@ void Weather::WeatherAutomaticUpdate(WorldTime Time) {
         std::random_device rd;
         std::mt19937 gen(rd());
         int MaxRandom;
-        if (CurrentTime.Season == "Spring") MaxRandom = 20;
-        if (CurrentTime.Season == "Summer") MaxRandom = 10;
-        if (CurrentTime.Season == "Autumn") MaxRandom = 15;
-        if (CurrentTime.Season == "Winter") MaxRandom = 50;
+        if (CurrentTime.Season == "Spring") MaxRandom = 1500;
+        if (CurrentTime.Season == "Summer") MaxRandom = 1000;
+        if (CurrentTime.Season == "Autumn") MaxRandom = 1500;
+        if (CurrentTime.Season == "Winter") MaxRandom = 5000;
         std::uniform_int_distribution<> dist(1, MaxRandom);
         int RandomNumber = dist(gen);
         if (RandomNumber == 1) {

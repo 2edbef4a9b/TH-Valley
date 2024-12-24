@@ -98,4 +98,23 @@ public:
     }
 };
 
+class Sebastian : public Citizen {
+public:
+    Sebastian() {
+        CitizenName = "Sebastian";
+
+        initSprite = cocos2d::Sprite::create("assets/avatar/Sebastian.png",
+                                             cocos2d::Rect(0, 0, 16, 32));
+        // initSprite->setScale(0.6);
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                cocos2d::Rect frameRect(j * 16, i * 32, 16, 32);
+                auto frame = cocos2d::SpriteFrame::create(
+                    "assets/avatar/Sebastian.png", frameRect);
+                if (frame) animFrames[i].pushBack(frame);
+            }
+        }
+    }
+};
+
 #endif

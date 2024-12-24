@@ -4,6 +4,7 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include "game/bag.h"
 
 #include "cocos2d.h"
 #include "json/document.h"
@@ -45,6 +46,8 @@ public:
     void hideOptions();
     void moveSelection(int delta);
     void selectOption();
+    void getBag(Bag* bag_) { playerBag = bag_; }
+    void getName(std::string name) { CitizenName = name; }
     // 获取当前游戏时间，格式为 "HHMM"
     std::string getCurrentGameTime() const;
 
@@ -82,6 +85,8 @@ private:
     std::vector<cocos2d::LayerColor*> optionBackgrounds_;
     int selectedOptionIndex_;
     bool waitingForChoice_;
+    Bag* playerBag;
+    std::string CitizenName;
 
     std::unordered_map<std::string, bool> gameStates_;
 };
