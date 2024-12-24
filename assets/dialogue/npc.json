@@ -1,0 +1,43 @@
+[
+    {
+        "type": "dialogue",
+        "content": "Hello, welcome to TH-Valley! "
+    },
+    {
+        "type": "dialogue",
+        "content": "Such a nice day. ",
+        "conditions": {
+            "time": [ "0600", "1800" ]
+        }
+    },
+    {
+        "type": "question",
+        "content": "Would you like to help me? ",
+        "options": [
+            "Of course!!! ",
+            "Sorry, I'm a little bit of busy. ",
+            "I'm not interested. "
+
+        ]
+    },
+    {
+        "type": "dialogue",
+        "content": "Hello, welcome to TH-Valley! "
+    },
+    {
+        "type": "dialogue",
+        "content": "Grazzzzie!!! ",
+        "conditions": {
+            "event": [ "hasReceivedGift" ]
+        }
+    },
+    {
+        "type": "dialogue",
+        "content": "You just don't know how to please people, don't ya? ",
+        "conditions": {
+            "event": [ "!hasReceivedGift" ]
+        }
+    }
+
+
+]

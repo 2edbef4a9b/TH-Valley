@@ -1,8 +1,7 @@
 #include <gtest/gtest.h>
 
-#include "tool_bar.h"
 #include "sample/sample_application.h"
-#include "sample/sample_scene.h"
+#include "tool_bar.h"
 
 class ToolBarTestsApp : public th_valley::SampleApplication {
 public:
@@ -16,14 +15,13 @@ public:
         }
 
         // Set the window size.
-        //glview->setFrameSize(kWindowSize.width, kWindowSize.height);
+        // glview->setFrameSize(kWindowSize.width, kWindowSize.height);
         glview->setFrameSize(1920, 1080);
         // Improve resolution on high-res screens.
-        //glview->setDesignResolutionSize(kDesignResolutionSize.width,
+        // glview->setDesignResolutionSize(kDesignResolutionSize.width,
         //                                kDesignResolutionSize.height,
         //                                ResolutionPolicy::NO_BORDER);
-        glview->setDesignResolutionSize(192 * 2,
-                                        108 * 2,
+        glview->setDesignResolutionSize(192 * 3, 108 * 3,
                                         ResolutionPolicy::NO_BORDER);
 
         // Set FPS. The default value is 1.0/60 if you don't call this.
@@ -36,7 +34,7 @@ public:
         CCLOG("Resource root path: %s", resource_root_path.c_str());
 
         // Create a scene. It's an autorelease object.
-        auto *scene = th_valley::SampleScene::create();
+        auto *scene = ToolBar::create();
         if (scene == nullptr) {
             return false;
         }

@@ -1,0 +1,43 @@
+[
+    {
+        "type": "dialogue",
+        "content": "Among all these places, you chose TH-Valley? "
+    },
+    {
+        "type": "dialogue",
+        "content": "Such a nice day to die. ",
+        "conditions": {
+            "time": [ "0600", "1800" ]
+        }
+    },
+    {
+        "type": "question",
+        "content": "I'm horny. ",
+        "options": [
+            "Wwwwwwhat do u mean??????????? ",
+            "Come to my place at midnight. ",
+            "I'm not interested. "
+
+        ]
+    },
+    {
+        "type": "dialogue",
+        "content": "Hello, welcome to TH-Valley! "
+    },
+    {
+        "type": "dialogue",
+        "content": "That's all you can give me? This crap of SHIIIIIIT? ",
+        "conditions": {
+            "event": [ "hasReceivedGift" ]
+        }
+    },
+    {
+        "type": "dialogue",
+        "content": "Fuck off. ",
+        "conditions": {
+            "event": [ "!hasReceivedGift" ]
+        }
+    }
+
+
+]
