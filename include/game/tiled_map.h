@@ -49,8 +49,6 @@ public:
 
     bool InitWithTMXFile(const std::string& tmxFile);
     void CreateMiniMap();
-    void Save();
-    void Load();
     void SpawnAnimal(int count);
     void SpawnCitizen(Citizen* citizen);
     void initCitizenPosition();
@@ -59,7 +57,7 @@ public:
                                 std::string_view ObjectLayerName = "Objects");
     void SetPlayerPos(cocos2d::Vec2 pos);
     void SetTeleportStatus(bool status);
-    cocos2d::TMXTiledMap* getTiledMap() { return tiled_map_;  }
+    cocos2d::TMXTiledMap* getTiledMap() { return tiled_map_; }
 
     // Save and Load
     void Save(const std::string& file_name);
@@ -101,7 +99,8 @@ private:
 
     void updateCitizenSprites(float dt);
     void ShowCitizenInfomation(cocos2d::Sprite* Citizen,
-                              const cocos2d::Vec2& InfoPosition, int& priority);
+                               const cocos2d::Vec2& InfoPosition,
+                               int& priority);
 
     cocos2d::TMXTiledMap* tiled_map_{};
     std::unordered_map<std::string, cocos2d::TMXLayer*> map_layer_;

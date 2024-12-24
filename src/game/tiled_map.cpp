@@ -133,14 +133,6 @@ void TiledMap::CreateMiniMap() {
     tiled_map_->addChild(mini_map, 100);
 }
 
-void TiledMap::Save() {
-    // Implementation for save
-}
-
-void TiledMap::Load() {
-    // Implementation for load
-}
-
 void TiledMap::SpawnAnimal(int count) {
     for (int pig_count = 0; pig_count < count; pig_count++) {
         Pig* pig = new Pig;
