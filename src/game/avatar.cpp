@@ -203,86 +203,91 @@ void Avatar::UseOtherTools(std::string_view tool, cocos2d::Vec2 tarpos,
         fadeIn, delay, fadeOut, cocos2d::CallFunc::create(lambda), nullptr);
     tempavatar->runAction(sequence);
 }
-
-// void avatarScene::Attacking(std::string weaponTypes) {
-//     cocos2d::Vec2 tarpos = Haley.pic->getPosition();
-//     cocos2d::Sprite* Scene[2];
-//     cocos2d::Sprite* tempavatar;
-//     if (weaponTypes == "wand") {
-//         for (int i = 0; i < 2; ++i) {
-//             Scene[i] = cocos2d::Sprite::create(
-//                 "weapon/ranged.png", cocos2d::Rect(198 + 74 * i, 832, 51,
-//                 50));
-//         }
-
-//         for (int i = 0; i < 2; ++i) {
-//             if (direction == Direction::kLeft) {
-//                 Scene[i]->setPosition(cocos2d::Vec2(tarpos.x - 50,
-//                                                     tarpos.y));  // 设置位置
-//             } else if (direction == Direction::kRight) {
-//                 Scene[i]->setPosition(cocos2d::Vec2(tarpos.x + 50,
-//                                                     tarpos.y));  // 设置位置
-//             } else if (direction == Direction::kUp) {
-//                 Scene[i]->setPosition(
-//                     cocos2d::Vec2(tarpos.x,
-//                                   tarpos.y + 50));  // 设置位置
-//             } else if (direction == Direction::kDown) {
-//                 Scene[i]->setPosition(
-//                     cocos2d::Vec2(tarpos.x,
-//                                   tarpos.y - 50));  // 设置位置
-//             }
-//             Scene[i]->setOpacity(0);  // 初始透明度为0
-//             this->addChild(Scene[i]);
-//             Scene[i]->setScale(0.4f);
-//             auto fadeIn = cocos2d::FadeIn::create(0.03f);    // 0.5秒淡入
-//             auto delay = cocos2d::DelayTime::create(0.2f);   // 停留1秒
-//             auto fadeOut = cocos2d::FadeOut::create(0.03f);  // 0.5秒淡出
-
-//             // 增加基于索引的延迟
-//             auto sequence = cocos2d::Sequence::create(
-//                 cocos2d::DelayTime::create(i * 0.8f), fadeIn, delay, fadeOut,
-//                 cocos2d::CallFunc::create([scenePtr = Scene[i]]() {
-//                     if (scenePtr) {
-//                         scenePtr->removeFromParent();  // 动作完成后移除
-//                     }
-//                 }),
-//                 nullptr);
-
-//             Scene[i]->runAction(sequence);  // 运行动作序列
-//         }
-//     } else if (weaponTypes == "sword") {
-//         tempavatar = cocos2d::Sprite::create(
-//             "weapon/melee.png", cocos2d::Rect(31 - 17, 143 - 16, 17, 16));
-//         if (direction == Direction::kLeft) {
-//             tempavatar->setFlippedX(true);
-//         }
-//         if (direction == Direction::kLeft || direction == Direction::kRight)
-//         {
-//             tarpos.y -= 1;
-//             if (direction == Direction::kLeft) {
-//                 tarpos.x -= 4;
-//             } else if (direction == Direction::kRight) {
-//                 tarpos.x += 4;
-//             }
-//             tempavatar->setPosition(cocos2d::Vec2(tarpos.x,
-//                                                   tarpos.y));  // 设置位置
-//             tempavatar->setOpacity(0);  // 初始透明度为0
-//             this->addChild(tempavatar);
-//             auto fadeIn = cocos2d::FadeIn::create(0.05f);    // 0.5秒淡入
-//             auto delay = cocos2d::DelayTime::create(0.08f);  // 停留1秒
-//             auto fadeOut = cocos2d::FadeOut::create(0.05f);  // 0.5秒淡出
-
-//             // 动作序列
-//             auto sequence = cocos2d::Sequence::create(
-//                 fadeIn, delay, fadeOut,
-//                 cocos2d::CallFunc::create([tempavatar]() {
-//                     tempavatar->removeFromParent();  // 动作完成后移除
-//                 }),
-//                 nullptr);
-//             tempavatar->runAction(sequence);  // 运行动作序列
-//         }
-//     }
-// }
+//void Avatar::MeleeAttack(cocos2d::Vec2 tarpos,Direction direction) {
+//    cocos2d::Sprite* tempavatar;
+//    tempavatar = cocos2d::Sprite::create(
+//        "weapon/melee.png", cocos2d::Rect(31 - 17, 143 - 16, 17, 16));
+//    if (direction == Direction::kLeft) {
+//        tempavatar->setFlippedX(true);
+//    }
+//    if (direction == Direction::kLeft || direction == Direction::kRight) {
+//        tarpos.y -= 1;
+//        if (direction == Direction::kLeft) {
+//            tarpos.x -= 4;
+//        } else if (direction == Direction::kRight) {
+//            tarpos.x += 4;
+//        }
+//        tempavatar->setPosition(cocos2d::Vec2(tarpos.x,
+//                                              tarpos.y));  // 设置位置
+//        tempavatar->setOpacity(0);  // 初始透明度为0
+//        this->addChild(tempavatar);
+//        auto fadeIn = cocos2d::FadeIn::create(0.05f);    // 0.5秒淡入
+//        auto delay = cocos2d::DelayTime::create(0.08f);  // 停留1秒
+//        auto fadeOut = cocos2d::FadeOut::create(0.05f);  // 0.5秒淡出
+//
+//        // 动作序列
+//        auto lambda = [tempavatar]() { tempavatar->removeFromParent(); };
+//        auto sequence = cocos2d::Sequence::create(
+//            fadeIn, delay, fadeOut, cocos2d::CallFunc::create(lambda), nullptr);
+//        tempavatar->runAction(sequence);  // 运行动作序列
+//    }
+//}
+//void Avatar::RangedAttack(cocos2d::Vec2 tarpos,Direction direction) {
+//    cocos2d::Sprite* Scene[2];
+//    for (int i = 0; i < 2; ++i) {
+//        Scene[i] = cocos2d::Sprite::create(
+//            "weapon/ranged.png", cocos2d::Rect(198 + 74 * i, 832, 51, 50));
+//    }
+//
+//    for (int i = 0; i < 2; ++i) {
+//        if (direction == Direction::kLeft) {
+//            Scene[i]->setPosition(cocos2d::Vec2(tarpos.x - 50,
+//                                                tarpos.y));  // 设置位置
+//        } else if (direction == Direction::kRight) {
+//            Scene[i]->setPosition(cocos2d::Vec2(tarpos.x + 50,
+//                                                tarpos.y));  // 设置位置
+//        } else if (direction == Direction::kUp) {
+//            Scene[i]->setPosition(cocos2d::Vec2(tarpos.x,
+//                                                tarpos.y + 50));  // 设置位置
+//        } else if (direction == Direction::kDown) {
+//            Scene[i]->setPosition(cocos2d::Vec2(tarpos.x,
+//                                                tarpos.y - 50));  // 设置位置
+//        }
+//        Scene[i]->setOpacity(0);  // 初始透明度为0
+//        this->addChild(Scene[i]);
+//        Scene[i]->setScale(0.4f);
+//        auto fadeIn = cocos2d::FadeIn::create(0.03f);    // 0.5秒淡入
+//        auto delay = cocos2d::DelayTime::create(0.2f);   // 停留1秒
+//        auto fadeOut = cocos2d::FadeOut::create(0.03f);  // 0.5秒淡出
+//
+//        // 增加基于索引的延迟
+//        auto lambda = [scenePtr = Scene[i]]() {
+//            if (scenePtr) {
+//                scenePtr->removeFromParent();
+//            }
+//        };
+//        auto sequence = cocos2d::Sequence::create(
+//            cocos2d::DelayTime::create(i * 0.8f), fadeIn, delay, fadeOut,
+//            cocos2d::CallFunc::create(lambda), nullptr);
+//
+//        Scene[i]->runAction(sequence);  // 运行动作序列
+//    }
+//
+//}
+//void Avatar::Attacking(std::string weaponTypes) {
+//    cocos2d::Vec2 tarpos =
+//        this->getParent()->convertToWorldSpace(this->getPosition());
+//    tarpos.x *= 0.122;
+//    tarpos.y *= 0.122;
+//    Direction direction = GetDirection();
+//
+//    if (weaponTypes == "wand") {
+//        RangedAttack(tarpos, direction);
+//
+//    } else if (weaponTypes == "sword") {
+//        MeleeAttack(tarpos, direction);
+//    }
+//}
 
 void Avatar::RenderMove() {
     Logger::GetInstance().LogInfo("Current direction: {}",
@@ -301,7 +306,6 @@ void Avatar::ChangeDirection(Direction direction) {
     if (current_direction == direction) {
         return;
     }
-
     SetDirection(direction);
     auto* new_texture = avatar_texture_.down;
     switch (direction) {

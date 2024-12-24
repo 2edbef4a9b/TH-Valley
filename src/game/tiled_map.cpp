@@ -137,6 +137,10 @@ void TiledMap::SpawnAnimal(int count) {
     initAnimalPosition();
 }
 
+void TiledMap::SpawnCitizen(Citizen* citizen) {
+    MapCitizens.push_back(citizen);
+}
+
 cocos2d::Rect TiledMap::GetPortalRect(Portal portal,
                                       std::string_view ObjectLayerName) {
     auto* object_group = tiled_map_->getObjectGroup(ObjectLayerName.data());
@@ -239,7 +243,6 @@ void TiledMap::onEnter() {
 
             if (MapToolBar->getToolName() == "StrawberrySeed") {
                 CropPlant(PlantTilePos, new Strawberry);
-
             } else if (MapToolBar->getToolName() == "CarrotSeed") {
                 CropPlant(PlantTilePos, new Carrot);
             } else if (MapToolBar->getToolName() == "PotatoSeed") {
@@ -316,7 +319,16 @@ void TiledMap::onEnter() {
                 } else {
                     Logger::GetInstance().LogError("Parent node is null");
                 }
+            /*case cocos2d::EventKeyboard::KeyCode::KEY_F:
+            case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_F:
+                if (tiled_map_->getParent()) {
+                    avatar.Attacking(dynamic_cast<GameScene*>(this->getParent())->GetToolBar()
+                                       ->getToolName());
+                } else {
+                    Logger::GetInstance().LogError("Parent node is null");
+                }*/
             default:
+                Logger::GetInstance().LogError("!");
                 break;
         }
         if (is_key_pressed_a_ || is_key_pressed_d_ || is_key_pressed_s_ ||

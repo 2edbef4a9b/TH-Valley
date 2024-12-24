@@ -14,6 +14,7 @@
 #include "game/map_controller.h"
 #include "math/CCGeometry.h"
 #include "utility/position.h"
+#include "game/citizen.h"
 
 class Crops;
 
@@ -51,6 +52,8 @@ public:
     void Save();
     void Load();
     void SpawnAnimal(int count);
+    void SpawnCitizen(Citizen* citizen);
+    void initCitizenPosition();
 
     cocos2d::Rect GetPortalRect(Portal portal,
                                 std::string_view ObjectLayerName = "Objects");
@@ -91,6 +94,8 @@ private:
     void ShowAnimalInfomation(cocos2d::Sprite* Animal,
                               const cocos2d::Vec2& InfoPosition, int& priority);
 
+    void updateCitizenSprites(float dt);
+
     cocos2d::TMXTiledMap* tiled_map_{};
     std::unordered_map<std::string, cocos2d::TMXLayer*> map_layer_;
     cocos2d::TMXObjectGroup* object_group_{};
@@ -99,11 +104,14 @@ private:
 
     std::map<Position, Crops*> CropPosition;
     std::map<Position, cocos2d::Sprite*> SpritePosition;
-    std::map<cocos2d::Sprite*, Animals*> SpritetoAnimal;
     std::vector<Crops*> MapCrops;
     std::vector<cocos2d::Sprite*> CropsSprite;
     std::vector<Animals*> MapAnimals;
+    std::map<cocos2d::Sprite*, Animals*> SpritetoAnimal;
     std::vector<cocos2d::Sprite*> AnimalSprite;
+    std::vector<Citizen*> MapCitizens;
+    std::vector<cocos2d::Sprite*> CitizensSprite;
+    std::map<cocos2d::Sprite*, Citizen*> SpritetoCitizen;
     static std::vector<Entity::Direction> AllDirection;
 
     int priority = 255;
