@@ -59,6 +59,7 @@ public:
                                 std::string_view ObjectLayerName = "Objects");
     void SetPlayerPos(cocos2d::Vec2 pos);
     void SetTeleportStatus(bool status);
+    cocos2d::TMXTiledMap* getTiledMap() { return tiled_map_;  }
 
 private:
     void onEnter() override;
@@ -95,6 +96,8 @@ private:
                               const cocos2d::Vec2& InfoPosition, int& priority);
 
     void updateCitizenSprites(float dt);
+    void ShowCitizenInfomation(cocos2d::Sprite* Citizen,
+                              const cocos2d::Vec2& InfoPosition, int& priority);
 
     cocos2d::TMXTiledMap* tiled_map_{};
     std::unordered_map<std::string, cocos2d::TMXLayer*> map_layer_;

@@ -35,7 +35,47 @@ void MapController::LoadTiledMap(const std::string& tiled_map,
         game_tiled_map_->SpawnCitizen(elliott);
         game_tiled_map_->SpawnCitizen(evelyn);
     }
+    if (tiled_map == "Shop") {
+        Sebastian* sebastian = new Sebastian;
+        game_tiled_map_->SpawnCitizen(sebastian);
+    }
     game_tiled_map_->initCitizenPosition();
+    LoadRain(tiled_map);
+}
+
+void MapController::LoadRain(const std::string& tiled_map) {
+    auto* rain = cocos2d::ParticleRain::create();
+    rain->setPosition(cocos2d::Vec2(
+        game_tiled_map_->getTiledMap()->getContentSize().width / 2,
+        game_tiled_map_->getTiledMap()->getContentSize().height));
+    rain->setPosVar(cocos2d::Vec2(
+        game_tiled_map_->getTiledMap()->getContentSize().width / 2,
+        0));  // 雨范围覆盖整个地图
+    // rain->setLife(3.0f);          // 调整雨滴存活时间
+    // rain->setLifeVar(1.0f);       // 存活时间的随机范围
+    rain->setSpeed(300.0f);       // 设置雨滴下落速度
+    rain->setSpeedVar(50.0f);     // 雨滴速度随机变化范围
+    rain->setStartSize(5.0f);     // 雨滴大小
+    rain->setStartSizeVar(2.0f);  // 雨滴大小随机范围
+
+    rain->setVisible(false);
+    game_tiled_map_->getTiledMap()->addChild(rain, 199);  // 添加到场景
+    game_tiled_map_->getTiledMap()->schedule(
+        [rain, tiled_map](float dt) {
+
+            // 如果状态改变，则处理粒子效果
+            if (GlobalWeather.WeatherType != "Rainy" || (tiled_map == "Barn") ||
+                (tiled_map == "Cave") || (tiled_map == "FarmHouse") ||
+                (tiled_map == "House") || (tiled_map == "Shop") ||
+                (tiled_map == "NPC4") || (tiled_map == "NPC3") ||
+                (tiled_map == "NPC2") || (tiled_map == "NPC1") ||
+                (tiled_map == "Bar")) {
+                rain->setVisible(false);
+            } else {
+                rain->setVisible(true);
+            }
+        },
+        1.0f, "CheckRainCondition");  // 每秒检查一次变量值
 }
 
 void MapController::TriggerTeleport(const std::string& portal_name) {

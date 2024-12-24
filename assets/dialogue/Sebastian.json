@@ -12,12 +12,11 @@
     },
     {
         "type": "question",
-        "content": "I'm horny. ",
+        "content": "What do you want to buy?. ",
         "options": [
-            "Wwwwwwhat do u mean??????????? ",
-            "Come to my place at midnight. ",
-            "I'm not interested. "
-
+            "Buy Carrot seeds. ",
+            "Buy Potato seeds. ",
+            "Buy Strawberry seeds. "
         ]
     },
     {
@@ -26,7 +25,7 @@
     },
     {
         "type": "dialogue",
-        "content": "That's all you can give me? This crap of SHIIIIIIT? ",
+        "content": "Have a nice day. ",
         "conditions": {
             "event": [ "hasReceivedGift" ]
         }
