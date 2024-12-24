@@ -3,6 +3,7 @@
 #include <optional>
 #include <regex>
 
+#include "client/client_controller.h"
 #include "frontend/game_scene.h"
 #include "game/crop_production.h"
 #include "game/pig.h"
@@ -234,13 +235,6 @@ void TiledMap::onEnter() {
             PlantTilePos.x = tilePos.x;
             PlantTilePos.y = tilePos.y;
 
-            // take a Strawberry as an example
-
-            // Potato* exampleStrawberry;
-            // exampleStrawberry = new Potato;
-            // GlobalTime.TimeShow();
-            // CCLOG("Potato");
-
             if (MapToolBar->getToolName() == "StrawberrySeed") {
                 CropPlant(PlantTilePos, new Strawberry);
             } else if (MapToolBar->getToolName() == "CarrotSeed") {
@@ -327,6 +321,10 @@ void TiledMap::onEnter() {
                 } else {
                     Logger::GetInstance().LogError("Parent node is null");
                 }*/
+            case cocos2d::EventKeyboard::KeyCode::KEY_ESCAPE:
+                ClientController::GetInstance().SetClientState(
+                    ClientController::ClientState::kTitleScreen);
+                break;
             default:
                 Logger::GetInstance().LogError("!");
                 break;

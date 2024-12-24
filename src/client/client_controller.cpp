@@ -28,7 +28,9 @@ void ClientController::Update() {
             break;
         case ClientState::kQuit:
             Logger::GetInstance().LogInfo("GameState Change to Quit");
-            StopUniverseServer();
+            if (universe_server_.IsRunning()) {
+                StopUniverseServer();
+            }
             director->end();
             break;
         case ClientState::kSettings:
@@ -50,6 +52,11 @@ void ClientController::Update() {
             break;
         case ClientState::kTitleScreen:
             Logger::GetInstance().LogInfo("GameState Change to TitleScreen");
+            if (universe_server_.IsRunning()) {
+                StopUniverseServer();
+            }
+            director->getOpenGLView()->setDesignResolutionSize(
+                1920, 1080, ResolutionPolicy::NO_BORDER);
             director->replaceScene(TitleScreen::create());
             break;
         default:
