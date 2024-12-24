@@ -1,8 +1,8 @@
 #include "sample/sample_scene.h"
 #include <cstddef>
 #include <string>
-#include "talk_box.h"
-#include "tool_bar.h"
+#include "frontend/talk_box.h"
+#include "frontend/tool_bar.h"
 using namespace cocos2d;
 
 

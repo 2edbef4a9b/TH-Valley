@@ -266,6 +266,31 @@ void TiledMap::onEnter() {
             SpritetoAnimal[Closest]->InfoOpen = true;
             ShowAnimalInfomation(Closest, pos, priority);
         }
+
+        // Citizen
+        MinDistance = 99999999;
+        cocos2d::Sprite* ClosestCitizen;
+        for (int i = 0; i < CitizensSprite.size(); i++) {
+            auto SpritePosition = CitizensSprite[i]->getPosition();
+            float Distance =
+                sqrt((SpritePosition.x - pos.x) * (SpritePosition.x - pos.x) +
+                     (SpritePosition.y - pos.y) * (SpritePosition.y - pos.y));
+            CCLOG("Citizen Position: %f %f\n", SpritePosition.x,
+                  SpritePosition.y);
+            if (fabs(SpritePosition.x - pos.x) < 20 &&
+                fabs(SpritePosition.y - pos.y) < 20 && Distance < MinDistance) {
+                CCLOG("Sprite clicked!");
+                MinDistance = Distance;
+                ClosestCitizen = CitizensSprite[i];
+            }
+        }
+
+        if (MinDistance < 99999999 &&
+            !SpritetoCitizen[ClosestCitizen]->InfoOpen) {
+            SpritetoCitizen[ClosestCitizen]->ShowTalkBox(this->getParent());
+
+            
+        }
     };
 
     listener->onMouseMove = [this](cocos2d::Event* event) {

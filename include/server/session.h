@@ -17,6 +17,8 @@ class Session : public std::enable_shared_from_this<Session> {
 public:
     explicit Session(boost::asio::ip::tcp::socket socket);
 
+    void DoRead();
+    void DoWrite(std::string_view message_sv);
     boost::asio::ip::tcp::socket &GetSocket();
     boost::uuids::uuid GetUUID() const;
     void SetSessionManager(
@@ -25,8 +27,6 @@ public:
     void Terminate();
 
 private:
-    void DoRead();
-    void DoWrite(std::string_view message_sv);
     void HandleMessage(std::string_view message_sv);
     static bool IsUUIDValid(std::string_view uuid_sv);
 

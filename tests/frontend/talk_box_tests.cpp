@@ -1,9 +1,9 @@
 #include <gtest/gtest.h>
 
+#include "frontend/talk_box.h"
 #include "sample/sample_application.h"
 #include "sample/sample_scene.h"
-#include "talk_box.h"
-#include "tool_bar.h"
+#include "frontend/tool_bar.h"
 
 std::vector<DialogueEntry> inputJson(std::string fileName) {
     // ╪сть JSON нд╪Ч
@@ -104,8 +104,8 @@ class TalkBoxTestsApp : public th_valley::SampleApplication {
 public:
     bool applicationDidFinishLaunching() override {
         // Initialize the director.
-        auto *director = cocos2d::Director::getInstance();
-        auto *glview = director->getOpenGLView();
+        auto* director = cocos2d::Director::getInstance();
+        auto* glview = director->getOpenGLView();
         if (!glview) {
             glview = cocos2d::GLViewImpl::create("Talk Box Tests");
             director->setOpenGLView(glview);
@@ -131,24 +131,23 @@ public:
         CCLOG("Resource root path: %s", resource_root_path.c_str());
 
         // Create a scene. It's an autorelease object.
-        //auto *scene = th_valley::SampleScene::create();
-        auto *scene = th_valley::SampleScene::create();
+        // auto *scene = th_valley::SampleScene::create();
+        auto* scene = th_valley::SampleScene::create();
         if (scene == nullptr) {
             return false;
-        } 
+        }
 
-
-        //scene->addChild(
-        //    TalkBox::createWithEntries(inputJson("assets/dialogue/npc.json"),
-        //                               "npc", "assets/Portraits/Abigail.png"),
-        //    100);
-        scene->addChild(
-            TalkBox::createWithEntries(inputJson("assets/dialogue/Sebastian.json"),
-                                       "Sebastian", "assets/Portraits/Sebastian.png"),
-            100);
+        // scene->addChild(
+        //     TalkBox::createWithEntries(inputJson("assets/dialogue/npc.json"),
+        //                                "npc",
+        //                                "assets/Portraits/Abigail.png"),
+        //     100);
+        scene->addChild(TalkBox::createWithEntries(
+                            inputJson("assets/dialogue/Sebastian.json"),
+                            "Sebastian", "assets/Portraits/Sebastian.png"),
+                        100);
 
         scene->addChild(ToolBar::create(), 200);
-
 
         // Run.
         director->runWithScene(scene);
@@ -168,7 +167,7 @@ TEST_F(TalkBoxTests, Run) {
     EXPECT_EQ(TalkBoxTestsApp::getInstance()->run(), 0);
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }

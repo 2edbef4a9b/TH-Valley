@@ -97,6 +97,101 @@ bool TalkBox::initWithEntries(const std::vector<DialogueEntry>& entries,
     return true;
 }
 
+std::vector<DialogueEntry> TalkBox::inputJson(const std::string& fileName) {
+    // 加载 JSON 文件
+    std::vector<DialogueEntry> dialogEntries;
+
+    std::string fullPath =
+        cocos2d::FileUtils::getInstance()->fullPathForFilename(fileName);
+    std::string jsonData =
+        cocos2d::FileUtils::getInstance()->getStringFromFile(fullPath);
+
+    CCLOG("JSON file path: %s", fullPath.c_str());
+    CCLOG("JSON data: %s", jsonData.c_str());
+
+    rapidjson::Document doc;
+    doc.Parse(jsonData.c_str());
+    if (doc.IsArray()) {
+        for (auto& v : doc.GetArray()) {
+            DialogueEntry entry;
+
+            // 解析 type
+            if (v.HasMember("type") && v["type"].IsString()) {
+                std::string typeStr = v["type"].GetString();
+                if (typeStr == "dialogue") {
+                    entry.type = DialogueEntry::EntryType::Dialogue;
+                } else if (typeStr == "question") {
+                    entry.type = DialogueEntry::EntryType::Question;
+                }
+            }
+
+            // 解析 content
+            if (v.HasMember("content") && v["content"].IsString()) {
+                entry.content = v["content"].GetString();
+            }
+
+            // 解析 options
+            if (entry.type == DialogueEntry::EntryType::Question &&
+                v.HasMember("options") && v["options"].IsArray()) {
+                for (auto& opt : v["options"].GetArray()) {
+                    if (opt.IsString()) {
+                        entry.options.push_back(opt.GetString());
+                    }
+                }
+            }
+
+            // 解析 conditions
+            if (v.HasMember("conditions") && v["conditions"].IsObject()) {
+                const auto& conditions = v["conditions"];
+                // 时间条件
+                if (conditions.HasMember("time") &&
+                    conditions["time"].IsArray()) {
+                    std::vector<std::string> timeRange;
+                    for (auto& timeValue : conditions["time"].GetArray()) {
+                        if (timeValue.IsString()) {
+                            timeRange.push_back(timeValue.GetString());
+                        }
+                    }
+                    entry.conditions["time"] = timeRange;
+                }
+                // 事件条件
+                if (conditions.HasMember("event") &&
+                    conditions["event"].IsArray()) {
+                    std::vector<std::string> events;
+                    for (auto& eventValue : conditions["event"].GetArray()) {
+                        if (eventValue.IsString()) {
+                            events.push_back(eventValue.GetString());
+                        }
+                    }
+                    entry.conditions["event"] = events;
+                }
+            }
+
+            dialogEntries.push_back(entry);
+        }
+    }
+    // 输出调试信息
+    CCLOG("Parsed %zu dialogue entries", dialogEntries.size());
+    for (const auto& entry : dialogEntries) {
+        CCLOG("Type: %s, Content: %s",
+              entry.type == DialogueEntry::EntryType::Dialogue ? "Dialogue"
+                                                               : "Question",
+              entry.content.c_str());
+        if (entry.type == DialogueEntry::EntryType::Question) {
+            for (const auto& option : entry.options) {
+                CCLOG("Option: %s", option.c_str());
+            }
+        }
+        for (const auto& condition : entry.conditions) {
+            CCLOG("Condition: %s", condition.first.c_str());
+            for (const auto& value : condition.second) {
+                CCLOG("Value: %s", value.c_str());
+            }
+        }
+    }
+    return dialogEntries;
+}
+
 void TalkBox::onEnter() {
     Layer::onEnter();
 

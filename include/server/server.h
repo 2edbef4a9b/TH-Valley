@@ -5,6 +5,7 @@
 #include <memory>
 #include <string_view>
 
+#include "boost/uuid/uuid.hpp"
 #include "server/session_manager.h"
 
 namespace th_valley {
@@ -19,6 +20,9 @@ public:
     Server(Server&& other) = delete;
     Server& operator=(Server&& other) = delete;
 
+    void BroadcastMessage(std::string_view message) const;
+    void SendMessage(boost::uuids::uuid session_id,
+                     std::string_view message) const;
     void StartUp();
     void ShutDown();
     [[nodiscard]] bool IsRunning() const;

@@ -2,17 +2,14 @@
 #define TALK_BOX_H_
 
 #include <string>
-#include <vector>
 #include <unordered_map>
+#include <vector>
 
 #include "cocos2d.h"
 #include "json/document.h"
 
 struct DialogueEntry {
-    enum class EntryType {
-        Dialogue,
-        Question
-    };
+    enum class EntryType { Dialogue, Question };
     EntryType type;
     std::string content;
     std::vector<std::string> options;
@@ -33,9 +30,12 @@ public:
                          const std::string& npcAvatarPath);
     static TalkBox* createWithEntries(const std::vector<DialogueEntry>& entries,
                                       const std::string& npcName,
-                                      const std::string& npcAvatarPath);                
+                                      const std::string& npcAvatarPath);
+
+    static std::vector<DialogueEntry> inputJson(const std::string& jsonPath);
+
     void onEnter();
-    void onExit(); 
+    void onExit();
 
     void showDialog();
     void hideDialog();

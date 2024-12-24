@@ -18,6 +18,15 @@ Server::~Server() {
     }
 }
 
+void Server::BroadcastMessage(const std::string_view message) const {
+    session_manager_->BroadcastMessage(message);
+}
+
+void Server::SendMessage(const boost::uuids::uuid session_id,
+                         const std::string_view message) const {
+    session_manager_->SendMessage(session_id, message);
+}
+
 void Server::StartUp() {
     Logger::GetInstance().LogInfo("{}: Starting up.", server_name_);
     is_running_ = true;

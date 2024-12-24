@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 
+#include "2d/CCNode.h"
 #include "cocos2d.h"
 #include "game/agriculture.h"
 #include "utility/position.h"
@@ -21,10 +22,11 @@ public:
 
     Position position;
 
-    //virtual void purchase();
+    // virtual void purchase();
     /* virtual void RandomMove();*/
 
     /*virtual void AnimalShowInfo();*/
+    void ShowTalkBox(cocos2d::Node *parent);
 };
 
 #endif
