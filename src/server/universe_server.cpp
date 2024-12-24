@@ -60,7 +60,8 @@ void UniverseServer::Update() {
         GlobalFarmHouse.AllAnimals[AnimalCount]->AnimalAutomaticUpdate();
     }
 
-    Logger::GetInstance().LogInfo("{}: Updating game state.", GetServerName());
+    // Logger::GetInstance().LogInfo("{}: Updating game state.",
+    // GetServerName());
 }
 
 }  // namespace th_valley

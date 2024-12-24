@@ -288,8 +288,6 @@ void TiledMap::onEnter() {
         if (MinDistance < 99999999 &&
             !SpritetoCitizen[ClosestCitizen]->InfoOpen) {
             SpritetoCitizen[ClosestCitizen]->ShowTalkBox(this->getParent());
-
-            
         }
     };
 
@@ -338,6 +336,7 @@ void TiledMap::onEnter() {
                 } else {
                     Logger::GetInstance().LogError("Parent node is null");
                 }
+                break;
             /*case cocos2d::EventKeyboard::KeyCode::KEY_F:
             case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_F:
                 if (tiled_map_->getParent()) {

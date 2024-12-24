@@ -32,18 +32,18 @@ bool TalkBox::initWithEntries(const std::vector<DialogueEntry>& entries,
     // 加载对话框背景
     background_ = Sprite::create("assets/talk_box/textBox.png");
     background_->setAnchorPoint(Vec2(0.5f, 0));
-    background_->setScale(1.6f);
+    background_->setScale(1.1f);
     background_->setPosition(visible_origin_.x + visible_size_.width / 2,
                              visible_origin_.y);
     this->addChild(background_, -5);
 
     // 创建文本标签
-    messageLabel_ = Label::createWithTTF("", std::string(kFontPath), 16);
+    messageLabel_ = Label::createWithTTF("", std::string(kFontPath), 12);
     messageLabel_->setTextColor(Color4B::WHITE);
     messageLabel_->setAnchorPoint(Vec2(0, 1));
     messageLabel_->setPosition(
         background_->getPosition() +
-        1.6f * Vec2(-background_->getContentSize().width / 2 + 10,
+        1.1f * Vec2(-background_->getContentSize().width / 2 + 10,
                     background_->getContentSize().height -
                         10));  // 设置位置为对话框内部的左半部分
     messageLabel_->setWidth((2 * background_->getContentSize().width) /
@@ -57,7 +57,7 @@ bool TalkBox::initWithEntries(const std::vector<DialogueEntry>& entries,
     closeButton_->setAnchorPoint(Vec2(1.0f, 1.0f));
     closeButton_->setPosition(
         background_->getPosition() +
-        1.6f * Vec2(background_->getContentSize().width / 2 - 5,
+        1.1f * Vec2(background_->getContentSize().width / 2 - 5,
                     background_->getContentSize().height - 5));
     this->addChild(closeButton_, 2);
 
@@ -75,18 +75,18 @@ bool TalkBox::initWithEntries(const std::vector<DialogueEntry>& entries,
     this->addChild(closeButtonBackground_, 1);
 
     // 添加NPC名称标签
-    npcNameLabel_ = Label::createWithTTF(npcName_, std::string(kFontPath), 18);
+    npcNameLabel_ = Label::createWithTTF(npcName_, std::string(kFontPath), 12);
     npcNameLabel_->setTextColor(Color4B::BLACK);
     npcNameLabel_->setAnchorPoint(Vec2(0.5f, 0));
     npcNameLabel_->setPosition(
         background_->getPosition() +
-        1.6f * Vec2(background_->getContentSize().width / 2 - 58, 1));
+        1.1f * Vec2(background_->getContentSize().width / 2 - 58, 1));
     this->addChild(npcNameLabel_, 5);
 
     // 添加NPC头像
     npcAvatar_ = Sprite::create(npcAvatarPath_, Rect(0, 0, 60, 60));
     npcAvatar_->setAnchorPoint(Vec2(0.5f, 0));
-    npcAvatar_->setScale(1.6f);
+    npcAvatar_->setScale(1.1f);
     npcAvatar_->setPosition(
         npcNameLabel_->getPosition() +
         Vec2(0, 10 + npcNameLabel_->getContentSize().height));
@@ -347,19 +347,19 @@ void TalkBox::showOptions(const std::vector<std::string>& options) {
     selectedOptionIndex_ = 0;
 
     float startY = messageLabel_->getPositionY() -
-                   messageLabel_->getContentSize().height / 2 - 30;
+                   messageLabel_->getContentSize().height / 2 - 10;
     for (size_t i = 0; i < options.size(); ++i) {
         // 创建选项背景层
         auto optionBg = LayerColor::create(
             (i == selectedOptionIndex_) ? Color4B(50, 50, 50, 200)
                                         : Color4B(0, 0, 0, 0),
             (1.6 * background_->getContentSize().width - 40) / 2,
-            20);                               // 设置高度为20
+            10);                               // 设置高度为20
         optionBg->setAnchorPoint(Vec2(0, 1));  // 设置锚点为左上角
         optionBg->setPosition(
             Vec2(visible_origin_.x + visible_size_.width / 2 -
-                     1.6 * background_->getContentSize().width / 2 + 20,
-                 startY - (i + 1) * 30));  // 设置位置为对话框内部的左半部分
+                     1.2 * background_->getContentSize().width / 2 + 20,
+                 startY - (i + 1) * 20));  // 设置位置为对话框内部的左半部分
         this->addChild(optionBg, 1);
         optionBackgrounds_.push_back(optionBg);
 
