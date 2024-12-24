@@ -1,11 +1,11 @@
 #include <game/crop_production.h>
 
 #include "cocos2d.h"
+#include "frontend/game_scene.h"
+#include "frontend/tool_bar.h"
 #include "game/crops.h"
 #include "game/tiled_map.h"
 #include "ui/CocosGUI.h"
-#include "frontend/tool_bar.h"
-#include "frontend/game_scene.h"
 
 namespace th_valley {
 
@@ -44,7 +44,7 @@ void TiledMap::CropPlant(const Position& PlantPosition, Crops* Crop) {
 
     CCLOG("Can be planted");
 
-    //auto CropPicture = Crop->CropSprite;
+    // auto CropPicture = Crop->CropSprite;
 
     // Picture Position Calculate
     cocos2d::Vec2 PicturePosition;
@@ -79,8 +79,8 @@ void TiledMap::CropRemove(const Position& RemovePosition) {
         }
     }
 
-    for (it = GlobalCropProduction.AllCrops.begin(); it != GlobalCropProduction.AllCrops.end();
-         it++) {
+    for (it = GlobalCropProduction.AllCrops.begin();
+         it != GlobalCropProduction.AllCrops.end(); it++) {
         if (*it == Crop) {
             GlobalCropProduction.AllCrops.erase(it);
             break;
@@ -217,7 +217,8 @@ void TiledMap::ShowCropInformation(Crops* Crop, const Position& InfoPosition,
             if (Crop->GrowthSituation[0] != "Normal") {
                 Situation->setVisible(false);
             }
-            if (Title == "Remove") CropRemove(InfoPosition);
+            if (Title == "Remove")
+                CropRemove(InfoPosition);
             else {
                 auto MapToolBar =
                     dynamic_cast<GameScene*>(this->getParent())->GetToolBar();

@@ -719,7 +719,13 @@ void TiledMap::Load(const std::string& file_name) {
                     if (crop) {
                         CropPosition[pos] = crop;
                         MapCrops.push_back(crop);
+                        crop->CropSprite->setPosition(PosFromtileCoord(pos));
+                        tiled_map_->addChild(crop->CropSprite, 4);
+                        UpdateTileAt(cocos2d::Vec2(pos.x, pos.y), 557, "Back");
+                        GlobalCropProduction.AllCrops.push_back(crop);
                     }
+
+                    // CropPlant(pos, crop);
                 }
             }
         }
