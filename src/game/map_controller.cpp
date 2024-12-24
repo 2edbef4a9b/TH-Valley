@@ -13,6 +13,7 @@ void MapController::LoadTiledMap(const std::string& tiled_map,
     game_tiled_map_ =
         TiledMap::create(kTiledMapPathPrefix + tiled_map + kTiledMapPathSuffix);
     game_tiled_map_->Load(tiled_map + ".txt");
+    game_tiled_map_->SetMapName(tiled_map);
     if (game_tiled_map_ == nullptr) {
         Logger::GetInstance().LogError("Failed to load TiledMap: {}",
                                        tiled_map);
@@ -63,7 +64,6 @@ void MapController::LoadRain(const std::string& tiled_map) {
     game_tiled_map_->getTiledMap()->addChild(rain, 199);  // 添加到场景
     game_tiled_map_->getTiledMap()->schedule(
         [rain, tiled_map](float dt) {
-
             // 如果状态改变，则处理粒子效果
             if (GlobalWeather.WeatherType != "Rainy" || (tiled_map == "Barn") ||
                 (tiled_map == "Cave") || (tiled_map == "FarmHouse") ||

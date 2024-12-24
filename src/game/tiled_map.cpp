@@ -771,6 +771,8 @@ void TiledMap::Load(const std::string& file_name) {
     }
 }
 
+void TiledMap::SetMapName(const std::string& map_name) { map_name_ = map_name; }
+
 std::vector<Entity::Direction> TiledMap::AllDirection;
 
 }  // namespace th_valley
