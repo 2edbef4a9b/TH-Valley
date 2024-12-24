@@ -1,4 +1,4 @@
-#include "talk_box.h"
+#include "frontend/talk_box.h"
 
 USING_NS_CC;
 
@@ -56,9 +56,9 @@ bool TalkBox::initWithEntries(const std::vector<DialogueEntry>& entries,
     closeButton_->setScale(0.01f);
     closeButton_->setAnchorPoint(Vec2(1.0f, 1.0f));
     closeButton_->setPosition(
-        background_->getPosition() + 1.6f *
-                              Vec2(background_->getContentSize().width / 2 - 5,
-                                   background_->getContentSize().height - 5));
+        background_->getPosition() +
+        1.6f * Vec2(background_->getContentSize().width / 2 - 5,
+                    background_->getContentSize().height - 5));
     this->addChild(closeButton_, 2);
 
     // 添加关闭按钮的背景层
@@ -67,8 +67,10 @@ bool TalkBox::initWithEntries(const std::vector<DialogueEntry>& entries,
                            closeButton_->getContentSize().width * 0.01f,
                            closeButton_->getContentSize().height * 0.01f);
     closeButtonBackground_->setAnchorPoint(Vec2(1, 1));
-    closeButtonBackground_->setPosition(closeButton_->getPosition() - Vec2(closeButton_->getContentSize().width * 0.01f,
-                           closeButton_->getContentSize().height * 0.01f));
+    closeButtonBackground_->setPosition(
+        closeButton_->getPosition() -
+        Vec2(closeButton_->getContentSize().width * 0.01f,
+             closeButton_->getContentSize().height * 0.01f));
     closeButtonBackground_->setVisible(false);
     this->addChild(closeButtonBackground_, 1);
 
@@ -78,15 +80,16 @@ bool TalkBox::initWithEntries(const std::vector<DialogueEntry>& entries,
     npcNameLabel_->setAnchorPoint(Vec2(0.5f, 0));
     npcNameLabel_->setPosition(
         background_->getPosition() +
-        1.6f * Vec2(background_->getContentSize().width / 2 - 58,
-                    1));  
+        1.6f * Vec2(background_->getContentSize().width / 2 - 58, 1));
     this->addChild(npcNameLabel_, 5);
 
     // 添加NPC头像
     npcAvatar_ = Sprite::create(npcAvatarPath_, Rect(0, 0, 60, 60));
     npcAvatar_->setAnchorPoint(Vec2(0.5f, 0));
     npcAvatar_->setScale(1.6f);
-    npcAvatar_->setPosition(npcNameLabel_->getPosition() + Vec2(0, 10 + npcNameLabel_->getContentSize().height)); 
+    npcAvatar_->setPosition(
+        npcNameLabel_->getPosition() +
+        Vec2(0, 10 + npcNameLabel_->getContentSize().height));
     this->addChild(npcAvatar_, 5);
 
     gameStates_["hasReceivedGift"] = true;
@@ -228,7 +231,7 @@ void TalkBox::showDialog() {
 
 void TalkBox::showNextMessage() {
     if (currentMessageIndex_ < dialogEntries_.size()) {
-        //currentMessageIndex_++;
+        // currentMessageIndex_++;
         showDialog();
     } else {
         hideDialog();
