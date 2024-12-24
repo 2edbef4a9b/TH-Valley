@@ -79,6 +79,14 @@ void TiledMap::CropRemove(const Position& RemovePosition) {
         }
     }
 
+    for (it = GlobalCropProduction.AllCrops.begin(); it != GlobalCropProduction.AllCrops.end();
+         it++) {
+        if (*it == Crop) {
+            GlobalCropProduction.AllCrops.erase(it);
+            break;
+        }
+    }
+
     // Remove Picture
     Picture->setVisible(false);
 
@@ -210,7 +218,13 @@ void TiledMap::ShowCropInformation(Crops* Crop, const Position& InfoPosition,
                 Situation->setVisible(false);
             }
             if (Title == "Remove") CropRemove(InfoPosition);
-            // Here do harvest
+            else {
+                auto MapToolBar =
+                    dynamic_cast<GameScene*>(this->getParent())->GetToolBar();
+                MapToolBar->bag_->add(Crop->Fruit);
+                CropRemove(InfoPosition);
+                MapToolBar->loadTools();
+            }
         });
     tiled_map_->addChild(HavestButton, priority);
 

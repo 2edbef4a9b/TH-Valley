@@ -36,6 +36,7 @@ public:
                      ItemSprite* newItem);  // 更新物品信息
     void swapItems(int key1, int key2);     // 交换两个物品的位置
     void ReduceItem(int key);
+    void add(ItemSprite* newItem);
 
     void bagInit();
     // 新增的 getItems 方法

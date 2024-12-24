@@ -8,6 +8,26 @@ bool Bag::isEmpty() const { return currentNum_ == 0; }
 
 bool Bag::isFull() const { return currentNum_ >= maxNum_; }
 
+void Bag::add(ItemSprite* item) {
+    for (int key = 0; key < 39; key++) {
+        auto it = items_.find(key);
+        if (it != items_.end()) {
+            if (it->second->name == item->name) {
+                addItem(key, item);
+                return;
+            }
+        }
+    }
+
+    for (int key = 0; key < 39; key++) {
+        auto it = items_.find(key);
+        if (it == items_.end()) {
+            addItem(key, item);
+            return;
+        }
+    }
+}
+
 void Bag::addItem(const int& key, ItemSprite* item) {
     if (isFull()) {
         // 背包已满，无法添加物品
