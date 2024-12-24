@@ -1,8 +1,19 @@
 #include "game/tiled_map.h"
 
+#include <cstdio>
+#include <fstream>
 #include <optional>
 #include <regex>
+#include <sstream>
 
+#include "json/document.h"
+#include "json/filereadstream.h"
+#include "json/filewritestream.h"
+#include "json/prettywriter.h"
+#include "json/stringbuffer.h"
+#include "json/writer.h"
+
+// ...existing code...
 #include "client/client_controller.h"
 #include "frontend/game_scene.h"
 #include "game/crop_production.h"
@@ -177,11 +188,11 @@ void TiledMap::SetPlayerPos(cocos2d::Vec2 pos) {
     pos.y = std::max(0.0F, std::min(pos.y, map_height));
 
     player_pos_ = pos;
-    Logger::GetInstance().LogInfo("Player position set to: {}, {}",
-                                  player_pos_.x, player_pos_.y);
-    Logger::GetInstance().LogInfo("Tile: {}, {}",
-                                  TileCoordFromPos(player_pos_).x,
-                                  TileCoordFromPos(player_pos_).y);
+    // Logger::GetInstance().LogInfo("Player position set to: {}, {}",
+    //                               player_pos_.x, player_pos_.y);
+    // Logger::GetInstance().LogInfo("Tile: {}, {}",
+    //                               TileCoordFromPos(player_pos_).x,
+    //                               TileCoordFromPos(player_pos_).y);
     SetViewpointCenter(player_pos_);
     avatar.setPosition(player_pos_);
 }
@@ -228,6 +239,7 @@ void TiledMap::onEnter() {
                 CCLOG("Too far to cultivate");
             } else {
                 UpdateTileAt(tilePos, 557, "Back");
+                avatar.UseTool("Hoe");
                 CCLOG("Tile is cultivable\n");
             }
         } else {
@@ -591,11 +603,11 @@ void TiledMap::SetViewpointCenter(cocos2d::Vec2 pos) {
     cocos2d::Vec2 centerPoint =
         cocos2d::Vec2(visibleSize.width / 2, visibleSize.height / 2);
     cocos2d::Vec2 actualPoint = cocos2d::Vec2(x, y);
-    CCLOG("actualPoint: %f, %f", actualPoint.x, actualPoint.y);
+    // CCLOG("actualPoint: %f, %f", actualPoint.x, actualPoint.y);
 
     cocos2d::Vec2 offset = centerPoint - actualPoint;
 
-    CCLOG("offset: %f, %f", offset.x, offset.y);
+    // CCLOG("offset: %f, %f", offset.x, offset.y);
 
     if (mapSize.width * tileSize.width < visibleSize.width) {
         offset.x = (visibleSize.width - mapSize.width * tileSize.width) / 2;
@@ -613,6 +625,108 @@ void TiledMap::UpdateTileAt(cocos2d::Vec2 tileCoord, int newGID,
     layer->setTileGID(newGID, tileCoord);
     CCLOG("Tile updated at %f, %f with GID: %d", tileCoord.x, tileCoord.y,
           newGID);
+}
+
+void TiledMap::Save(const std::string& file_name) {
+    Logger::GetInstance().LogInfo("Saving game state to: {}", file_name);
+    std::string save_directory =
+        cocos2d::FileUtils::getInstance()->getDefaultResourceRootPath() +
+        "saves/";
+    std::string save_path = save_directory + file_name;
+
+    // Create the save directory if it doesn't exist
+    cocos2d::FileUtils::getInstance()->createDirectory(save_directory);
+
+    // Create a JSON document
+    rapidjson::Document document;
+    document.SetObject();
+    rapidjson::Document::AllocatorType& allocator = document.GetAllocator();
+
+    // Serialize crops
+    rapidjson::Value crops_array(rapidjson::kArrayType);
+    for (const auto& crop_pair : CropPosition) {
+        const Position& pos = crop_pair.first;
+        Crops* crop = crop_pair.second;
+
+        rapidjson::Value crop_object(rapidjson::kObjectType);
+        crop_object.AddMember("x", pos.x, allocator);
+        crop_object.AddMember("y", pos.y, allocator);
+        // auto crop_name = crop->CropName;
+        crop_object.AddMember("type",
+                              rapidjson::Value("Strawberry", allocator).Move(),
+                              allocator);
+
+        crops_array.PushBack(crop_object, allocator);
+    }
+    document.AddMember("crops", crops_array, allocator);
+
+    // Write the JSON document to a file
+    FILE* fp = fopen(save_path.c_str(), "wb");
+    if (fp) {
+        char writeBuffer[65536];
+        rapidjson::FileWriteStream os(fp, writeBuffer, sizeof(writeBuffer));
+        rapidjson::PrettyWriter<rapidjson::FileWriteStream> writer(os);
+        document.Accept(writer);
+        fclose(fp);
+    } else {
+        Logger::GetInstance().LogError("Failed to open file for saving: {}",
+                                       save_path);
+    }
+}
+
+void TiledMap::Load(const std::string& file_name) {
+    Logger::GetInstance().LogInfo("Loading game state from: {}", file_name);
+    std::string save_directory =
+        cocos2d::FileUtils::getInstance()->getDefaultResourceRootPath() +
+        "saves/";
+    std::string save_path = save_directory + file_name;
+
+    // Open the JSON file
+    FILE* fp = fopen(save_path.c_str(), "rb");
+    if (fp) {
+        char readBuffer[65536];
+        rapidjson::FileReadStream is(fp, readBuffer, sizeof(readBuffer));
+        rapidjson::Document document;
+        document.ParseStream(is);
+        fclose(fp);
+
+        if (document.HasParseError()) {
+            Logger::GetInstance().LogError("Failed to parse JSON file: {}",
+                                           save_path);
+            return;
+        }
+
+        // Deserialize crops
+        if (document.HasMember("crops") && document["crops"].IsArray()) {
+            const rapidjson::Value& crops_array = document["crops"];
+            for (rapidjson::SizeType i = 0; i < crops_array.Size(); ++i) {
+                const rapidjson::Value& crop_object = crops_array[i];
+                if (crop_object.IsObject()) {
+                    Position pos;
+                    pos.x = crop_object["x"].GetFloat();
+                    pos.y = crop_object["y"].GetFloat();
+                    std::string crop_type = crop_object["type"].GetString();
+
+                    Crops* crop = nullptr;
+                    if (crop_type == "Strawberry") {
+                        crop = new Strawberry();
+                    } else if (crop_type == "Carrot") {
+                        crop = new Carrot();
+                    } else if (crop_type == "Potato") {
+                        crop = new Potato();
+                    }
+
+                    if (crop) {
+                        CropPosition[pos] = crop;
+                        MapCrops.push_back(crop);
+                    }
+                }
+            }
+        }
+    } else {
+        Logger::GetInstance().LogError("Failed to open file for loading: {}",
+                                       save_path);
+    }
 }
 
 std::vector<Entity::Direction> TiledMap::AllDirection;

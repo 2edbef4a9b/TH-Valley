@@ -10,11 +10,11 @@
 #include "frontend/tool_bar.h"
 #include "game/animals.h"
 #include "game/avatar.h"
+#include "game/citizen.h"
 #include "game/entity.h"
 #include "game/map_controller.h"
 #include "math/CCGeometry.h"
 #include "utility/position.h"
-#include "game/citizen.h"
 
 class Crops;
 
@@ -59,6 +59,10 @@ public:
                                 std::string_view ObjectLayerName = "Objects");
     void SetPlayerPos(cocos2d::Vec2 pos);
     void SetTeleportStatus(bool status);
+
+    // Save and Load
+    void Save(const std::string& file_name);
+    void Load(const std::string& file_name);
 
 private:
     void onEnter() override;

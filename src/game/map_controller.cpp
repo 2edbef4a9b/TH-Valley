@@ -2,9 +2,9 @@
 
 #include <string_view>
 
+#include "game/NPC.h"
 #include "game/tiled_map.h"
 #include "utility/logger.h"
-#include "game/NPC.h"
 
 namespace th_valley {
 
@@ -12,6 +12,7 @@ void MapController::LoadTiledMap(const std::string& tiled_map,
                                  cocos2d::Node* parent) {
     game_tiled_map_ =
         TiledMap::create(kTiledMapPathPrefix + tiled_map + kTiledMapPathSuffix);
+    game_tiled_map_->Load(tiled_map + ".txt");
     if (game_tiled_map_ == nullptr) {
         Logger::GetInstance().LogError("Failed to load TiledMap: {}",
                                        tiled_map);
@@ -50,7 +51,7 @@ void MapController::TriggerTeleport(const std::string& portal_name) {
     }
 
     // Save and remove the current map.
-    SaveTiledMap(game_tiled_map_);
+    SaveTiledMap(game_tiled_map_, portal.GetFromMap());
     auto* parent = game_tiled_map_->getParent();
     if (parent == nullptr) {
         Logger::GetInstance().LogError("Parent node is null");
@@ -75,7 +76,17 @@ void MapController::TriggerTeleport(const std::string& portal_name) {
     game_tiled_map_->SetPlayerPos(cocos2d::Vec2(center_x, center_y));
 }
 
-void MapController::SaveTiledMap(TiledMap* tiled_map) {}
+void MapController::SaveTiledMap(TiledMap* tiled_map,
+                                 const std::string& map_name) {
+    if (tiled_map == nullptr) {
+        Logger::GetInstance().LogError("TiledMap is null");
+        return;
+    }
+
+    const std::string save_path = map_name + ".txt";
+    tiled_map->Save(save_path);
+    Logger::GetInstance().LogInfo("Saved TiledMap: {}", tiled_map->getName());
+}
 
 MapController& MapController::GetInstance() {
     static MapController instance;
