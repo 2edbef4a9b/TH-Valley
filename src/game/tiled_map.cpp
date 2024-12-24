@@ -629,6 +629,7 @@ void TiledMap::UpdateTileAt(cocos2d::Vec2 tileCoord, int newGID,
 
 void TiledMap::Save(const std::string& file_name) {
     Logger::GetInstance().LogInfo("Saving game state to: {}", file_name);
+
     std::string save_directory =
         cocos2d::FileUtils::getInstance()->getDefaultResourceRootPath() +
         "saves/";
@@ -651,10 +652,23 @@ void TiledMap::Save(const std::string& file_name) {
         rapidjson::Value crop_object(rapidjson::kObjectType);
         crop_object.AddMember("x", pos.x, allocator);
         crop_object.AddMember("y", pos.y, allocator);
-        // auto crop_name = crop->CropName;
-        crop_object.AddMember("type",
-                              rapidjson::Value("Strawberry", allocator).Move(),
-                              allocator);
+
+        rapidjson::Value crop_type_value;
+        if (crop == nullptr) {
+            crop_type_value.SetString("Removed", allocator);
+        } else {
+            crop_type_value.SetString(crop->getCropName().c_str(), allocator);
+        }
+        crop_object.AddMember("type", crop_type_value, allocator);
+
+        rapidjson::Value crop_stage_value;
+        if (crop == nullptr) {
+            crop_stage_value.SetInt(-1);
+        } else {
+            crop_stage_value.SetInt(crop->CurrentGrowthStage);
+        }
+
+        crop_object.AddMember("stage", crop_stage_value, allocator);
 
         crops_array.PushBack(crop_object, allocator);
     }
@@ -671,6 +685,11 @@ void TiledMap::Save(const std::string& file_name) {
     } else {
         Logger::GetInstance().LogError("Failed to open file for saving: {}",
                                        save_path);
+    }
+
+    while (GlobalCropProduction.AllCrops.size() > 0) {
+        delete GlobalCropProduction.AllCrops.back();
+        GlobalCropProduction.AllCrops.pop_back();
     }
 }
 
@@ -706,26 +725,33 @@ void TiledMap::Load(const std::string& file_name) {
                     pos.x = crop_object["x"].GetFloat();
                     pos.y = crop_object["y"].GetFloat();
                     std::string crop_type = crop_object["type"].GetString();
+                    int crop_stage = crop_object["stage"].GetInt();
 
                     Crops* crop = nullptr;
+                    bool is_removed = crop_type == "Removed";
                     if (crop_type == "Strawberry") {
                         crop = new Strawberry();
                     } else if (crop_type == "Carrot") {
                         crop = new Carrot();
                     } else if (crop_type == "Potato") {
                         crop = new Potato();
+                    } else {
+                        Logger::GetInstance().LogError("Unknown crop type: {}",
+                                                       crop_type);
                     }
 
-                    if (crop) {
+                    if (crop && !is_removed) {
+                        crop->setCurrentGrowthStage(crop_stage);
                         CropPosition[pos] = crop;
                         MapCrops.push_back(crop);
                         crop->CropSprite->setPosition(PosFromtileCoord(pos));
                         tiled_map_->addChild(crop->CropSprite, 4);
                         UpdateTileAt(cocos2d::Vec2(pos.x, pos.y), 557, "Back");
                         GlobalCropProduction.AllCrops.push_back(crop);
+                        SpritePosition[pos] = crop->CropSprite;
+                    } else if (is_removed) {
+                        UpdateTileAt(cocos2d::Vec2(pos.x, pos.y), 557, "Back");
                     }
-
-                    // CropPlant(pos, crop);
                 }
             }
         }

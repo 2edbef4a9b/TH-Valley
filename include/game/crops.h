@@ -6,11 +6,17 @@
 
 #include "cocos2d.h"
 #include "game/agriculture.h"
-#include "utility/position.h"
 #include "game/bag.h"
+#include "utility/position.h"
 
 class Crops : public Agriculture {
 public:
+    [[nodiscard]] virtual const std::string &getCropName() const {
+        return CropName;
+    }
+
+    void setCurrentGrowthStage(int stage);
+
     // Crops Information
     std::string CropName;
     std::string CropType;

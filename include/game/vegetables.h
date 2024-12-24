@@ -5,13 +5,18 @@
 
 class Strawberry : public Crops {
 public:
+    [[nodiscard]] const std::string& getCropName() const override {
+        return CropName;
+    }
+
     Strawberry() {
         CropName = "Strawberry";
         CropType = "Fruit";
         CurrentGrowthStage = 0;
         MaxGrowthStage = 3;
-        //GrowthDuration = {60 * 60 * 24 * 3, 60 * 60 * 24 * 3, 60 * 60 * 24 * 1,
-        //                  60 * 60 * 24 * 7};
+        // GrowthDuration = {60 * 60 * 24 * 3, 60 * 60 * 24 * 3, 60 * 60 * 24 *
+        // 1,
+        //                   60 * 60 * 24 * 7};
         GrowthDuration = {50, 50, 50, 50};
         GrowthStage = {"Seed", "Seedling", "Maturation", "Ripened"};
         frameRect.resize(4);
@@ -22,7 +27,8 @@ public:
         CropSprite =
             cocos2d::Sprite::create("assets/Crops/crops.png", frameRect[0]);
         Fruit = new ItemSprite("Strawberry", 1, "A delicious fruit",
-                 "assets/Crops/ripenedcrop.png", cocos2d::Rect(153, 129, 17, 17));
+                               "assets/Crops/ripenedcrop.png",
+                               cocos2d::Rect(153, 129, 17, 17));
 
         GrowthSituation = {"Normal"};
         isNormal = 1;
@@ -51,6 +57,10 @@ public:
 
 class Carrot : public Crops {
 public:
+    [[nodiscard]] const std::string& getCropName() const override {
+        return CropName;
+    }
+
     Carrot() {
         CropName = "Carrot";
         CropType = "Vegetable";
@@ -97,6 +107,10 @@ public:
 
 class Potato : public Crops {
 public:
+    [[nodiscard]] const std::string& getCropName() const override {
+        return CropName;
+    }
+
     Potato() {
         CropName = "Potato";
         CropType = "Vegetable";
