@@ -4,6 +4,12 @@
 
 #include "game/NPC.h"
 #include "game/tiled_map.h"
+#include "json/document.h"
+#include "json/filereadstream.h"
+#include "json/filewritestream.h"
+#include "json/prettywriter.h"
+#include "json/stringbuffer.h"
+#include "json/writer.h"
 #include "utility/logger.h"
 
 namespace th_valley {
@@ -12,7 +18,10 @@ void MapController::LoadTiledMap(const std::string& tiled_map,
                                  cocos2d::Node* parent) {
     game_tiled_map_ =
         TiledMap::create(kTiledMapPathPrefix + tiled_map + kTiledMapPathSuffix);
-    game_tiled_map_->Load(tiled_map + ".txt");
+
+    game_tiled_map_->Load(tiled_map + ".json");
+    game_tiled_map_->SetMapName(tiled_map);
+
     if (game_tiled_map_ == nullptr) {
         Logger::GetInstance().LogError("Failed to load TiledMap: {}",
                                        tiled_map);
@@ -51,20 +60,20 @@ void MapController::LoadRain(const std::string& tiled_map) {
         game_tiled_map_->getTiledMap()->getContentSize().height));
     rain->setPosVar(cocos2d::Vec2(
         game_tiled_map_->getTiledMap()->getContentSize().width / 2,
-        0));  // Óê·¶Î§¸²¸ÇÕû¸öµØÍ¼
-    // rain->setLife(3.0f);          // µ÷ÕûÓêµÎ´æ»îÊ±¼ä
-    // rain->setLifeVar(1.0f);       // ´æ»îÊ±¼äµÄËæ»ú·¶Î§
-    rain->setSpeed(300.0f);       // ÉèÖÃÓêµÎÏÂÂäËÙ¶È
-    rain->setSpeedVar(50.0f);     // ÓêµÎËÙ¶ÈËæ»ú±ä»¯·¶Î§
-    rain->setStartSize(5.0f);     // ÓêµÎ´óÐ¡
-    rain->setStartSizeVar(2.0f);  // ÓêµÎ´óÐ¡Ëæ»ú·¶Î§
+        0));  // é›¨èŒƒå›´è¦†ç›–æ•´ä¸ªåœ°å›¾
+    // rain->setLife(3.0f);          // è°ƒæ•´é›¨æ»´å­˜æ´»æ—¶é—´
+    // rain->setLifeVar(1.0f);       // å­˜æ´»æ—¶é—´çš„éšæœºèŒƒå›´
+    rain->setSpeed(300.0f);       // è®¾ç½®é›¨æ»´ä¸‹è½é€Ÿåº¦
+    rain->setSpeedVar(50.0f);     // é›¨æ»´é€Ÿåº¦éšæœºå˜åŒ–èŒƒå›´
+    rain->setStartSize(5.0f);     // é›¨æ»´å¤§å°
+    rain->setStartSizeVar(2.0f);  // é›¨æ»´å¤§å°éšæœºèŒƒå›´
 
     rain->setVisible(false);
-    game_tiled_map_->getTiledMap()->addChild(rain, 199);  // Ìí¼Óµ½³¡¾°
+    game_tiled_map_->getTiledMap()->addChild(rain, 199);  // æ·»åŠ åˆ°åœºæ™¯
     game_tiled_map_->getTiledMap()->schedule(
         [rain, tiled_map](float dt) {
 
-            // Èç¹û×´Ì¬¸Ä±ä£¬Ôò´¦ÀíÁ£×ÓÐ§¹û
+            // å¦‚æžœçŠ¶æ€æ”¹å˜ï¼Œåˆ™å¤„ç†ç²’å­æ•ˆæžœ
             if (GlobalWeather.WeatherType != "Rainy" || (tiled_map == "Barn") ||
                 (tiled_map == "Cave") || (tiled_map == "FarmHouse") ||
                 (tiled_map == "House") || (tiled_map == "Shop") ||
@@ -76,7 +85,7 @@ void MapController::LoadRain(const std::string& tiled_map) {
                 rain->setVisible(true);
             }
         },
-        1.0f, "CheckRainCondition");  // Ã¿Ãë¼ì²éÒ»´Î±äÁ¿Öµ
+        1.0f, "CheckRainCondition");  // æ¯ç§’æ£€æŸ¥ä¸€æ¬¡å˜é‡å€¼
 }
 
 void MapController::TriggerTeleport(const std::string& portal_name) {
@@ -123,7 +132,9 @@ void MapController::SaveTiledMap(TiledMap* tiled_map,
         return;
     }
 
-    const std::string save_path = map_name + ".txt";
+
+    const std::string save_path = map_name + ".json";
+
     tiled_map->Save(save_path);
     Logger::GetInstance().LogInfo("Saved TiledMap: {}", tiled_map->getName());
 }
@@ -131,6 +142,63 @@ void MapController::SaveTiledMap(TiledMap* tiled_map,
 MapController& MapController::GetInstance() {
     static MapController instance;
     return instance;
+}
+
+void MapController::SetPlayerPos(cocos2d::Vec2 pos) {
+    player_pos_ = pos;
+    game_tiled_map_->SetPlayerPos(pos);
+}
+
+void MapController::SavePlayerInfo() { game_tiled_map_->SavePlayerInfo(); }
+
+void MapController::LoadPlayerInfo() {
+    std::string save_path =
+        cocos2d::FileUtils::getInstance()->getDefaultResourceRootPath() +
+        "saves/player_state.json";
+
+    // Open the JSON file
+    FILE* fp = fopen(save_path.c_str(), "rb");
+    if (fp) {
+        char readBuffer[65536];
+        rapidjson::FileReadStream is(fp, readBuffer, sizeof(readBuffer));
+        rapidjson::Document document;
+        document.ParseStream(is);
+        fclose(fp);
+
+        if (document.HasParseError()) {
+            Logger::GetInstance().LogError("Failed to parse JSON file: {}",
+                                           save_path);
+            return;
+        }
+
+        // Load map name
+        if (document.HasMember("map_name") && document["map_name"].IsString()) {
+            player_map_ = document["map_name"].GetString();
+        } else {
+            Logger::GetInstance().LogError(
+                "Map name not found in JSON file: {}", save_path);
+        }
+
+        // Load player position
+        if (document.HasMember("player_pos") &&
+            document["player_pos"].IsObject()) {
+            const rapidjson::Value& player_pos = document["player_pos"];
+            if (player_pos.HasMember("x") && player_pos["x"].IsFloat() &&
+                player_pos.HasMember("y") && player_pos["y"].IsFloat()) {
+                player_pos_.x = player_pos["x"].GetFloat();
+                player_pos_.y = player_pos["y"].GetFloat();
+            } else {
+                Logger::GetInstance().LogError(
+                    "Player position not found in JSON file: {}", save_path);
+            }
+        } else {
+            Logger::GetInstance().LogError(
+                "Player position not found in JSON file: {}", save_path);
+        }
+    } else {
+        Logger::GetInstance().LogError("Failed to open file for loading: {}",
+                                       save_path);
+    }
 }
 
 }  // namespace th_valley

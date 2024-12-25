@@ -2,6 +2,7 @@
 #define TILED_MAP_H_
 
 #include <optional>
+#include <string>
 #include <string_view>
 #include <unordered_map>
 
@@ -63,6 +64,11 @@ public:
     void Save(const std::string& file_name);
     void Load(const std::string& file_name);
 
+    void SavePlayerInfo();
+    void LoadPlayerInfo();
+    void SetMapName(const std::string& map_name);
+
+
 private:
     void onEnter() override;
     void update(float delta) override;
@@ -119,6 +125,7 @@ private:
     std::vector<cocos2d::Sprite*> CitizensSprite;
     std::map<cocos2d::Sprite*, Citizen*> SpritetoCitizen;
     static std::vector<Entity::Direction> AllDirection;
+    std::string map_name_;
 
     int priority = 255;
     bool is_key_pressed_w_{false};
