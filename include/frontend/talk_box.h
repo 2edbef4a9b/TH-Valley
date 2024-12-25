@@ -47,6 +47,7 @@ public:
     void moveSelection(int delta);
     void selectOption();
     void getBag(Bag* bag_) { playerBag = bag_; }
+    void getName(std::string name) { CitizenName = name; }
     // 获取当前游戏时间，格式为 "HHMM"
     std::string getCurrentGameTime() const;
 
@@ -85,6 +86,7 @@ private:
     int selectedOptionIndex_;
     bool waitingForChoice_;
     Bag* playerBag;
+    std::string CitizenName;
 
     std::unordered_map<std::string, bool> gameStates_;
 };

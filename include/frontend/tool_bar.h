@@ -46,6 +46,7 @@ private:
     cocos2d::Sprite* toolIcons[10] = {nullptr};
 
     int draggingToolIndex = -1;
+    cocos2d::Label* MoneyLabel;
 
     void addToolLable();
     void updateToolDisplay();

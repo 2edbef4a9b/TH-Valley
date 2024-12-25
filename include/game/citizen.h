@@ -8,6 +8,7 @@
 #include "cocos2d.h"
 #include "game/agriculture.h"
 #include "utility/position.h"
+#include "game/bag.h"
 
 class Citizen {
 public:
@@ -26,7 +27,7 @@ public:
     /* virtual void RandomMove();*/
 
     /*virtual void AnimalShowInfo();*/
-    void ShowTalkBox(cocos2d::Node *parent);
+    void ShowTalkBox(cocos2d::Node *parent, Bag* bag_, std::string name);
 };
 
 #endif

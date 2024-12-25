@@ -410,9 +410,27 @@ void TalkBox::selectOption() {
     int choice = selectedOptionIndex_;
     CCLOG("Select choice %d", choice);
 
-    // 根据选择执行相应的逻辑，例如更新游戏状态
-    // 这里可以根据需要添加代码
-
+    if (CitizenName == "Sebastian") {
+        if (choice == 0 && playerBag->getMoney() >= 50) {
+            ItemSprite* CarrotSeed = new ItemSprite(
+                "CarrotSeed", 10, "Used for planting carrots",
+                "assets/Crops/crops.png", cocos2d::Rect(2, 785, 11, 13));
+            playerBag->add(CarrotSeed);
+            playerBag->SpendMoney(50);
+        } else if (choice == 1 && playerBag->getMoney() >= 40) {
+            ItemSprite* PotatoSeed = new ItemSprite(
+                "PotatoSeed", 10, "Used for planting potatoes",
+                "assets/Crops/crops.png", cocos2d::Rect(130, 54, 10, 7));
+            playerBag->add(PotatoSeed);
+            playerBag->SpendMoney(40);
+        } else if (choice == 2 && playerBag->getMoney() >= 60) {
+            ItemSprite* StrawberrySeed = new ItemSprite(
+                "StrawberrySeed", 10, "Used for planting strawberries",
+                "assets/Crops/crops.png", cocos2d::Rect(1, 593, 13, 14));
+            playerBag->add(StrawberrySeed);
+            playerBag->SpendMoney(60);
+        }
+    } 
     // 隐藏选项，继续下一条对话
     hideOptions();
     waitingForChoice_ = false;
