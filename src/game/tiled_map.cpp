@@ -368,7 +368,9 @@ void TiledMap::onEnter() {
                     Logger::GetInstance().LogError("Parent node is null");
                 }*/
             case cocos2d::EventKeyboard::KeyCode::KEY_ESCAPE:
+
                 SavePlayerInfo();
+
                 ClientController::GetInstance().SetClientState(
                     ClientController::ClientState::kTitleScreen);
                 break;
@@ -771,6 +773,7 @@ void TiledMap::Load(const std::string& file_name) {
                                        save_path);
     }
 }
+
 
 void TiledMap::SavePlayerInfo() {
     std::string save_path =

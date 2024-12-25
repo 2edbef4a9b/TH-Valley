@@ -18,8 +18,10 @@ void MapController::LoadTiledMap(const std::string& tiled_map,
                                  cocos2d::Node* parent) {
     game_tiled_map_ =
         TiledMap::create(kTiledMapPathPrefix + tiled_map + kTiledMapPathSuffix);
+
     game_tiled_map_->Load(tiled_map + ".json");
     game_tiled_map_->SetMapName(tiled_map);
+
     if (game_tiled_map_ == nullptr) {
         Logger::GetInstance().LogError("Failed to load TiledMap: {}",
                                        tiled_map);
@@ -58,19 +60,20 @@ void MapController::LoadRain(const std::string& tiled_map) {
         game_tiled_map_->getTiledMap()->getContentSize().height));
     rain->setPosVar(cocos2d::Vec2(
         game_tiled_map_->getTiledMap()->getContentSize().width / 2,
-        0));  // Óê·¶Î§¸²¸ÇÕû¸öµØÍ¼
-    // rain->setLife(3.0f);          // µ÷ÕûÓêµÎ´æ»îÊ±¼ä
-    // rain->setLifeVar(1.0f);       // ´æ»îÊ±¼äµÄËæ»ú·¶Î§
-    rain->setSpeed(300.0f);       // ÉèÖÃÓêµÎÏÂÂäËÙ¶È
-    rain->setSpeedVar(50.0f);     // ÓêµÎËÙ¶ÈËæ»ú±ä»¯·¶Î§
-    rain->setStartSize(5.0f);     // ÓêµÎ´óÐ¡
-    rain->setStartSizeVar(2.0f);  // ÓêµÎ´óÐ¡Ëæ»ú·¶Î§
+        0));  // é›¨èŒƒå›´è¦†ç›–æ•´ä¸ªåœ°å›¾
+    // rain->setLife(3.0f);          // è°ƒæ•´é›¨æ»´å­˜æ´»æ—¶é—´
+    // rain->setLifeVar(1.0f);       // å­˜æ´»æ—¶é—´çš„éšæœºèŒƒå›´
+    rain->setSpeed(300.0f);       // è®¾ç½®é›¨æ»´ä¸‹è½é€Ÿåº¦
+    rain->setSpeedVar(50.0f);     // é›¨æ»´é€Ÿåº¦éšæœºå˜åŒ–èŒƒå›´
+    rain->setStartSize(5.0f);     // é›¨æ»´å¤§å°
+    rain->setStartSizeVar(2.0f);  // é›¨æ»´å¤§å°éšæœºèŒƒå›´
 
     rain->setVisible(false);
-    game_tiled_map_->getTiledMap()->addChild(rain, 199);  // Ìí¼Óµ½³¡¾°
+    game_tiled_map_->getTiledMap()->addChild(rain, 199);  // æ·»åŠ åˆ°åœºæ™¯
     game_tiled_map_->getTiledMap()->schedule(
         [rain, tiled_map](float dt) {
-            // Èç¹û×´Ì¬¸Ä±ä£¬Ôò´¦ÀíÁ£×ÓÐ§¹û
+
+            // å¦‚æžœçŠ¶æ€æ”¹å˜ï¼Œåˆ™å¤„ç†ç²’å­æ•ˆæžœ
             if (GlobalWeather.WeatherType != "Rainy" || (tiled_map == "Barn") ||
                 (tiled_map == "Cave") || (tiled_map == "FarmHouse") ||
                 (tiled_map == "House") || (tiled_map == "Shop") ||
@@ -82,7 +85,7 @@ void MapController::LoadRain(const std::string& tiled_map) {
                 rain->setVisible(true);
             }
         },
-        1.0f, "CheckRainCondition");  // Ã¿Ãë¼ì²éÒ»´Î±äÁ¿Öµ
+        1.0f, "CheckRainCondition");  // æ¯ç§’æ£€æŸ¥ä¸€æ¬¡å˜é‡å€¼
 }
 
 void MapController::TriggerTeleport(const std::string& portal_name) {
@@ -129,7 +132,9 @@ void MapController::SaveTiledMap(TiledMap* tiled_map,
         return;
     }
 
+
     const std::string save_path = map_name + ".json";
+
     tiled_map->Save(save_path);
     Logger::GetInstance().LogInfo("Saved TiledMap: {}", tiled_map->getName());
 }
