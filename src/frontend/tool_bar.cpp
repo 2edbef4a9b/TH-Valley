@@ -19,6 +19,13 @@ bool ToolBar::init() {
 
     bag_ = new Bag();
 
+    std::string Money = std::to_string(bag_->getMoney());
+    MoneyLabel = Label::createWithTTF(
+        "$" + Money, "assets/fonts/DFHannotateW5-A.ttf", 50);
+    MoneyLabel->setScale(0.13);
+    MoneyLabel->setPosition(cocos2d::Vec2(350, 10));
+    MoneyLabel->setTextColor(cocos2d::Color4B::YELLOW);
+    this->addChild(MoneyLabel, 50);
     addToolLable();
     // Load tools
     loadTools();
@@ -80,6 +87,17 @@ void ToolBar::loadTools() {
             count == nullptr;
         }
     }
+
+    std::string Money = std::to_string(bag_->getMoney());
+    MoneyLabel->setString("$" + Money);
+    //this->addChild(MoneyLabel, 50);
+    /*Bag* ScheduleBag = bag_;
+    this->schedule(
+        [MoneyLabel, ScheduleBag](float dt) {
+            std::string Money = std::to_string(ScheduleBag->getMoney());
+            MoneyLabel->setString("$" + Money);
+        },
+        1.0f, "UpdateLabel");*/
 
     auto boxSize = background_->getContentSize().width / 10.0;
     const auto& itemSprites = bag_->getItems();

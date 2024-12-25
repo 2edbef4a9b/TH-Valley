@@ -1,7 +1,18 @@
 #include "game/crops.h"
 
-#include "game/worldtime.h"
 #include <cocos2d.h>
+
+#include "game/worldtime.h"
+
+void Crops::setCurrentGrowthStage(int stage) {
+    if (stage >= 0 && stage <= MaxGrowthStage) {
+        CurrentGrowthStage = stage;
+        CropSprite->setTextureRect(frameRect[CurrentGrowthStage]);
+    } else {
+        CCLOG("Invalid Growth Stage");
+    }
+}
+
 void Crops::UpdateSituation(const std::string &Situation, const bool &Compare,
                             bool &isSituation, const int &toDeath) {
     if (Compare) {
@@ -48,7 +59,8 @@ void Crops::CropAutomaticUpdate() {
     for (int i = 0; i < SeasonRequirement.size(); i++) {
         if (SeasonRequirement[i] == GlobalTime.Season) SeasonCheck = 1;
     }
-    UpdateSituation("WrongSeason", SeasonCheck, isWrongSeason, 60 * 60 * 24 * 1);
+    UpdateSituation("WrongSeason", SeasonCheck, isWrongSeason,
+                    60 * 60 * 24 * 1);
 
     // Frozen Check
     // CCLOG("Compare: %d\n", CurrentWeather->Temperature);

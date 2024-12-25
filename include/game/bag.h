@@ -35,15 +35,22 @@ public:
     void replaceItem(const int& key,
                      ItemSprite* newItem);  // 更新物品信息
     void swapItems(int key1, int key2);     // 交换两个物品的位置
+    void ReduceItem(int key);
+    void add(ItemSprite* newItem);
 
     void bagInit();
     // 新增的 getItems 方法
     const std::unordered_map<int, ItemSprite*>& getItems() const;
     ItemSprite* getItems(int index);
+    void SpendMoney(const int& value) { money -= value; };
+    void EarnMoney(const int& value) { money += value; }
+    int getMoney() { return money; }
 
 private:
     std::unordered_map<int, ItemSprite*> items_;  // 存储物品
+    std::map<int, bool> isFill;
     int currentNum_;
     int maxNum_;
+    int money = 5000;
 };
 #endif  // BAG_H_

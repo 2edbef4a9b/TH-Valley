@@ -11,6 +11,7 @@
 class ToolBar : public cocos2d::Layer {
 public:
     Bag* bag_;
+    int selectedToolIndex;
 
     ToolBar() = default;
     ~ToolBar() override = default;
@@ -44,8 +45,8 @@ private:
     std::vector<cocos2d::Label*> toolCounts;        // Labels for tool counts
     cocos2d::Sprite* toolIcons[10] = {nullptr};
 
-    int selectedToolIndex;
     int draggingToolIndex = -1;
+    cocos2d::Label* MoneyLabel;
 
     void addToolLable();
     void updateToolDisplay();

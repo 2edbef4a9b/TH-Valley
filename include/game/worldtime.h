@@ -11,12 +11,12 @@ public:
     std::string Season;
     int isContinue;
     WorldTime() {
-        Year = 0;
+        Year = 5000;
         Month = 3;
-        Day = 0;
-        Hour = 0;
+        Day = 1;
+        Hour = 8;
         Minute = 0;
-        Second = 0;
+        Second = 5;
         Season = "Spring";
         isContinue = 1;
     }

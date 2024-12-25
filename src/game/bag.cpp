@@ -8,11 +8,32 @@ bool Bag::isEmpty() const { return currentNum_ == 0; }
 
 bool Bag::isFull() const { return currentNum_ >= maxNum_; }
 
+void Bag::add(ItemSprite* item) {
+    for (int key = 0; key < 39; key++) {
+        auto it = items_.find(key);
+        if (it != items_.end() && isFill[key]){
+            if (it->second->name == item->name) {
+                addItem(key, item);
+                return;
+            }
+        }
+    }
+
+    for (int key = 0; key < 39; key++) {
+        auto it = items_.find(key);
+        if (it == items_.end()) {
+            addItem(key, item);
+            return;
+        }
+    }
+}
+
 void Bag::addItem(const int& key, ItemSprite* item) {
     if (isFull()) {
         // 背包已满，无法添加物品
         return;
     }
+    isFill[key] = true;
     auto it = items_.find(key);
     if (it != items_.end()) {
         // 物品已存在，增加数量
@@ -34,11 +55,20 @@ ItemSprite* Bag::findItem(const int& key) {
 }
 
 void Bag::removeItem(const int& key) {
+    isFill[key] = false;
     auto it = items_.find(key);
     if (it != items_.end()) {
-        delete it->second;
+        //delete it->second;
         items_.erase(it);
         --currentNum_;
+    }
+}
+
+void Bag::ReduceItem(const int key) {
+    auto it = items_.find(key);
+    if (it != items_.end()) {
+        it->second->quantity--;
+        if (it->second->quantity == 0) removeItem(key);
     }
 }
 
@@ -66,28 +96,32 @@ void Bag::swapItems(int key1, int key2) {
 }
 
 void Bag::bagInit() {
+    for (int key = 0; key < 39; key++) isFill[key] = false;
     ItemSprite* Axe = new ItemSprite(
         "Axe", 1, "Used for chopping wood", "assets/TileSheets/tools.png",
         cocos2d::Rect(0 + 5 * 16, 32 + 4 * 32, 16, 16));
     items_[0] = Axe;
+    isFill[0] = true;
     ItemSprite* Hoe = new ItemSprite(
         "Hoe", 3, "Used for chopping wood", "assets/TileSheets/tools.png",
         cocos2d::Rect(0 + 5 * 16, 32 + 0 * 32, 16, 16));
     items_[1] = Hoe;
-
+    isFill[1] = true;
     ItemSprite* StrawberrySeed =
-        new ItemSprite("StrawberrySeed", 53, "Used for planting strawberries",
+        new ItemSprite("StrawberrySeed", 12, "Used for planting strawberries",
                        "assets/Crops/crops.png", cocos2d::Rect(1, 593, 13, 14));
     items_[2] = StrawberrySeed;
+    isFill[2] = true;
     ItemSprite* CarrotSeed =
         new ItemSprite("CarrotSeed", 68, "Used for planting carrots",
                        "assets/Crops/crops.png", cocos2d::Rect(2, 785, 11, 13));
     items_[15] = CarrotSeed;
+    isFill[15] = true;
     ItemSprite* PotatoSeed =
         new ItemSprite("PotatoSeed", 64, "Used for planting potatoes",
                        "assets/Crops/crops.png", cocos2d::Rect(130, 54, 10, 7));
     items_[38] = PotatoSeed;
-
+    isFill[38] = true;
     for (const auto& [i, item] : items_) {
         CCLOG("Item %s added to bag index %d", item->name.c_str(), i);
     }

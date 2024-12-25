@@ -29,7 +29,11 @@ public:
                         double kScale);
     void UseOtherTools(std::string_view tool, cocos2d::Vec2 tarpos,
                        Direction direction, double kScale);
+    //void Attacking(std::string weaponTypes);
+    ////void LevelUpShow();
 
+    //void MeleeAttack(cocos2d::Vec2 tarpos,Direction direction);
+    //void RangedAttack(cocos2d::Vec2 tarpos,Direction direction);
     void RenderMove();
     void ChangeDirection(Direction direction) override;
 
@@ -45,6 +49,12 @@ private:
     void InitTexture(std::string_view avatar_name);
     AvatarTexture avatar_texture_{};
     std::vector<cocos2d::Animate*> move_animations_;
+
+    std::vector<std::string> ocupationlist{"caster", "saber", "shilder"};
+    std::vector<std::string> weponlist{"wand", "sword", "shield"};
+
+    std::string profession;
+    std::string weapon;
 };
 
 }  // namespace th_valley

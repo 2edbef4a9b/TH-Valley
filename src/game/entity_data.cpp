@@ -1,4 +1,5 @@
 #include "game/entity_data.h"
+#include "utility/logger.h"
 
 namespace th_valley {
 
@@ -49,5 +50,66 @@ double EntityData::GetPhysicalDefense() const {
 }
 
 double EntityData::GetSpellDefense() const { return defense_.spell_defense; }
+
+EntityData::Attack& EntityData::Attack::operator=(
+    const EntityData::Attack& giv) {
+    if (&giv != this) {
+        this->physical_damage = giv.physical_damage;
+        this->spell_power = giv.spell_power;
+    }
+    return *this;
+}
+
+EntityData::Attack& EntityData::Attack::operator+(
+    const EntityData::Attack& giv) {
+    this->physical_damage += giv.physical_damage;
+    this->spell_power += giv.spell_power;
+    return *this;
+}
+
+EntityData::Defense& EntityData::Defense::operator=(
+    const EntityData::Defense& giv) {
+    if (&giv != this) {
+        this->physical_defense = giv.physical_defense;
+        this->spell_defense = giv.spell_defense;
+    }
+    return *this;
+}
+
+EntityData::Defense& EntityData::Defense::operator+(
+    const EntityData::Defense& giv) {
+    this->physical_defense += giv.physical_defense;
+    this->spell_defense += giv.spell_defense;
+    return *this;
+}
+
+EntityData::Status& EntityData::Status::operator=(
+    const EntityData::Status& giv) {
+    if (&giv != this) {
+        this->health = giv.health;
+        this->hunger = giv.hunger;
+        this->thirst = giv.thirst;
+        this->energy = giv.energy;
+        this->experience = giv.experience;
+    }
+    return *this;
+}
+
+
+void EntityData::Status::LevelUp(double exp) {
+    if (Level < 10) {
+        experience += exp;
+        if (experience >=experiencelist[Level-1]){
+            Level++;
+            if (Level < 10) {
+                experience -= experiencelist[Level - 1];
+            } else {
+                Logger::GetInstance().LogInfo("can not get exp");
+            }
+        }
+    } else {
+        Logger::GetInstance().LogInfo("Level Cap Reached");
+    }
+}
 
 }  // namespace th_valley

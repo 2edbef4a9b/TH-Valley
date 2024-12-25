@@ -21,8 +21,9 @@ public:
     MapController& operator=(MapController&& other) = delete;
 
     void LoadTiledMap(const std::string& tiled_map, cocos2d::Node* parent);
-    void SaveTiledMap(TiledMap* tiled_map);
+    void SaveTiledMap(TiledMap* tiled_map, const std::string& map_name);
     void TriggerTeleport(const std::string& portal_name);
+    void LoadRain(const std::string& tiled_map);
 
     static MapController& GetInstance();
 

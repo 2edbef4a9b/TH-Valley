@@ -12,61 +12,6 @@
 
 namespace th_valley {
 
-boost::uuids::uuid Session::GetUUID() const { return uuid_; }
-
-boost::asio::ip::tcp::socket &Session::GetSocket() { return socket_; }
-
-void Session::SetSessionManager(
-    const std::shared_ptr<SessionManager> &session_manager) {
-    session_manager_ = session_manager;
-}
-
-Session::Session(boost::asio::ip::tcp::socket socket)
-    : socket_(std::move(socket)), uuid_(boost::uuids::random_generator()()) {}
-
-void Session::Start() {
-    Logger::GetInstance().LogInfo("Session: Starting a new session.");
-    DoRead();  // Start reading from the client socket.
-    Logger::GetInstance().LogInfo("Session: Started a new session.");
-}
-
-void Session::Terminate() {
-    Logger::GetInstance().LogInfo("Session: Terminating with UUID: {}.",
-                                  boost::uuids::to_string(uuid_));
-    if (socket_.is_open()) {
-        boost::system::error_code error_code;
-        // Shutdown the socket
-        socket_.shutdown(boost::asio::ip::tcp::socket::shutdown_both,
-                         error_code);
-        if (error_code) {
-            Logger::GetInstance().LogError(
-                "Session: Socket shutdown failed with error: {}.",
-                error_code.message());
-        }
-
-        // Close the socket
-        socket_.close(error_code);
-        if (error_code) {
-            Logger::GetInstance().LogError(
-                "Session: Socket close failed with error: {}.",
-                error_code.message());
-        }
-    } else {
-        Logger::GetInstance().LogError("Session: Socket already closed.");
-    }
-
-    // Remove the session from the session manager after termination.
-    if (session_manager_.lock()) {
-        session_manager_.lock()->RemoveSession(uuid_);
-    } else {
-        Logger::GetInstance().LogError(
-            "Session: Session manager is not set, cannot remove session.");
-    }
-
-    Logger::GetInstance().LogInfo("Session: Terminated with UUID: {}.",
-                                  boost::uuids::to_string(uuid_));
-}
-
 void Session::DoRead() {
     Logger::GetInstance().LogInfo("Session: Reading from client.");
     auto self(shared_from_this());
@@ -123,6 +68,61 @@ void Session::DoWrite(const std::string_view message_sv) {
         });
 
     Logger::GetInstance().LogInfo("Session: Writing to client initiated.");
+}
+
+boost::uuids::uuid Session::GetUUID() const { return uuid_; }
+
+boost::asio::ip::tcp::socket &Session::GetSocket() { return socket_; }
+
+void Session::SetSessionManager(
+    const std::shared_ptr<SessionManager> &session_manager) {
+    session_manager_ = session_manager;
+}
+
+Session::Session(boost::asio::ip::tcp::socket socket)
+    : socket_(std::move(socket)), uuid_(boost::uuids::random_generator()()) {}
+
+void Session::Start() {
+    Logger::GetInstance().LogInfo("Session: Starting a new session.");
+    DoRead();  // Start reading from the client socket.
+    Logger::GetInstance().LogInfo("Session: Started a new session.");
+}
+
+void Session::Terminate() {
+    Logger::GetInstance().LogInfo("Session: Terminating with UUID: {}.",
+                                  boost::uuids::to_string(uuid_));
+    if (socket_.is_open()) {
+        boost::system::error_code error_code;
+        // Shutdown the socket
+        socket_.shutdown(boost::asio::ip::tcp::socket::shutdown_both,
+                         error_code);
+        if (error_code) {
+            Logger::GetInstance().LogError(
+                "Session: Socket shutdown failed with error: {}.",
+                error_code.message());
+        }
+
+        // Close the socket
+        socket_.close(error_code);
+        if (error_code) {
+            Logger::GetInstance().LogError(
+                "Session: Socket close failed with error: {}.",
+                error_code.message());
+        }
+    } else {
+        Logger::GetInstance().LogError("Session: Socket already closed.");
+    }
+
+    // Remove the session from the session manager after termination.
+    if (session_manager_.lock()) {
+        session_manager_.lock()->RemoveSession(uuid_);
+    } else {
+        Logger::GetInstance().LogError(
+            "Session: Session manager is not set, cannot remove session.");
+    }
+
+    Logger::GetInstance().LogInfo("Session: Terminated with UUID: {}.",
+                                  boost::uuids::to_string(uuid_));
 }
 
 void Session::HandleMessage(const std::string_view message_sv) {

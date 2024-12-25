@@ -1,8 +1,20 @@
 #include "game/tiled_map.h"
 
+#include <cstdio>
+#include <fstream>
 #include <optional>
 #include <regex>
+#include <sstream>
 
+#include "json/document.h"
+#include "json/filereadstream.h"
+#include "json/filewritestream.h"
+#include "json/prettywriter.h"
+#include "json/stringbuffer.h"
+#include "json/writer.h"
+
+// ...existing code...
+#include "client/client_controller.h"
 #include "frontend/game_scene.h"
 #include "game/crop_production.h"
 #include "game/pig.h"
@@ -121,20 +133,16 @@ void TiledMap::CreateMiniMap() {
     tiled_map_->addChild(mini_map, 100);
 }
 
-void TiledMap::Save() {
-    // Implementation for save
-}
-
-void TiledMap::Load() {
-    // Implementation for load
-}
-
 void TiledMap::SpawnAnimal(int count) {
     for (int pig_count = 0; pig_count < count; pig_count++) {
         Pig* pig = new Pig;
         MapAnimals.push_back(pig);
     }
     initAnimalPosition();
+}
+
+void TiledMap::SpawnCitizen(Citizen* citizen) {
+    MapCitizens.push_back(citizen);
 }
 
 cocos2d::Rect TiledMap::GetPortalRect(Portal portal,
@@ -172,11 +180,11 @@ void TiledMap::SetPlayerPos(cocos2d::Vec2 pos) {
     pos.y = std::max(0.0F, std::min(pos.y, map_height));
 
     player_pos_ = pos;
-    Logger::GetInstance().LogInfo("Player position set to: {}, {}",
-                                  player_pos_.x, player_pos_.y);
-    Logger::GetInstance().LogInfo("Tile: {}, {}",
-                                  TileCoordFromPos(player_pos_).x,
-                                  TileCoordFromPos(player_pos_).y);
+    // Logger::GetInstance().LogInfo("Player position set to: {}, {}",
+    //                               player_pos_.x, player_pos_.y);
+    // Logger::GetInstance().LogInfo("Tile: {}, {}",
+    //                               TileCoordFromPos(player_pos_).x,
+    //                               TileCoordFromPos(player_pos_).y);
     SetViewpointCenter(player_pos_);
     avatar.setPosition(player_pos_);
 }
@@ -223,6 +231,7 @@ void TiledMap::onEnter() {
                 CCLOG("Too far to cultivate");
             } else {
                 UpdateTileAt(tilePos, 557, "Back");
+                avatar.UseTool("Hoe");
                 CCLOG("Tile is cultivable\n");
             }
         } else {
@@ -230,16 +239,8 @@ void TiledMap::onEnter() {
             PlantTilePos.x = tilePos.x;
             PlantTilePos.y = tilePos.y;
 
-            // take a Strawberry as an example
-
-            // Potato* exampleStrawberry;
-            // exampleStrawberry = new Potato;
-            // GlobalTime.TimeShow();
-            // CCLOG("Potato");
-
             if (MapToolBar->getToolName() == "StrawberrySeed") {
                 CropPlant(PlantTilePos, new Strawberry);
-
             } else if (MapToolBar->getToolName() == "CarrotSeed") {
                 CropPlant(PlantTilePos, new Carrot);
             } else if (MapToolBar->getToolName() == "PotatoSeed") {
@@ -269,6 +270,47 @@ void TiledMap::onEnter() {
             SpritetoAnimal[Closest]->InfoOpen = true;
             ShowAnimalInfomation(Closest, pos, priority);
         }
+
+        // Citizen
+        MinDistance = 99999999;
+        cocos2d::Sprite* ClosestCitizen;
+        for (int i = 0; i < CitizensSprite.size(); i++) {
+            auto SpritePosition = CitizensSprite[i]->getPosition();
+            float Distance =
+                sqrt((SpritePosition.x - pos.x) * (SpritePosition.x - pos.x) +
+                     (SpritePosition.y - pos.y) * (SpritePosition.y - pos.y));
+            CCLOG("Citizen Position: %f %f\n", SpritePosition.x,
+                  SpritePosition.y);
+            if (fabs(SpritePosition.x - pos.x) < 20 &&
+                fabs(SpritePosition.y - pos.y) < 20 && Distance < MinDistance) {
+                CCLOG("Sprite clicked!");
+                MinDistance = Distance;
+                ClosestCitizen = CitizensSprite[i];
+            }
+        }
+
+        if (MinDistance < 99999999 &&
+            !SpritetoCitizen[ClosestCitizen]->InfoOpen) {
+            if (SpritetoCitizen[ClosestCitizen]->CitizenName == "Sebastian") {
+                SpritetoCitizen[ClosestCitizen]->ShowTalkBox(
+                    this->getParent(), MapToolBar->bag_,
+                    SpritetoCitizen[ClosestCitizen]->CitizenName);
+            } else {
+                if (MapToolBar->getToolName() == "Strawberry") {
+                    MapToolBar->bag_->ReduceItem(MapToolBar->selectedToolIndex);
+                    MapToolBar->bag_->EarnMoney(140);
+                }
+                if (MapToolBar->getToolName() == "Potato") {
+                    MapToolBar->bag_->ReduceItem(MapToolBar->selectedToolIndex);
+                    MapToolBar->bag_->EarnMoney(70);
+                }
+                if (MapToolBar->getToolName() == "Carrot") {
+                    MapToolBar->bag_->ReduceItem(MapToolBar->selectedToolIndex);
+                    MapToolBar->bag_->EarnMoney(70);
+                }
+            }
+        }
+        MapToolBar->loadTools();
     };
 
     listener->onMouseMove = [this](cocos2d::Event* event) {
@@ -316,7 +358,21 @@ void TiledMap::onEnter() {
                 } else {
                     Logger::GetInstance().LogError("Parent node is null");
                 }
+                break;
+            /*case cocos2d::EventKeyboard::KeyCode::KEY_F:
+            case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_F:
+                if (tiled_map_->getParent()) {
+                    avatar.Attacking(dynamic_cast<GameScene*>(this->getParent())->GetToolBar()
+                                       ->getToolName());
+                } else {
+                    Logger::GetInstance().LogError("Parent node is null");
+                }*/
+            case cocos2d::EventKeyboard::KeyCode::KEY_ESCAPE:
+                ClientController::GetInstance().SetClientState(
+                    ClientController::ClientState::kTitleScreen);
+                break;
             default:
+                Logger::GetInstance().LogError("!");
                 break;
         }
         if (is_key_pressed_a_ || is_key_pressed_d_ || is_key_pressed_s_ ||
@@ -557,11 +613,11 @@ void TiledMap::SetViewpointCenter(cocos2d::Vec2 pos) {
     cocos2d::Vec2 centerPoint =
         cocos2d::Vec2(visibleSize.width / 2, visibleSize.height / 2);
     cocos2d::Vec2 actualPoint = cocos2d::Vec2(x, y);
-    CCLOG("actualPoint: %f, %f", actualPoint.x, actualPoint.y);
+    // CCLOG("actualPoint: %f, %f", actualPoint.x, actualPoint.y);
 
     cocos2d::Vec2 offset = centerPoint - actualPoint;
 
-    CCLOG("offset: %f, %f", offset.x, offset.y);
+    // CCLOG("offset: %f, %f", offset.x, offset.y);
 
     if (mapSize.width * tileSize.width < visibleSize.width) {
         offset.x = (visibleSize.width - mapSize.width * tileSize.width) / 2;
@@ -579,6 +635,140 @@ void TiledMap::UpdateTileAt(cocos2d::Vec2 tileCoord, int newGID,
     layer->setTileGID(newGID, tileCoord);
     CCLOG("Tile updated at %f, %f with GID: %d", tileCoord.x, tileCoord.y,
           newGID);
+}
+
+void TiledMap::Save(const std::string& file_name) {
+    Logger::GetInstance().LogInfo("Saving game state to: {}", file_name);
+
+    std::string save_directory =
+        cocos2d::FileUtils::getInstance()->getDefaultResourceRootPath() +
+        "saves/";
+    std::string save_path = save_directory + file_name;
+
+    // Create the save directory if it doesn't exist
+    cocos2d::FileUtils::getInstance()->createDirectory(save_directory);
+
+    // Create a JSON document
+    rapidjson::Document document;
+    document.SetObject();
+    rapidjson::Document::AllocatorType& allocator = document.GetAllocator();
+
+    // Serialize crops
+    rapidjson::Value crops_array(rapidjson::kArrayType);
+    for (const auto& crop_pair : CropPosition) {
+        const Position& pos = crop_pair.first;
+        Crops* crop = crop_pair.second;
+
+        rapidjson::Value crop_object(rapidjson::kObjectType);
+        crop_object.AddMember("x", pos.x, allocator);
+        crop_object.AddMember("y", pos.y, allocator);
+
+        rapidjson::Value crop_type_value;
+        if (crop == nullptr) {
+            crop_type_value.SetString("Removed", allocator);
+        } else {
+            crop_type_value.SetString(crop->getCropName().c_str(), allocator);
+        }
+        crop_object.AddMember("type", crop_type_value, allocator);
+
+        rapidjson::Value crop_stage_value;
+        if (crop == nullptr) {
+            crop_stage_value.SetInt(-1);
+        } else {
+            crop_stage_value.SetInt(crop->CurrentGrowthStage);
+        }
+
+        crop_object.AddMember("stage", crop_stage_value, allocator);
+
+        crops_array.PushBack(crop_object, allocator);
+    }
+    document.AddMember("crops", crops_array, allocator);
+
+    // Write the JSON document to a file
+    FILE* fp = fopen(save_path.c_str(), "wb");
+    if (fp) {
+        char writeBuffer[65536];
+        rapidjson::FileWriteStream os(fp, writeBuffer, sizeof(writeBuffer));
+        rapidjson::PrettyWriter<rapidjson::FileWriteStream> writer(os);
+        document.Accept(writer);
+        fclose(fp);
+    } else {
+        Logger::GetInstance().LogError("Failed to open file for saving: {}",
+                                       save_path);
+    }
+
+    while (GlobalCropProduction.AllCrops.size() > 0) {
+        delete GlobalCropProduction.AllCrops.back();
+        GlobalCropProduction.AllCrops.pop_back();
+    }
+}
+
+void TiledMap::Load(const std::string& file_name) {
+    Logger::GetInstance().LogInfo("Loading game state from: {}", file_name);
+    std::string save_directory =
+        cocos2d::FileUtils::getInstance()->getDefaultResourceRootPath() +
+        "saves/";
+    std::string save_path = save_directory + file_name;
+
+    // Open the JSON file
+    FILE* fp = fopen(save_path.c_str(), "rb");
+    if (fp) {
+        char readBuffer[65536];
+        rapidjson::FileReadStream is(fp, readBuffer, sizeof(readBuffer));
+        rapidjson::Document document;
+        document.ParseStream(is);
+        fclose(fp);
+
+        if (document.HasParseError()) {
+            Logger::GetInstance().LogError("Failed to parse JSON file: {}",
+                                           save_path);
+            return;
+        }
+
+        // Deserialize crops
+        if (document.HasMember("crops") && document["crops"].IsArray()) {
+            const rapidjson::Value& crops_array = document["crops"];
+            for (rapidjson::SizeType i = 0; i < crops_array.Size(); ++i) {
+                const rapidjson::Value& crop_object = crops_array[i];
+                if (crop_object.IsObject()) {
+                    Position pos;
+                    pos.x = crop_object["x"].GetFloat();
+                    pos.y = crop_object["y"].GetFloat();
+                    std::string crop_type = crop_object["type"].GetString();
+                    int crop_stage = crop_object["stage"].GetInt();
+
+                    Crops* crop = nullptr;
+                    bool is_removed = crop_type == "Removed";
+                    if (crop_type == "Strawberry") {
+                        crop = new Strawberry();
+                    } else if (crop_type == "Carrot") {
+                        crop = new Carrot();
+                    } else if (crop_type == "Potato") {
+                        crop = new Potato();
+                    } else {
+                        Logger::GetInstance().LogError("Unknown crop type: {}",
+                                                       crop_type);
+                    }
+
+                    if (crop && !is_removed) {
+                        crop->setCurrentGrowthStage(crop_stage);
+                        CropPosition[pos] = crop;
+                        MapCrops.push_back(crop);
+                        crop->CropSprite->setPosition(PosFromtileCoord(pos));
+                        tiled_map_->addChild(crop->CropSprite, 4);
+                        UpdateTileAt(cocos2d::Vec2(pos.x, pos.y), 557, "Back");
+                        GlobalCropProduction.AllCrops.push_back(crop);
+                        SpritePosition[pos] = crop->CropSprite;
+                    } else if (is_removed) {
+                        UpdateTileAt(cocos2d::Vec2(pos.x, pos.y), 557, "Back");
+                    }
+                }
+            }
+        }
+    } else {
+        Logger::GetInstance().LogError("Failed to open file for loading: {}",
+                                       save_path);
+    }
 }
 
 std::vector<Entity::Direction> TiledMap::AllDirection;

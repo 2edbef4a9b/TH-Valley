@@ -1,0 +1,42 @@
+[
+    {
+        "type": "dialogue",
+        "content": "Among all these places, you chose TH-Valley? "
+    },
+    {
+        "type": "dialogue",
+        "content": "Such a nice day to die. ",
+        "conditions": {
+            "time": [ "0600", "1800" ]
+        }
+    },
+    {
+        "type": "question",
+        "content": "What do you want to buy?. ",
+        "options": [
+            "Buy Carrot seeds. ",
+            "Buy Potato seeds. ",
+            "Buy Strawberry seeds. "
+        ]
+    },
+    {
+        "type": "dialogue",
+        "content": "Hello, welcome to TH-Valley! "
+    },
+    {
+        "type": "dialogue",
+        "content": "Have a nice day. ",
+        "conditions": {
+            "event": [ "hasReceivedGift" ]
+        }
+    },
+    {
+        "type": "dialogue",
+        "content": "Fuck off. ",
+        "conditions": {
+            "event": [ "!hasReceivedGift" ]
+        }
+    }
+
+
+]

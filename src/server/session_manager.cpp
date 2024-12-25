@@ -11,13 +11,24 @@ namespace th_valley {
 SessionManager::SessionManager(boost::asio::ip::tcp::acceptor& acceptor)
     : acceptor_(std::move(acceptor)) {}
 
-void SessionManager::AddSession(const boost::uuids::uuid& uuid,
-                                const std::shared_ptr<Session>& session) {
-    sessions_.emplace(uuid, session);
+void SessionManager::BroadcastMessage(std::string_view message) const {
+    // Broadcast a message to all connected sessions.
+    for (const auto& [uuid, session] : sessions_) {
+        session->DoWrite(message);
+    }
 }
 
-void SessionManager::RemoveSession(const boost::uuids::uuid& uuid) {
-    sessions_.erase(uuid);
+void SessionManager::SendMessage(const boost::uuids::uuid& uuid,
+                                 std::string_view message) const {
+    // Send a message to a specific session.
+    if (sessions_.contains(uuid)) {
+        sessions_.at(uuid)->DoWrite(message);
+    } else {
+        Logger::GetInstance().LogError(
+            "Session Manager: Attempted to send message to non-existent "
+            "session with UUID: {}",
+            to_string(uuid));
+    }
 }
 
 void SessionManager::StartAccept() {
@@ -70,6 +81,15 @@ void SessionManager::UpdateSessionUUID(const boost::uuids::uuid& old_uuid,
             "session with UUID: {}",
             to_string(old_uuid));
     }
+}
+
+void SessionManager::AddSession(const boost::uuids::uuid& uuid,
+                                const std::shared_ptr<Session>& session) {
+    sessions_.emplace(uuid, session);
+}
+
+void SessionManager::RemoveSession(const boost::uuids::uuid& uuid) {
+    sessions_.erase(uuid);
 }
 
 }  // namespace th_valley

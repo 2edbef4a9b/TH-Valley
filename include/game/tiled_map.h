@@ -10,6 +10,7 @@
 #include "frontend/tool_bar.h"
 #include "game/animals.h"
 #include "game/avatar.h"
+#include "game/citizen.h"
 #include "game/entity.h"
 #include "game/map_controller.h"
 #include "math/CCGeometry.h"
@@ -48,14 +49,19 @@ public:
 
     bool InitWithTMXFile(const std::string& tmxFile);
     void CreateMiniMap();
-    void Save();
-    void Load();
     void SpawnAnimal(int count);
+    void SpawnCitizen(Citizen* citizen);
+    void initCitizenPosition();
 
     cocos2d::Rect GetPortalRect(Portal portal,
                                 std::string_view ObjectLayerName = "Objects");
     void SetPlayerPos(cocos2d::Vec2 pos);
     void SetTeleportStatus(bool status);
+    cocos2d::TMXTiledMap* getTiledMap() { return tiled_map_; }
+
+    // Save and Load
+    void Save(const std::string& file_name);
+    void Load(const std::string& file_name);
 
 private:
     void onEnter() override;
@@ -91,6 +97,11 @@ private:
     void ShowAnimalInfomation(cocos2d::Sprite* Animal,
                               const cocos2d::Vec2& InfoPosition, int& priority);
 
+    void updateCitizenSprites(float dt);
+    void ShowCitizenInfomation(cocos2d::Sprite* Citizen,
+                               const cocos2d::Vec2& InfoPosition,
+                               int& priority);
+
     cocos2d::TMXTiledMap* tiled_map_{};
     std::unordered_map<std::string, cocos2d::TMXLayer*> map_layer_;
     cocos2d::TMXObjectGroup* object_group_{};
@@ -99,11 +110,14 @@ private:
 
     std::map<Position, Crops*> CropPosition;
     std::map<Position, cocos2d::Sprite*> SpritePosition;
-    std::map<cocos2d::Sprite*, Animals*> SpritetoAnimal;
     std::vector<Crops*> MapCrops;
     std::vector<cocos2d::Sprite*> CropsSprite;
     std::vector<Animals*> MapAnimals;
+    std::map<cocos2d::Sprite*, Animals*> SpritetoAnimal;
     std::vector<cocos2d::Sprite*> AnimalSprite;
+    std::vector<Citizen*> MapCitizens;
+    std::vector<cocos2d::Sprite*> CitizensSprite;
+    std::map<cocos2d::Sprite*, Citizen*> SpritetoCitizen;
     static std::vector<Entity::Direction> AllDirection;
 
     int priority = 255;
