@@ -4,11 +4,13 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
-#include "game/bag.h"
 
 #include "cocos2d.h"
 #include "json/document.h"
 
+#include "game/items/bag.h" // ä¿®æ­£å¼•ç”¨
+
+// å¯¹è¯æ¡ç›®ç»“æ„ä½“
 struct DialogueEntry {
     enum class EntryType { Dialogue, Question };
     EntryType type;
@@ -19,76 +21,68 @@ struct DialogueEntry {
 
 class TalkBox : public cocos2d::Layer {
 public:
-    TalkBox() = default;
-    ~TalkBox() override = default;
-    TalkBox(const TalkBox& other) = delete;
-    TalkBox& operator=(const TalkBox& other) = delete;
-    TalkBox(TalkBox&& other) = delete;
-    TalkBox& operator=(TalkBox&& other) = delete;
-
-    bool initWithEntries(const std::vector<DialogueEntry>& entries,
-                         const std::string& npcName,
-                         const std::string& npcAvatarPath);
+    // ... ä¿æŒåŸæœ‰æ„é€ /ææ„ ...
     static TalkBox* createWithEntries(const std::vector<DialogueEntry>& entries,
                                       const std::string& npcName,
                                       const std::string& npcAvatarPath);
+    bool initWithEntries(const std::vector<DialogueEntry>& entries,
+                         const std::string& npcName,
+                         const std::string& npcAvatarPath);
 
     static std::vector<DialogueEntry> inputJson(const std::string& jsonPath);
 
-    void onEnter();
-    void onExit();
+    // ç”Ÿå‘½å‘¨æœŸ
+    void onEnter() override;
+    void onExit() override;
 
+    // æ˜¾ç¤ºæ§åˆ¶
     void showDialog();
     void hideDialog();
-
     void showNextMessage();
+
+    // é€‰é¡¹æ§åˆ¶
     void showOptions(const std::vector<std::string>& options);
     void hideOptions();
     void moveSelection(int delta);
     void selectOption();
-    void getBag(Bag* bag_) { playerBag = bag_; }
-    void getName(std::string name) { CitizenName = name; }
-    // »ñÈ¡µ±Ç°ÓÎÏ·Ê±¼ä£¬¸ñÊ½Îª "HHMM"
-    std::string getCurrentGameTime() const;
 
-    // ¼ì²éÌõ¼şÊÇ·ñÂú×ã
+    // æ•°æ®æ³¨å…¥
+    void setBag(Bag* bag) { playerBag = bag; } // é‡å‘½åä¸ºæ ‡å‡† setter
+    void setNPCName(std::string name) { CitizenName = name; }
+    
+    std::string getCurrentGameTime() const; // éœ€è°ƒç”¨ WorldTime
     bool conditionsMet(const DialogueEntry& entry) const;
 
 private:
-    constexpr static std::string_view kFontPath =
-        "assets/fonts/DFHannotateW5-A.ttf";
+    static constexpr std::string_view kFontPath = "assets/fonts/DFHannotateW5-A.ttf";
 
-    // Ìí¼ÓÊÂ¼ş¼àÌıÆ÷
+    // ç›‘å¬å™¨
     cocos2d::EventListenerTouchOneByOne* touchListener_;
     cocos2d::EventListenerKeyboard* keyboardListener_;
-    cocos2d::EventListenerMouse* mouseListener_;
-    cocos2d::EventListenerTouchOneByOne* closeButtonListener_;
-
-    cocos2d::Size visible_size_;
-    cocos2d::Vec2 visible_origin_;
-
+    
+    // UI ç»„ä»¶
     cocos2d::Sprite* background_;
     cocos2d::Label* messageLabel_;
-
     cocos2d::Sprite* closeButton_;
-    cocos2d::LayerColor* closeButtonBackground_;
-
     cocos2d::Label* npcNameLabel_;
     cocos2d::Sprite* npcAvatar_;
+    
+    // æ•°æ®
     std::string npcName_;
     std::string npcAvatarPath_;
-
     std::vector<DialogueEntry> dialogEntries_;
     int currentMessageIndex_;
 
+    // é€‰é¡¹ UI
     std::vector<cocos2d::Label*> optionLabels_;
     std::vector<cocos2d::LayerColor*> optionBackgrounds_;
     int selectedOptionIndex_;
     bool waitingForChoice_;
-    Bag* playerBag;
-    std::string CitizenName;
 
+    // å¤–éƒ¨å¼•ç”¨
+    Bag* playerBag = nullptr;
+    std::string CitizenName;
     std::unordered_map<std::string, bool> gameStates_;
 };
 
-#endif  // TALK_BOX_H_
+#endif // TALK_BOX_H_
