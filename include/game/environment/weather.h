@@ -8,7 +8,7 @@
 
 class Weather {
 public:
-    const int WeatherTotal = 3;  // the total types of weather
+    const int WeatherTotal = 3;  
     WorldTime CurrentTime;
     std::string WeatherType;
     int TypeDuringTime;

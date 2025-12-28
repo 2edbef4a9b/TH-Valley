@@ -1,7 +1,7 @@
 #ifndef AVATAR_H_
 #define AVATAR_H_
 
-#include "game/character.h" // 继承 Character
+#include "game/character.h" 
 #include "game/tool_strategies.h"
 
 namespace th_valley {
@@ -14,7 +14,7 @@ public:
     bool init() override;
     void update(float delta) override;
 
-    // --- 策略模式 (保留) ---
+    // --- 策略模式  ---
     void SetToolStrategy(IToolStrategy* newStrategy);
     void UseCurrentTool(cocos2d::Vec2 targetPos);
     

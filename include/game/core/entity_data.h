@@ -7,7 +7,7 @@ namespace th_valley {
 
 class EntityData {
 public:
-    EntityData(); // 添加构造函数初始化
+    EntityData(); 
 
     void SetHealth(double health);
     void SetHunger(double hunger);

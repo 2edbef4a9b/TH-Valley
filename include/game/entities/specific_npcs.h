@@ -9,9 +9,7 @@ class Sandy : public NPC {
 public:
     Sandy() {
         SetName("Sandy");
-        InitCharacterAnim("assets/avatar/sandy.png"); // 使用父类方法加载资源
-        
-        // 初始化 Sandy 特有的对话
+        InitCharacterAnim("assets/avatar/sandy.png");
         dialogues_ = {"Hello!", "Nice weather today."};
     }
 };
@@ -21,11 +19,9 @@ public:
     Abigail() {
         SetName("Abigail");
         InitCharacterAnim("assets/avatar/Abigail.png");
+        dialogues_ = {"hi!", "Bad weather today."};
     }
 };
-
-// ... 其他 NPC ...
-
 } // namespace th_valley
 
 #endif // SPECIFIC_NPCS_H_

@@ -1,8 +1,8 @@
 #ifndef ANIMAL_FACTORY_H_
 #define ANIMAL_FACTORY_H_
 
-#include "game/animals.h"
-#include "game/specific_animals.h" // 包含 Pig, Cow, Chicken 的定义
+#include "game/farming/animals/animals.h"
+#include "game/farming/animals/specific_animals.h" 
 
 namespace th_valley {
 
@@ -20,13 +20,15 @@ public:
     Animals* CreateAnimal() override { return new Pig(); }
 };
 
-// 如果有牛或鸡，也在这里添加
-/*
 class CowFactory : public AnimalFactory {
 public:
     Animals* CreateAnimal() override { return new Cow(); }
 };
-*/
+
+class ChickenFactory : public AnimalFactory {
+public:
+    Animals* CreateAnimal() override { return new Chicken(); }
+};
 
 } // namespace th_valley
 

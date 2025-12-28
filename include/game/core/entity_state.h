@@ -5,9 +5,8 @@
 
 namespace th_valley {
 
-class Entity; // 前向声明
+class Entity; 
 
-// 定义输入数据结构，用于 HandleInput
 struct Input {
     bool isKeyPressed;
     cocos2d::EventKeyboard::KeyCode keyCode;

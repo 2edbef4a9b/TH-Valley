@@ -1,8 +1,7 @@
 #ifndef SPECIFIC_CROPS_H_
 #define SPECIFIC_CROPS_H_
 
-#include "game/crops.h"
-#include "game/item_system.h" // 引入享元系统
+#include "game/farming/crops/crops.h"
 
 namespace th_valley {
 
@@ -11,34 +10,27 @@ class Strawberry : public Crops {
 public:
     Strawberry() {
         CropName = "Strawberry";
-        // CropType = "Fruit"; // 可以保留，或者放入 ItemDefinition
         
         // 状态初始化
         CurrentGrowthStage = 0;
         MaxGrowthStage = 3;
         
         // 生长数据
-        GrowthDuration = {50, 50, 50, 50}; // 对应 UML 或策划表
-        GrowthStage = {"Seed", "Seedling", "Maturation", "Ripened"};
+        GrowthDuration = {50, 50, 50, 50}; 
         
-        // 视图数据 (Sprite Frame)
-        // 注意：实际项目中建议将这些硬编码数据移至 JSON 配置文件，由 Factory 读取
-        frameRect.resize(4);
-        frameRect[0].setRect(1, 593, 13, 14);
-        frameRect[1].setRect(36, 597, 8, 8);
-        frameRect[2].setRect(81, 587, 16, 23);
-        frameRect[3].setRect(97, 587, 16, 24);
+        // --- 表现层配置 ---
+        texturePath = "assets/Crops/crops.png";
+        
+        // 配置每一帧的切片 (从硬编码改为配置)
+        frameRects.resize(4);
+        frameRects[0].setRect(1, 593, 13, 14);   // Stage 0 (Seed)
+        frameRects[1].setRect(36, 597, 8, 8);    // Stage 1
+        frameRects[2].setRect(81, 587, 16, 23);  // Stage 2
+        frameRects[3].setRect(97, 587, 16, 24);  // Stage 3 (Ripe)
 
-        // 创建初始精灵 (使用第一阶段)
-        // 注意：资源路径最好用常量
-        CropSprite = cocos2d::Sprite::create("assets/Crops/crops.png", frameRect[0]);
-
-        // --- 享元模式修正 ---
-        // 删除: Fruit = new ItemSprite(...)
-        // 改为: 记录产出物的 ID/Name，收获时去 ItemFactory 查
-        // 假设基类 Crops 有一个 std::string productItemName;
+        // 产出配置
         productItemName = "Strawberry"; 
-        output_count = 8;
+        output_count = 8; // 草莓产量高
 
         // 属性设置
         isNormal = true;
@@ -47,6 +39,8 @@ public:
         // 种植要求
         SeasonRequirement = {"Spring"};
         SoilRequirement = {"Arable"};
+        
+        // 注意：这里没有 cocos2d::Sprite::create() 了
     }
 };
 
@@ -59,13 +53,13 @@ public:
         MaxGrowthStage = 3;
         GrowthDuration = {60 * 60 * 24 * 1, 60 * 60 * 24 * 1, 60 * 60 * 24 * 1, 60 * 60 * 24 * 7};
         
-        frameRect.resize(4);
-        frameRect[0].setRect(2, 785, 11, 13);
-        frameRect[1].setRect(35, 785, 10, 20);
-        frameRect[2].setRect(51, 783, 10, 22);
-        frameRect[3].setRect(65, 779, 13, 25);
+        texturePath = "assets/Crops/crops.png";
         
-        CropSprite = cocos2d::Sprite::create("assets/Crops/crops.png", frameRect[0]);
+        frameRects.resize(4);
+        frameRects[0].setRect(2, 785, 11, 13);
+        frameRects[1].setRect(35, 785, 10, 20);
+        frameRects[2].setRect(51, 783, 10, 22);
+        frameRects[3].setRect(65, 779, 13, 25);
         
         productItemName = "Carrot";
         output_count = 1;
@@ -83,18 +77,41 @@ public:
         MaxGrowthStage = 3;
         GrowthDuration = {50, 50, 50, 50};
         
-        frameRect.resize(4);
-        frameRect[0].setRect(130, 54, 10, 7);
-        frameRect[1].setRect(180, 50, 10, 9);
-        frameRect[2].setRect(208, 45, 14, 19);
-        frameRect[3].setRect(225, 42, 14, 22);
+        texturePath = "assets/Crops/crops.png";
         
-        CropSprite = cocos2d::Sprite::create("assets/Crops/crops.png", frameRect[0]);
+        frameRects.resize(4);
+        frameRects[0].setRect(130, 54, 10, 7);
+        frameRects[1].setRect(180, 50, 10, 9);
+        frameRects[2].setRect(208, 45, 14, 19);
+        frameRects[3].setRect(225, 42, 14, 22);
         
         productItemName = "Potato";
         output_count = 1;
 
         SeasonRequirement = {"Spring", "Summer", "Autumn"};
+    }
+};
+
+// --- Turnip (补全定义) ---
+class Turnip : public Crops {
+public:
+    Turnip() {
+        CropName = "Turnip";
+        CurrentGrowthStage = 0;
+        MaxGrowthStage = 2; // 假设只有3个阶段
+        GrowthDuration = {30, 30};
+        
+        texturePath = "assets/Crops/crops.png";
+        
+        frameRects.resize(3); 
+        // 示例坐标，请根据实际 SpriteSheet 修改
+        frameRects[0].setRect(0, 0, 16, 16); 
+        frameRects[1].setRect(16, 0, 16, 16);
+        frameRects[2].setRect(32, 0, 16, 16);
+
+        productItemName = "Turnip";
+        output_count = 1;
+        SeasonRequirement = {"Spring"};
     }
 };
 

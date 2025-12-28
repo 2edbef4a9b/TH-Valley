@@ -3,7 +3,7 @@
 
 #include "cocos2d.h"
 #include "game/entity_data.h"
-#include "game/entity_state.h" // 包含状态定义
+#include "game/entity_state.h" 
 
 namespace th_valley {
 
@@ -26,7 +26,7 @@ public:
     // --- 状态模式方法 ---
     void ChangeState(IEntityState* newState);
     
-    // 输入处理入口（供外部层调用，如 HelloWorldScene）
+    // 输入处理入口（供外部层调用)
     void OnInput(const Input& input);
 
     // --- 供状态类调用的接口 ---

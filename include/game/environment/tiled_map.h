@@ -9,8 +9,6 @@
 #include <map>
 
 #include "cocos2d.h"
-
-// 引入依赖
 #include "game/avatar.h"
 #include "game/entity.h"
 #include "game/citizen.h"

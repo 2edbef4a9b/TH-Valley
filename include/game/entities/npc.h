@@ -1,7 +1,7 @@
 #ifndef NPC_H_
 #define NPC_H_
 
-#include "game/character.h" // 继承 Character
+#include "game/character.h" 
 #include "game/bag.h"
 
 namespace th_valley {
