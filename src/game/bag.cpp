@@ -1,139 +1,110 @@
 #include "game/bag.h"
 
-Bag::Bag() : currentNum_(0), maxNum_(40) { bagInit(); }
-
-Bag::~Bag() {}
-
-bool Bag::isEmpty() const { return currentNum_ == 0; }
-
-bool Bag::isFull() const { return currentNum_ >= maxNum_; }
-
-void Bag::add(ItemSprite* item) {
-    for (int key = 0; key < 39; key++) {
-        auto it = items_.find(key);
-        if (it != items_.end() && isFill[key]){
-            if (it->second->name == item->name) {
-                addItem(key, item);
-                return;
-            }
-        }
-    }
-
-    for (int key = 0; key < 39; key++) {
-        auto it = items_.find(key);
-        if (it == items_.end()) {
-            addItem(key, item);
-            return;
-        }
-    }
+Bag::Bag() {
+    maxNum_ = 20; // 假设背包有20个格子
+    currentNum_ = 0;
+    money = 5000;
 }
 
-void Bag::addItem(const int& key, ItemSprite* item) {
-    if (isFull()) {
-        // �����������޷�������Ʒ
-        return;
+Bag::~Bag() {
+    // 释放所有 ItemStack 内存
+    for (auto& pair : slots_) {
+        delete pair.second;
     }
-    isFill[key] = true;
-    auto it = items_.find(key);
-    if (it != items_.end()) {
-        // ��Ʒ�Ѵ��ڣ���������
-        it->second->quantity += item->quantity;
-        delete item;  // �ͷ��´������Ʒ
-    } else {
-        // ��������Ʒ
-        items_[key] = item;
-        ++currentNum_;
-    }
+    slots_.clear();
 }
 
-ItemSprite* Bag::findItem(const int& key) {
-    auto it = items_.find(key);
-    if (it != items_.end()) {
+bool Bag::isEmpty() const {
+    return slots_.empty();
+}
+
+bool Bag::isFull() const {
+    return slots_.size() >= maxNum_;
+}
+
+// 通过现有的 Stack 添加
+bool Bag::addItem(const int& slotIndex, ItemStack* stack) {
+    if (isFull() || slotIndex < 0 || slotIndex >= maxNum_) return false;
+
+    // 如果该格子已有物品，简单的处理是直接覆盖或拒绝
+    // 这里假设逻辑是覆盖或者在该位置放置
+    if (slots_.find(slotIndex) != slots_.end()) {
+        delete slots_[slotIndex]; // 删除旧的
+    }
+
+    slots_[slotIndex] = stack;
+    return true;
+}
+
+// 通过名称和数量添加（通过工厂查找定义）
+bool Bag::addItemByData(const int& slotIndex, std::string itemName, int quantity) {
+    ItemDefinition* def = ItemFactory::getInstance()->GetItemDefinition(itemName);
+    if (!def) return false; // 物品定义不存在
+
+    ItemStack* newStack = new ItemStack(def, quantity);
+    return addItem(slotIndex, newStack);
+}
+
+ItemStack* Bag::findItem(const int& slotIndex) {
+    auto it = slots_.find(slotIndex);
+    if (it != slots_.end()) {
         return it->second;
     }
     return nullptr;
 }
 
-void Bag::removeItem(const int& key) {
-    isFill[key] = false;
-    auto it = items_.find(key);
-    if (it != items_.end()) {
-        //delete it->second;
-        items_.erase(it);
-        --currentNum_;
+void Bag::removeItem(const int& slotIndex) {
+    auto it = slots_.find(slotIndex);
+    if (it != slots_.end()) {
+        delete it->second; // 释放内存
+        slots_.erase(it);
     }
 }
 
-void Bag::ReduceItem(const int key) {
-    auto it = items_.find(key);
-    if (it != items_.end()) {
-        it->second->quantity--;
-        if (it->second->quantity == 0) removeItem(key);
+void Bag::swapItems(int slot1, int slot2) {
+    // 检查索引有效性
+    if (slot1 < 0 || slot1 >= maxNum_ || slot2 < 0 || slot2 >= maxNum_) return;
+
+    auto it1 = slots_.find(slot1);
+    auto it2 = slots_.find(slot2);
+
+    ItemStack* item1 = (it1 != slots_.end()) ? it1->second : nullptr;
+    ItemStack* item2 = (it2 != slots_.end()) ? it2->second : nullptr;
+
+    // 交换逻辑
+    if (item1) slots_[slot2] = item1;
+    else slots_.erase(slot2);
+
+    if (item2) slots_[slot1] = item2;
+    else slots_.erase(slot1);
+}
+
+void Bag::ReduceItem(int slotIndex, int count) {
+    auto it = slots_.find(slotIndex);
+    if (it != slots_.end()) {
+        ItemStack* stack = it->second;
+        stack->Remove(count);
+        
+        // 如果数量归零，从背包移除
+        if (stack->getQuantity() <= 0) {
+            removeItem(slotIndex);
+        }
     }
 }
 
-void Bag::replaceItem(const int& key, ItemSprite* newItem) {
-    if (newItem == nullptr) return;
-    auto it = items_.find(key);
-    if (it != items_.end()) {
-        delete it->second;
-        it->second = newItem;
-    }
-}
-
-void Bag::swapItems(int key1, int key2) {
-    auto it1 = items_.find(key1);
-    auto it2 = items_.find(key2);
-    if (it1 != items_.end() && it2 != items_.end()) {
-        std::swap(it1->second, it2->second);
-    } else if (it1 != items_.end()) {
-        items_[key2] = it1->second;
-        items_.erase(it1);
-    } else if (it2 != items_.end()) {
-        items_[key1] = it2->second;
-        items_.erase(it2);
-    }
+const std::map<int, ItemStack*>& Bag::getSlots() const {
+    return slots_;
 }
 
 void Bag::bagInit() {
-    for (int key = 0; key < 39; key++) isFill[key] = false;
-    ItemSprite* Axe = new ItemSprite(
-        "Axe", 1, "Used for chopping wood", "assets/TileSheets/tools.png",
-        cocos2d::Rect(0 + 5 * 16, 32 + 4 * 32, 16, 16));
-    items_[0] = Axe;
-    isFill[0] = true;
-    ItemSprite* Hoe = new ItemSprite(
-        "Hoe", 3, "Used for chopping wood", "assets/TileSheets/tools.png",
-        cocos2d::Rect(0 + 5 * 16, 32 + 0 * 32, 16, 16));
-    items_[1] = Hoe;
-    isFill[1] = true;
-    ItemSprite* StrawberrySeed =
-        new ItemSprite("StrawberrySeed", 12, "Used for planting strawberries",
-                       "assets/Crops/crops.png", cocos2d::Rect(1, 593, 13, 14));
-    items_[2] = StrawberrySeed;
-    isFill[2] = true;
-    ItemSprite* CarrotSeed =
-        new ItemSprite("CarrotSeed", 68, "Used for planting carrots",
-                       "assets/Crops/crops.png", cocos2d::Rect(2, 785, 11, 13));
-    items_[15] = CarrotSeed;
-    isFill[15] = true;
-    ItemSprite* PotatoSeed =
-        new ItemSprite("PotatoSeed", 64, "Used for planting potatoes",
-                       "assets/Crops/crops.png", cocos2d::Rect(130, 54, 10, 7));
-    items_[38] = PotatoSeed;
-    isFill[38] = true;
-    for (const auto& [i, item] : items_) {
-        CCLOG("Item %s added to bag index %d", item->name.c_str(), i);
+    // 清空背包
+    for (auto& pair : slots_) {
+        delete pair.second;
     }
-}
-
-const std::unordered_map<int, ItemSprite*>& Bag::getItems() const {
-    return items_;
-}
-
-ItemSprite* Bag::getItems(int index) {
-    if (items_[index])
-        return items_[index];
-    else
-        return nullptr;
+    slots_.clear();
+    
+    // 示例：初始化时送几个物品
+    // 注意：需要先在工厂里 LoadDefinition 注册过 "Hoe"
+    addItemByData(0, "Hoe", 1);
+    addItemByData(1, "Seed", 10);
 }
