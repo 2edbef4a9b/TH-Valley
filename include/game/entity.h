@@ -1,56 +1,48 @@
 #ifndef ENTITY_H_
 #define ENTITY_H_
 
-#include <string_view>
-
-#include "2d/CCNode.h"
-#include "2d/CCSprite.h"
 #include "cocos2d.h"
 #include "game/entity_data.h"
-#include "math/Vec2.h"
+#include "game/entity_state.h" // 包含状态定义
 
 namespace th_valley {
 
 class Entity : public cocos2d::Sprite {
 public:
     enum class Direction {
-        kDown,
-        kRight,
-        kUp,
-        kLeft,
+        kDown, kRight, kUp, kLeft,
     };
 
-    enum class EntityState {
-        kIdle,
-        kMove,
-        kAction,
-        kDead,
-    };
+    Entity();
+    ~Entity() override;
 
-    Entity() = default;
-    ~Entity() override = default;
-
-    Entity(const Entity& other) = delete;
-    Entity& operator=(const Entity& other) = delete;
-    Entity(Entity&& other) = delete;
-    Entity& operator=(Entity&& other) = delete;
-
-    void SetState(EntityState state);
-    EntityState GetState() const;
-    void SetDirection(Direction direction);
-    Direction GetDirection() const;
+    // 禁用拷贝，防止状态指针被浅拷贝导致重复释放
+    Entity(const Entity&) = delete;
+    Entity& operator=(const Entity&) = delete;
 
     bool init() override;
     void update(float delta) override;
 
+    // --- 状态模式方法 ---
+    void ChangeState(IEntityState* newState);
+    
+    // 输入处理入口（供外部层调用，如 HelloWorldScene）
+    void OnInput(const Input& input);
+
+    // --- 供状态类调用的接口 ---
+    void SetDirection(Direction direction);
+    Direction GetDirection() const;
+    EntityData& GetData(); // 允许修改数据
+    const EntityData& GetData() const; // 只读数据
+
     virtual void InitEntity(cocos2d::Node* parent);
-    virtual void ChangeDirection(Direction direction);
 
 private:
-    cocos2d::Vec2 position_;
     EntityData entity_data_;
-    EntityState state_{EntityState::kIdle};
     Direction direction_{Direction::kDown};
+    
+    // 当前状态指针
+    IEntityState* current_state_ = nullptr;
 };
 
 }  // namespace th_valley

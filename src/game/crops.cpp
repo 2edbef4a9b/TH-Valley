@@ -131,3 +131,50 @@ void Crops::CropFertilize() {
 void Crops::getTime(WorldTime *Time) { CurrentTime = Time; }
 
 void Crops::getWeather(Weather *weather) { CurrentWeather = weather; }
+
+
+// crops.cpp
+#include "game/crops.h"
+#include "game/worldtime.h"
+#include "game/weather.h"
+
+Crops::Crops() {
+    // Automatically register when created
+    GlobalTime.AddObserver(this);
+    
+    CurrentGrowthStage = 0;
+    isDeath = false;
+    isWatered = false;
+}
+
+Crops::~Crops() {
+    // Must unregister when destroyed to avoid crashes
+    GlobalTime.RemoveObserver(this);
+}
+
+const std::string &Crops::getCropName() const {
+    return CropName;
+}
+
+
+// The Callback from WorldTime
+void Crops::OnTimeTick(WorldTime* time) {
+    // Logic that runs every game tick
+    CropAutomaticUpdate(time);
+}
+
+// The Callback from WorldTime
+void Crops::OnDayChanged(WorldTime* time) {
+    // Logic that runs once per day
+    isWatered = false; // Reset watering status
+    // Maybe verify if crop died due to lack of water
+}
+
+
+void Crops::CropWatering() {
+    isWatered = true;
+}
+
+void Crops::getWeather(Weather *weather) {
+    CurrentWeather = weather;
+}

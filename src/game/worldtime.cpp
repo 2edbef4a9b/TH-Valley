@@ -1,77 +1,88 @@
 #include "game/worldtime.h"
+#include "i_time_observer.h" // Include interface here to call methods
+#include <algorithm>
+
+// Define the global instance
+WorldTime GlobalTime;
+
+WorldTime::WorldTime() {
+    Year = 1;
+    Month = 1;
+    Day = 1;
+    Hour = 8;
+    Minute = 0;
+    Second = 0;
+    Season = "Spring";
+    isContinue = 1;
+}
+
+WorldTime& WorldTime::getInstance() {
+    return GlobalTime;
+}
+
+void WorldTime::AddObserver(ITimeObserver* obs) {
+    observers.push_back(obs);
+}
+
+void WorldTime::RemoveObserver(ITimeObserver* obs) {
+    auto it = std::remove(observers.begin(), observers.end(), obs);
+    if (it != observers.end()) {
+        observers.erase(it, observers.end());
+    }
+}
+
+void WorldTime::NotifyTimeChanged() {
+    // Notify all listeners that time ticked
+    for (auto* obs : observers) {
+        obs->OnTimeTick(this);
+    }
+}
+
+void WorldTime::NotifyDayChanged() {
+    for (auto* obs : observers) {
+        obs->OnDayChanged(this);
+    }
+}
 
 void WorldTime::TimeNext() {
-    // Second, Minute, Hour Update
+    if (!isContinue) return;
+
+    // --- Simulation of time passing ---
     Second++;
-    if (Second == 60) {
+    if (Second >= 60) {
         Second = 0;
         Minute++;
-    }
-    if (Minute == 60) {
-        Minute = 0;
-        Hour++;
-    }
-    if (Hour == 24) {
-        Hour = 0;
-        Day++;
-    }
+        
+        // Notify Observers every minute (or however often you want)
+        NotifyTimeChanged(); 
 
-    // Month Update
-    if (Month == 1 || Month == 3 || Month == 5 || Month == 7 || Month == 8 ||
-        Month == 10 || Month == 12) {
-        if (Day == 32) {
-            Day = 1;
-            Month++;
-        }
-    } else if (Month == 2) {
-        if (Day == 29) {
-            Day = 1;
-            Month++;
-        }
-    } else {
-        if (Day == 31) {
-            Day = 1;
-            Month++;
+        if (Minute >= 60) {
+            Minute = 0;
+            Hour++;
+            if (Hour >= 24) {
+                Hour = 0;
+                Day++;
+                CalculateSeason(); // Update season if needed
+                
+                // Notify Observers that a new day started
+                NotifyDayChanged();
+            }
         }
     }
-
-    // Year Update
-    if (Month == 13) {
-        Month = 1;
-        Year++;
-    }
-
-    // SeasonUpdate
-    CalculateSeason();
 }
 
 void WorldTime::CalculateSeason() {
-    if (Month >= 3 && Month <= 5)
-        Season = "Spring";
-    else if (Month >= 6 && Month <= 8)
-        Season = "Summer";
-    else if (Month >= 9 && Month <= 11)
-        Season = "Autumn";
-    else
-        Season = "Winter";
+    // Basic logic example
+    if (Month >= 3 && Month <= 5) Season = "Spring";
+    else if (Month >= 6 && Month <= 8) Season = "Summer";
+    else if (Month >= 9 && Month <= 11) Season = "Autumn";
+    else Season = "Winter";
 }
 
+// Implement other stubs (TimeStart, TimeStop, etc.) as needed...
 void WorldTime::TimeStart() { isContinue = 1; }
-
 void WorldTime::TimeStop() { isContinue = 0; }
-
-void WorldTime::TimeSet(const int NewYear, const int NewMonth, const int NewDay,
-                        const int NewHour, const int NewMinute,
-                        const int NewSecond) {
-    Year = NewYear;
-    Month = NewMonth;
-    Day = NewDay;
-    Hour = NewHour;
-    Minute = NewMinute;
-    Second = NewSecond;
-}
-
-void WorldTime::TimeShow() {
-    CCLOG("%d %d %d %d %d %d\n", Year, Month, Day, Hour, Minute, Second);
-    CCLOG("%s\n", Season.c_str());
+void WorldTime::TimeShow() { /* Cocos2d log or UI update */ }
+void WorldTime::TimeSet(int nY, int nM, int nD, int nH, int nMin, int nS) {
+    Year = nY; Month = nM; Day = nD; Hour = nH; Minute = nMin; Second = nS;
 }

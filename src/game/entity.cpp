@@ -1,48 +1,75 @@
 #include "game/entity.h"
 
-#include "utility/logger.h"
-
 namespace th_valley {
 
-void Entity::SetState(EntityState state) { state_ = state; }
+Entity::Entity() {
+    // 构造时，初始状态为空，init 中再初始化
+    current_state_ = nullptr;
+}
 
-Entity::EntityState Entity::GetState() const { return state_; }
-
-void Entity::SetDirection(Direction direction) { direction_ = direction; }
-
-Entity::Direction Entity::GetDirection() const { return direction_; }
+Entity::~Entity() {
+    // 必须清理当前状态内存
+    if (current_state_) {
+        current_state_->Exit(this);
+        delete current_state_;
+        current_state_ = nullptr;
+    }
+}
 
 bool Entity::init() {
-    if (!cocos2d::Sprite::init()) {
+    if (!Sprite::init()) {
         return false;
     }
-    auto* texture =
-        cocos2d::Director::getInstance()->getTextureCache()->addImage(
-            "assets/avatar/koishi_left.png");
-    auto* sprite_frame = cocos2d::SpriteFrame::createWithTexture(
-        texture, cocos2d::Rect(0, 0, 128, 128));
-    this->setSpriteFrame(sprite_frame);
-    this->setScale(32.0F / 128.0F);
-    this->setAnchorPoint(cocos2d::Vec2(0.5F, 0.0F));
+
+    // 开启 Update 调度
+    this->scheduleUpdate();
+
+    // 初始化默认状态为 Idle
+    ChangeState(new IdleState());
 
     return true;
 }
 
-void Entity::update(float delta) {
-    constexpr float kMoveSpeed = 100.0F;
-    if (state_ == EntityState::kAction) {
-        Logger::GetInstance().LogInfo("Action");
-    }
-}
-
 void Entity::InitEntity(cocos2d::Node* parent) {
-    if (!init()) {
-        return;
+    if (parent) {
+        parent->addChild(this);
+        this->setPosition(parent->getContentSize() / 2);
     }
-    parent->addChild(this, 20);
 }
 
-void Entity::ChangeDirection(Direction direction) {
+void Entity::update(float delta) {
+    // 核心：委托给当前状态执行
+    if (current_state_) {
+        current_state_->Execute(this, delta);
+    }
+}
+
+void Entity::ChangeState(IEntityState* newState) {
+    // 1. 退出旧状态
+    if (current_state_) {
+        current_state_->Exit(this);
+        delete current_state_; // 释放旧状态内存
+    }
+
+    // 2. 切换指针
+    current_state_ = newState;
+
+    // 3. 进入新状态
+    if (current_state_) {
+        current_state_->Enter(this);
+    }
+}
+
+void Entity::OnInput(const Input& input) {
+    // 将输入传递给当前状态处理
+    if (current_state_) {
+        current_state_->HandleInput(this, input);
+    }
+}
+
+// --- Getter / Setter ---
+
+void Entity::SetDirection(Direction direction) {
     direction_ = direction;
     switch (direction_) {
         case Direction::kUp:
@@ -66,4 +93,16 @@ void Entity::ChangeDirection(Direction direction) {
     }
 }
 
-}  // namespace th_valley
+Entity::Direction Entity::GetDirection() const {
+    return direction_;
+}
+
+EntityData& Entity::GetData() {
+    return entity_data_;
+}
+
+const EntityData& Entity::GetData() const {
+    return entity_data_;
+}
+
+} // namespace th_valley

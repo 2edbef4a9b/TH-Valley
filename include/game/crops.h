@@ -3,34 +3,38 @@
 
 #include <string>
 #include <vector>
-
 #include "cocos2d.h"
-#include "game/agriculture.h"
-#include "game/bag.h"
-#include "utility/position.h"
 
-class Crops : public Agriculture {
+#include "i_time_observer.h"
+#include "game/agriculture.h" // Assumed existing base class
+#include "game/bag.h"         // Assumed existing
+#include "utility/position.h" // Assumed existing
+
+class Weather;   // Forward declaration
+class WorldTime; // Forward declaration
+
+class Crops : public Agriculture, public ITimeObserver {
 public:
-    [[nodiscard]] virtual const std::string &getCropName() const {
-        return CropName;
-    }
+    Crops();
+    virtual ~Crops();
 
+    [[nodiscard]] virtual const std::string &getCropName() const;
     void setCurrentGrowthStage(int stage);
 
-    // Crops Information
+    // --- ITimeObserver Implementation ---
+    void OnTimeTick(WorldTime* time) override;
+    void OnDayChanged(WorldTime* time) override;
+    // ------------------------------------
+
+    // Data Members
     std::string CropName;
-    std::string CropType;
     int CurrentGrowthStage;
     int MaxGrowthStage;
     std::vector<int> GrowthDuration;
     std::vector<std::string> GrowthStage;
-    std::vector<cocos2d::Rect> frameRect;
     cocos2d::Sprite *CropSprite;
-    ItemSprite *Fruit;
-
-    // Situation
-    std::vector<std::string> GrowthSituation;
-
+    
+    // Status flags
     bool isNormal;
     int SpecialSituationCount;
     bool isWrongSeason;
@@ -43,36 +47,12 @@ public:
     int toDeathTime;
     bool isFertilize;
 
-    int GrowthSpeed;
-
-    // requirement
-    int WaterRequirement;
-    int MaxWaterRequirement;
-    int FertilizerDuration;
-    std::vector<std::string>
-        SeasonRequirement;  // Player can only plant in these seasons
-    std::vector<std::string>
-        SoilRequirement;  // Player can only plant on these types of soil
-
-    // position
-    // Map *CurrentMap;
     Position position;
 
-    // Output
-    int output;
-
-    void getTime(WorldTime *Time);
+    // Logic Methods
     void getWeather(Weather *weather);
-    // virtual void ShowCropInfo();
-    // virtual void DurationCalculate();
+    virtual void CropAutomaticUpdate(WorldTime* time);
     virtual void CropWatering();
-    // virtual void CropHavest();
-    virtual void CropFertilize();
-    // virtual void CropRemove();
-    virtual void CropAutomaticUpdate();
-    virtual void UpdateSituation(const std::string &Situation,
-                                 const bool &Compare, bool &isSituation,
-                                 const int &toDeath);
 };
 
-#endif  // CROPS_H_
+#endif // CROPS_H_
