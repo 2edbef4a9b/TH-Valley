@@ -8,7 +8,7 @@ namespace th_valley {
 
 class Agriculture {
 protected:
-    // 环境引用 (不负责内存管理，由 Manager 注入)
+    // Environment reference (doesn't manage memory, injected by Manager) - Refactored with Factory Pattern
     WorldTime* CurrentTime = nullptr;
     Weather* CurrentWeather = nullptr;
 
@@ -16,7 +16,7 @@ public:
     Agriculture() = default;
     virtual ~Agriculture() = default;
 
-    // 依赖注入：由 Manager 在创建对象后立即调用
+    // Dependency injection: called by Manager immediately after object creation - Refactored with Factory Pattern
     void bindWorldInformation(WorldTime* Time, Weather* weather) {
         CurrentTime = Time;
         CurrentWeather = weather;

@@ -2,18 +2,18 @@
 #define CROP_FACTORY_H_
 
 #include "game/crops.h"
-#include "game/specific_crops.h" // 包含 Strawberry, Potato, Carrot, Turnip 的定义
+#include "game/specific_crops.h"  // Contains definitions for Strawberry, Potato, Carrot, Turnip - Refactored with Factory Pattern
 
 namespace th_valley {
 
-// --- 抽象工厂 ---
+// --- Abstract Factory - Refactored with Abstract Factory Pattern ---
 class CropFactory {
 public:
     virtual ~CropFactory() = default;
     virtual Crops* CreateCrop() = 0;
 };
 
-// --- 具体工厂 ---
+// --- Concrete Factories - Refactored with Factory Pattern ---
 
 class StrawberryFactory : public CropFactory {
 public:
@@ -35,6 +35,6 @@ public:
     Crops* CreateCrop() override { return new Turnip(); }
 };
 
-} // namespace th_valley
+}  // namespace th_valley
 
-#endif // CROP_FACTORY_H_
+#endif  // CROP_FACTORY_H_

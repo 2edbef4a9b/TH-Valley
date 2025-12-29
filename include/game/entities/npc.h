@@ -1,8 +1,8 @@
 #ifndef NPC_H_
 #define NPC_H_
 
-#include "game/character.h" 
 #include "game/bag.h"
+#include "game/character.h"
 
 namespace th_valley {
 
@@ -11,22 +11,22 @@ public:
     NPC();
     ~NPC() override = default;
 
-    // --- NPC 特有功能 ---
-    
-    // 显示对话框
-    void ShowTalkBox(cocos2d::Node *parent, Bag* bag);
-    
-    // NPC 行为 AI (比如白天去广场，晚上回家)
+    // --- NPC Specific Functions ---
+
+    // Show dialogue box
+    void ShowTalkBox(cocos2d::Node* parent, Bag* bag);
+
+    // NPC behavior AI (e.g. go to square in day, return home at night)
     void UpdateAI(float dt);
 
-    // 是否允许交互
+    // Whether interaction is allowed
     bool CanInteract() const { return true; }
 
 protected:
-    // 对话内容数据
+    // Dialogue content data
     std::vector<std::string> dialogues_;
 };
 
-} // namespace th_valley
+}  // namespace th_valley
 
-#endif // NPC_H_
+#endif  // NPC_H_

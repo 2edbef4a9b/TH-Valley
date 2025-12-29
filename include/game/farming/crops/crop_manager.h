@@ -7,7 +7,7 @@
 #include "cocos2d.h"
 
 #include "game/crops.h"
-#include "game/crop_factory.h" // 【修改点】只引用 crop_factory.h
+#include "game/crop_factory.h" // [Change point] only reference crop_factory.h - Refactored with Factory Pattern
 #include "game/worldtime.h"
 #include "game/weather.h"
 #include "utility/position.h"

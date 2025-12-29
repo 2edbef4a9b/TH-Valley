@@ -14,7 +14,7 @@
 #include "game/citizen.h"
 #include "utility/position.h"
 
-// 前向声明
+// Forward declaration - Refactored with Facade Pattern
 namespace th_valley {
     class FarmSystemFacade; 
     class MapController;
@@ -24,7 +24,7 @@ namespace th_valley {
 
 class TiledMap final : public cocos2d::Node {
 public:
-    // 传送门定义
+    // Portal definition - Refactored with Facade Pattern
     class Portal {
     public:
         explicit Portal(const std::string& portal_name);
@@ -40,7 +40,7 @@ public:
     TiledMap();
     ~TiledMap() override;
     
-    // 禁用拷贝
+    // Disable copying - Refactored with Facade Pattern
     TiledMap(const TiledMap&) = delete;
     TiledMap& operator=(const TiledMap&) = delete;
 
@@ -50,13 +50,13 @@ public:
     void onEnter() override;
     void update(float delta) override;
 
-    // --- 输入处理 ---
-    // 核心：处理点击，将世界坐标转换为网格坐标，转发给 FarmSystemFacade
+    // --- Input handling ---
+    // Core: Handle clicks, convert world coordinates to grid coordinates, forward to FarmSystemFacade - Refactored with Facade Pattern
     void OnClick(const cocos2d::Vec2& worldPos, const std::string& selectedTool);
     
     void HandleKeyboardInput(); 
 
-    // --- 地图功能 ---
+    // --- Map functions ---
     cocos2d::Rect GetPortalRect(Portal portal, std::string_view ObjectLayerName = "Objects");
     void SetPlayerPos(cocos2d::Vec2 pos);
     void SetTeleportStatus(bool status);
@@ -65,22 +65,22 @@ public:
     std::string GetMapName() const { return map_name_; }
     void SetMapName(const std::string& name) { map_name_ = name; }
     
-    // 获取 FarmSystemFacade 指针 (供 MapController 保存数据使用)
+    // Get FarmSystemFacade pointer (for MapController to save data) - Refactored with Facade Pattern
     FarmSystemFacade* GetFarmSystem() const { return farm_system_; }
 
-    // --- 辅助计算 ---
+    // --- Auxiliary calculations ---
     cocos2d::Vec2 GetPlayerPos();
     cocos2d::Vec2 TileCoordFromPos(cocos2d::Vec2 pos);
     cocos2d::Vec2 PosFromtileCoord(Position pos);
     bool IsCollision(cocos2d::Vec2 pos, std::string LayerName = "Paths");
     bool IsCollisionAtAnyLayer(cocos2d::Vec2 pos);
 
-    // --- NPC 相关 ---
+    // --- NPC related ---
     void SpawnCitizen(Citizen* citizen);
     void initCitizenPosition();
     void updateCitizenSprites(float dt);
 
-    // --- 数据持久化 ---
+    // --- Data persistence ---
     void Save(const std::string& file_name);
     void Load(const std::string& file_name);
 
@@ -104,11 +104,11 @@ private:
     std::vector<cocos2d::Sprite*> CitizensSprite;
     std::map<cocos2d::Sprite*, Citizen*> SpritetoCitizen;
 
-    // --- 系统外观 ---
-    // TiledMap 拥有并管理 FarmSystemFacade 的生命周期
+    // --- System facade ---
+    // TiledMap owns and manages the lifecycle of FarmSystemFacade - Refactored with Facade Pattern
     FarmSystemFacade* farm_system_{nullptr};
 
-    // 私有辅助函数
+    // Private auxiliary functions - Refactored with Facade Pattern
     void CreateMiniMap();
     std::optional<Portal> GetPortal(cocos2d::Vec2 pos, std::string_view ObjectLayerName = "Objects") const;
     void SetViewpointCenter(cocos2d::Vec2 pos);

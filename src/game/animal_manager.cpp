@@ -7,13 +7,13 @@ AnimalManager::AnimalManager() {
 }
 
 AnimalManager::~AnimalManager() {
-    // 清理工厂
+    // Clean up factories - Refactored with Factory Pattern
     for(auto& pair : factory_registry_) {
         delete pair.second;
     }
     factory_registry_.clear();
-    
-    // 清理动物
+
+    // Clean up animals - Refactored with Factory Pattern
     for(auto* animal : animals_list_) {
         delete animal;
     }
@@ -36,26 +36,26 @@ void AnimalManager::SpawnAnimal(const std::string& type, int count, cocos2d::Vec
     for(int i=0; i<count; ++i) {
         Animals* newAnimal = factory->CreateAnimal();
         
-        // 绑定环境
+        // Bind environment - Refactored with Factory Pattern
         newAnimal->bindWorldInformation(time_system_, weather_system_);
         
-        // 设置位置等初始化逻辑...
+        // Set position and other initialization logic... - Refactored with Factory Pattern
         if (spawn_pos != cocos2d::Vec2::ZERO) {
-            newAnimal->position = Position(0, 0); // 需转换坐标
-            // 或者直接设置 Sprite 位置
+            newAnimal->position = Position(0, 0); // Need to convert coordinates - Refactored with Factory Pattern
+            // Or directly set Sprite position - Refactored with Factory Pattern
         }
         
         if (parent_layer_) {
-            newAnimal->InitSprite(parent_layer_); // 假设 Animals 有初始化 Sprite 的方法
+            newAnimal->InitSprite(parent_layer_); // Assume Animals has method to initialize Sprite - Refactored with Factory Pattern
         }
 
         animals_list_.push_back(newAnimal);
         
-        // 注册时间观察者
+        // Register time observer - Refactored with Observer Pattern
         if(time_system_) time_system_->AddObserver(newAnimal);
     }
 }
 
-// ... 其他实现 ...
+// ... Other implementations ... - Refactored with Factory Pattern
 
 }

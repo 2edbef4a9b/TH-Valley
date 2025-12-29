@@ -18,49 +18,49 @@ public:
     FarmSystemFacade();
     ~FarmSystemFacade();
 
-    // 禁用拷贝
+    // Disable copying - Refactored with Facade Pattern
     FarmSystemFacade(const FarmSystemFacade&) = delete;
     FarmSystemFacade& operator=(const FarmSystemFacade&) = delete;
 
-    // --- 初始化 ---
-    // map_root_node: 用于渲染 Sprite 的父节点 (通常是 TiledMap 或 ObjectLayer)
+    // --- Initialization - Refactored with Facade Pattern ---
+    // map_root_node: Parent node for rendering Sprites (usually TiledMap or ObjectLayer) - Refactored with Facade Pattern
     void InitSystem(cocos2d::Node* map_root_node);
 
-    // --- 游戏循环 ---
-    // 在 TiledMap::update 中调用
+    // --- Game Loop - Refactored with Facade Pattern ---
+    // Called in TiledMap::update - Refactored with Facade Pattern
     void UpdateGame(float dt);
 
-    // --- 玩家交互接口 (核心) ---
-    // 当玩家点击地图时调用
-    // grid_pos: 点击的网格坐标
-    // world_pos: 点击的世界像素坐标 (用于判定动物点击)
-    // selected_tool: 当前手持工具名称 (如 "Hoe", "Seeds", "WateringCan")
+    // --- Player Interaction Interface (Core) - Refactored with Facade Pattern ---
+    // Called when player clicks on the map - Refactored with Facade Pattern
+    // grid_pos: Clicked grid coordinates - Refactored with Facade Pattern
+    // world_pos: Clicked world pixel coordinates (used for animal click detection) - Refactored with Facade Pattern
+    // selected_tool: Current held tool name (e.g. "Hoe", "Seeds", "WateringCan") - Refactored with Facade Pattern
     void OnInteract(const Position& grid_pos, const cocos2d::Vec2& world_pos, const std::string& selected_tool);
 
-    // 专门的种植接口 (通常由 OnInteract 内部调用，也可供调试使用)
+    // Dedicated planting interface (typically called internally by OnInteract, can also be used for debugging) - Refactored with Facade Pattern
     bool PlantCrop(const Position& pos, const std::string& seed_name);
 
-    // --- 数据保存/加载接口 ---
+    // --- Data Save/Load Interface - Refactored with Facade Pattern ---
     void SaveData(const std::string& save_file);
     void LoadData(const std::string& save_file);
 
-    // --- 子系统访问器 (供 UI 使用) ---
+    // --- Subsystem Accessors (for UI use) - Refactored with Facade Pattern ---
     WorldTime* GetWorldTime() const { return time_system_; }
     Weather* GetWeather() const { return weather_system_; }
     StatisticsManager* GetStatistics() const { return statistics_manager_; }
-    // CropManager/AnimalManager 通常不需要暴露给 UI，除非为了调试显示碰撞箱
+    // CropManager/AnimalManager typically don't need to be exposed to UI, unless for debugging collision boxes - Refactored with Facade Pattern
 
 private:
-    // 环境系统引用 (使用全局单例或注入)
+    // Environment system references (using global singleton or injection) - Refactored with Facade Pattern
     WorldTime* time_system_{nullptr};
     Weather* weather_system_{nullptr};
 
-    // 子系统管理器 (由 Facade 拥有并管理生命周期)
+    // Subsystem managers (owned by Facade and lifecycle managed) - Refactored with Facade Pattern
     CropManager* crop_manager_{nullptr};
     AnimalManager* animal_manager_{nullptr};
     StatisticsManager* statistics_manager_{nullptr};
 
-    // 内部辅助逻辑
+    // Internal helper logic - Refactored with Facade Pattern
     void HandleCropInteraction(const Position& pos, const std::string& tool);
     void HandleAnimalInteraction(const cocos2d::Vec2& world_pos, const std::string& tool);
 };

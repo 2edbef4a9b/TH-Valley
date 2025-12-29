@@ -11,14 +11,14 @@ class Logger {
 public:
     static Logger& GetInstance();
 
-    // 基础打印接口
+    // Basic print interface - Refactored with Singleton Pattern
     void LogDebug(std::string_view message);
     void LogInfo(std::string_view message);
     void LogWarning(std::string_view message);
     void LogError(std::string_view message);
     void LogFatal(std::string_view message);
 
-    // 带格式化参数的模板接口 (C++20 std::format)
+    // Template interface with formatted parameters (C++20 std::format) - Refactored with Singleton Pattern
     template <typename... Args>
     void LogDebug(std::string_view format_str, Args&&... args);
 
@@ -34,7 +34,7 @@ public:
     template <typename... Args>
     void LogFatal(std::string_view format_str, Args&&... args);
 
-    // 禁用拷贝/移动
+    // Disable copy/move - Refactored with Singleton Pattern
     Logger(const Logger&) = delete;
     Logger& operator=(const Logger&) = delete;
     Logger(Logger&&) = delete;

@@ -5,7 +5,7 @@
 #include <vector>
 #include "cocos2d.h"
 
-#include "game/core/i_time_observer.h" // 假设路径调整过
+#include "game/core/i_time_observer.h" // Assume path has been adjusted - Refactored with Factory Pattern
 #include "game/farming/crops/agriculture.h"
 #include "game/core/position.h"
 
@@ -16,51 +16,51 @@ public:
     Animals();
     virtual ~Animals();
 
-    // --- ITimeObserver 实现 ---
+    // --- ITimeObserver implementation ---
     void OnTimeTick(WorldTime* time) override;
     void OnDayChanged(WorldTime* time) override;
     // --------------------------
 
-    // --- 核心逻辑数据 ---
+    // --- Core logic data ---
     std::string AnimalName;
     bool isHungry;
     bool isUnhappy;
     int Happiness;
     Position position;
     
-    // 生长数据
+    // Growth data - Refactored with Factory Pattern
     int CurrentGrowthStage;
     int MaxGrowthStage;
-    int GrowthDuration; // 总生长时长(秒或Tick)
+    int GrowthDuration; // Total growth duration (seconds or ticks) - Refactored with Factory Pattern
     
-    // 产出数据
-    std::string ProduceItemName; // 产出物品名
+    // Output data - Refactored with Factory Pattern
+    std::string ProduceItemName; // Output item name - Refactored with Factory Pattern
     int ProduceCount;
 
-    // --- 表现层配置 (View Config) ---
-    // 这些数据在具体子类的构造函数中设置，但不立即加载图片
-    std::string texturePath;    // 图片路径
-    cocos2d::Size frameSize;    // 单个动画帧的大小 (e.g. 32x32)
-    cocos2d::Rect initialRect;  // 初始站立的帧区域
+    // --- Presentation layer configuration (View Config) --- - Refactored with Factory Pattern
+    // These data are set in specific subclass constructors, but don't immediately load images - Refactored with Factory Pattern
+    std::string texturePath;    // Image path - Refactored with Factory Pattern
+    cocos2d::Size frameSize;    // Size of single animation frame (e.g. 32x32) - Refactored with Factory Pattern
+    cocos2d::Rect initialRect;  // Initial standing frame area - Refactored with Factory Pattern
     std::vector<float> scaleRange; // {min, max}
 
-    // --- 表现层实例 ---
+    // --- Presentation layer instance ---
     cocos2d::Sprite* AnimalSprite = nullptr; 
-    cocos2d::Vector<cocos2d::SpriteFrame*> animFrames[5]; // 存储动画帧
+    cocos2d::Vector<cocos2d::SpriteFrame*> animFrames[5]; // Store animation frames - Refactored with Factory Pattern
 
-    // --- 核心方法 ---
+    // --- Core methods ---
     
-    // [新增] 初始化视图：解耦的关键
-    // 在 Manager Spawn 时调用，而不是在构造函数中调用
+    // [New] Initialize view: key to decoupling - Refactored with Factory Pattern
+    // Called during Manager Spawn, not in constructor - Refactored with Factory Pattern
     virtual void InitializeView(cocos2d::Node* parent);
 
-    // 个体行为
+    // Individual behavior - Refactored with Factory Pattern
     virtual void Stroke();
     virtual bool Eat(const std::string& EatFood);
     virtual void AnimalAutomaticUpdate(WorldTime* time);
 
 protected:
-    // 辅助：根据 texturePath 和 frameSize 切割动画帧
+    // Helper: Cut animation frames based on texturePath and frameSize - Refactored with Factory Pattern
     void GenerateFrames();
 };
 

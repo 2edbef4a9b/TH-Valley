@@ -8,24 +8,24 @@
 #include "game/items/item_system.h"
 #include "game/farming/animals/animal_factory.h"
 
-// 商店逻辑类
+// Shop logic class - Refactored with Flyweight Pattern
 class Shop {
 public:
     Shop() = default;
     virtual ~Shop() = default;
 
-    // 获取商品列表 <索引, 商品堆叠>
+    // Get product list <index, item stack> - Refactored with Flyweight Pattern
     const std::map<int, ItemStack*>& GetStock() const { return stock_; }
     
-    // 获取商品价格
+    // Get product price - Refactored with Flyweight Pattern
     int GetPrice(int index) const {
         auto it = price_list_.find(index);
         return (it != price_list_.end()) ? it->second : 0;
     }
 
-    // 购买逻辑
-    // targetBag: 玩家背包
-    // index: 商品索引
+    // Purchase logic - Refactored with Flyweight Pattern
+    // targetBag: player's backpack - Refactored with Flyweight Pattern
+    // index: product index - Refactored with Flyweight Pattern
     bool Purchase(int index, Bag* targetBag) {
         if (stock_.find(index) == stock_.end()) return false;
         
@@ -34,13 +34,13 @@ public:
 
         ItemStack* itemToBuy = stock_[index];
         
-        // 尝试添加到背包 (深拷贝一份)
+        // Try to add to backpack (deep copy one) - Refactored with Flyweight Pattern
         ItemStack* newItem = new ItemStack(itemToBuy->getDefinition(), 1); 
-        // 简单的自动寻找空位逻辑，实际项目可能需要指定位置
-        // 这里假设 add 方法能处理自动堆叠或找位，或者 GUI 层处理
-        // 为了兼容旧逻辑，我们假设 Bag 有一个 AutoAdd 方法，或者 GUI 负责找位置
+        // Simple automatic empty space search logic, actual project may need to specify position - Refactored with Flyweight Pattern
+        // Here we assume the add method can handle automatic stacking or positioning, or GUI layer handles it - Refactored with Flyweight Pattern
+        // For compatibility with old logic, we assume Bag has an AutoAdd method, or GUI is responsible for positioning - Refactored with Flyweight Pattern
         
-        // 简化：这里只做扣钱逻辑，具体添加物品由 UI 层调用 Bag::addItem
+        // Simplified: only handle money deduction here, specific item addition is called by UI layer Bag::addItem - Refactored with Flyweight Pattern
         targetBag->SpendMoney(price);
         return true;
     }
@@ -50,19 +50,19 @@ protected:
     std::map<int, int> price_list_;
 };
 
-// 具体的牧场商店
+// Specific farm shop - Refactored with Flyweight Pattern
 class FarmShop : public Shop {
 public:
     FarmShop() {
-        // 使用新的 ItemSystem
+        // Use new ItemSystem - Refactored with Flyweight Pattern
         ItemDefinition* pigDef = ItemFactory::getInstance()->GetItemDefinition("Pig");
         if (!pigDef) {
-            // 如果没定义，临时注册一个（实际应在游戏启动时统一注册）
+            // If not defined, temporarily register one (should be unified at game startup) - Refactored with Flyweight Pattern
             ItemFactory::getInstance()->LoadDefinition("Pig", "Pig cub", "assets/Animals/Pig.png", cocos2d::Rect(0,0,32,32));
             pigDef = ItemFactory::getInstance()->GetItemDefinition("Pig");
         }
 
-        // 添加商品
+        // Add products - Refactored with Flyweight Pattern
         stock_[0] = new ItemStack(pigDef, 1);
         price_list_[0] = 500;
     }

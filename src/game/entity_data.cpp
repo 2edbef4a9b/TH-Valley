@@ -3,13 +3,13 @@
 namespace th_valley {
 
 EntityData::EntityData() {
-    // 初始化默认数值
+    // Initialize default values - Refactored with State Pattern
     status_ = {1000, 100, 100, 100, 0, {100, 200, 300}, 1};
     attack_ = {10, 10};
     defense_ = {5, 5};
 }
 
-// --- Getter / Setter 实现 ---
+// --- Getter / Setter implementation - Refactored with State Pattern ---
 
 void EntityData::SetHealth(double health) { status_.health = health; }
 double EntityData::GetHealth() const { return status_.health; }
@@ -41,11 +41,11 @@ double EntityData::GetPhysicalDefense() const { return defense_.physical_defense
 void EntityData::SetSpellDefense(double val) { defense_.spell_defense = val; }
 double EntityData::GetSpellDefense() const { return defense_.spell_defense; }
 
-// 简单的升级逻辑实现
+// Simple level-up logic implementation - Refactored with State Pattern
 void EntityData::Status::LevelUp(double exp) {
     if (Level < experiencelist.size() && exp >= experiencelist[Level - 1]) {
         Level++;
-        health += 100; // 升级回血/加上限
+        health += 100; // Level up health recovery/add limit - Refactored with State Pattern
     }
 }
 

@@ -9,7 +9,7 @@
 #include "math/Vec2.h"
 #include "utility/position.h"
 
-// 前向声明 TiledMap，避免包含 tiled_map.h 导致循环依赖
+// Forward declaration of TiledMap to avoid circular dependency from including tiled_map.h - Refactored with Facade Pattern
 namespace th_valley {
     class TiledMap; 
 }
@@ -18,27 +18,27 @@ namespace th_valley {
 
 class MapController {
 public:
-    // 禁用拷贝和赋值
+    // Disable copying and assignment - Refactored with Facade Pattern
     MapController(const MapController&) = delete;
     MapController& operator=(const MapController&) = delete;
     MapController(MapController&&) = delete;
     MapController& operator=(MapController&&) = delete;
 
-    // 获取单例
+    // Get singleton - Refactored with Facade Pattern
     static MapController& GetInstance();
 
-    // --- 核心逻辑 ---
+    // --- Core logic ---
 
-    // 加载并切换地图
+    // Load and switch maps - Refactored with Facade Pattern
     void LoadTiledMap(const std::string& tiled_map_name, cocos2d::Node* parent);
 
-    // 保存当前地图状态 (委托给 TiledMap -> Facade)
+    // Save current map state (delegated to TiledMap -> Facade) - Refactored with Facade Pattern
     void SaveCurrentMap();
 
-    // 触发传送 (通常由 TiledMap 检测到碰撞后调用)
+    // Trigger teleport (usually called after TiledMap detects collision) - Refactored with Facade Pattern
     void TriggerTeleport(const std::string& portal_name);
 
-    // --- 玩家数据管理 ---
+    // --- Player data management ---
     void SetPlayerPos(cocos2d::Vec2 pos);
     cocos2d::Vec2 GetPlayerPos() const;
 
@@ -48,10 +48,10 @@ public:
     std::string GetPlayerName() const { return player_name_; }
     std::string GetPlayerMap() const { return player_map_; }
 
-    // --- 辅助功能 ---
+    // --- Auxiliary functions ---
     void LoadRainEffect(const std::string& tiled_map_name);
 
-    // 获取当前持有的 TiledMap 指针
+    // Get current TiledMap pointer - Refactored with Facade Pattern
     TiledMap* GetTiledMap() const { return game_tiled_map_; }
 
 private:

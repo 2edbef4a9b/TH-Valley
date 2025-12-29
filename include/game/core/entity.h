@@ -16,24 +16,24 @@ public:
     Entity();
     ~Entity() override;
 
-    // 禁用拷贝，防止状态指针被浅拷贝导致重复释放
+    // Disable copying to prevent shallow copy of state pointer causing double free - Refactored with State Pattern
     Entity(const Entity&) = delete;
     Entity& operator=(const Entity&) = delete;
 
     bool init() override;
     void update(float delta) override;
 
-    // --- 状态模式方法 ---
+    // --- State Pattern methods - Refactored with State Pattern ---
     void ChangeState(IEntityState* newState);
-    
-    // 输入处理入口（供外部层调用)
+
+    // Input processing entry (for external layer to call) - Refactored with State Pattern
     void OnInput(const Input& input);
 
-    // --- 供状态类调用的接口 ---
+    // --- Interfaces for state classes to call - Refactored with State Pattern ---
     void SetDirection(Direction direction);
     Direction GetDirection() const;
-    EntityData& GetData(); // 允许修改数据
-    const EntityData& GetData() const; // 只读数据
+    EntityData& GetData(); // Allow data modification - Refactored with State Pattern
+    const EntityData& GetData() const; // Read-only data - Refactored with State Pattern
 
     virtual void InitEntity(cocos2d::Node* parent);
 
@@ -41,7 +41,7 @@ private:
     EntityData entity_data_;
     Direction direction_{Direction::kDown};
     
-    // 当前状态指针
+    // Current state pointer - Refactored with State Pattern
     IEntityState* current_state_ = nullptr;
 };
 

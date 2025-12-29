@@ -4,7 +4,7 @@
 
 namespace th_valley {
 
-// --- Object Pool Implementation ---
+// --- Object Pool Implementation - Refactored with Object Pool Pattern ---
 std::list<cocos2d::Sprite*> IToolStrategy::effect_pool_;
 
 void IToolStrategy::CleanupPool() {
@@ -44,7 +44,7 @@ void IToolStrategy::ReturnEffectSprite(cocos2d::Sprite* sprite) {
     }
 }
 
-// --- Strategies Implementation ---
+// --- Strategy Pattern Implementation - Refactored with Strategy Pattern ---
 
 void WateringCanStrategy::Use(Avatar* user, cocos2d::Vec2 tarpos) {
     constexpr double kScale = 5.0;

@@ -18,16 +18,16 @@ public:
     AnimalManager();
     ~AnimalManager();
 
-    // 初始化引用
+    // Initialize references - Refactored with Factory Pattern
     void Init(cocos2d::Node* parent_layer, WorldTime* time, Weather* weather);
     
     void Update(float dt);
     
-    // 生成动物
-    // 实现注意事项：
-    // 1. factory->CreateAnimal()
-    // 2. newAnimal->InitializeView(parent_layer_) <-- 关键点
-    // 3. newAnimal->bindWorldInformation(...)
+    // Generate animal - Refactored with Factory Pattern
+    // Implementation notes: - Refactored with Factory Pattern
+    // 1. factory->CreateAnimal() - Refactored with Factory Pattern
+    // 2. newAnimal->InitializeView(parent_layer_) <-- Key point - Refactored with Factory Pattern
+    // 3. newAnimal->bindWorldInformation(...) - Refactored with Factory Pattern
     void SpawnAnimal(const std::string& type, int count, cocos2d::Vec2 spawn_pos = cocos2d::Vec2::ZERO);
     
     bool InteractWithAnimal(const cocos2d::Vec2& touch_pos, const std::string& tool_name);

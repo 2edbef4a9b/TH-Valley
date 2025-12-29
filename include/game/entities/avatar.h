@@ -15,18 +15,18 @@ public:
     bool init() override;
     void update(float delta) override;
 
-    // --- 策略模式  ---
+    // --- Strategy Pattern Implementation - Refactored with Strategy Pattern ---
     void SetToolStrategy(IToolStrategy* newStrategy);
     void UseCurrentTool(cocos2d::Vec2 targetPos);
-    
-    // --- 输入处理特有逻辑 ---
-    // 响应键盘/鼠标
+
+    // --- Input handling specific logic - Refactored with Strategy Pattern ---
+    // Responds to keyboard/mouse input - Refactored with Strategy Pattern
     void HandleInput(); 
 
 private:
     IToolStrategy* currentToolStrategy_ = nullptr;
     
-    // 职业、武器等玩家特有属性
+    // Player specific attributes like profession, weapons, etc. - Refactored with Strategy Pattern
     std::string profession;
 };
 

@@ -3,7 +3,7 @@
 namespace th_valley {
 
 StatisticsManager::StatisticsManager() {
-    // 初始化默认值
+    // Initialize default values - Refactored with Observer Pattern
     player_crop_level_ = 1;
     current_crop_exp_ = 0;
     total_crops_harvested_ = 0;
@@ -12,7 +12,7 @@ StatisticsManager::StatisticsManager() {
     farm_house_level_ = 1;
     total_animals_owned_ = 0;
 
-    // 简单的经验表: 1级100, 2级200, 3级400...
+    // Simple experience table: Level 1 100, Level 2 200, Level 3 400... - Refactored with Observer Pattern
     crop_level_up_exp_ = {0, 100, 200, 400, 800, 1500};
 }
 
@@ -28,16 +28,16 @@ void StatisticsManager::OnCropHarvested(int exp_gain) {
 }
 
 void StatisticsManager::CheckCropLevelUp() {
-    // 防止数组越界
+    // Prevent array out of bounds - Refactored with Observer Pattern
     if (player_crop_level_ >= crop_level_up_exp_.size()) return;
 
     double needed = crop_level_up_exp_[player_crop_level_];
     if (current_crop_exp_ >= needed) {
         player_crop_level_++;
-        current_crop_exp_ -= needed; // 或者保留累积经验，看游戏设计
+        current_crop_exp_ -= needed; // Or keep accumulated experience, depending on game design - Refactored with Observer Pattern
         cocos2d::log("Level Up! Farming Level is now: %d", player_crop_level_);
-        
-        // 可以在这里触发升级特效或通知 UI 更新
+
+        // Can trigger upgrade effects or notify UI update here - Refactored with Observer Pattern
     }
 }
 

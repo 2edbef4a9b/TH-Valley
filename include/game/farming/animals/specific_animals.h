@@ -5,15 +5,15 @@
 
 namespace th_valley {
 
-// ==================== 猪 ====================
+// ==================== Pig ==================== - Refactored with Factory Pattern
 class Pig : public Animals {
 public:
     Pig() {
-        // --- 逻辑数据 ---
+        // --- Logic data --- - Refactored with Factory Pattern
         AnimalName = "Pig";
         CurrentGrowthStage = 0;
         MaxGrowthStage = 1;
-        GrowthDuration = 60 * 60 * 24 * 10; // 10天
+        GrowthDuration = 60 * 60 * 24 * 10; // 10 days - Refactored with Factory Pattern
         
         ProduceItemName = "Truffle";
         ProduceCount = 1;
@@ -21,24 +21,24 @@ public:
         Happiness = 100;
         isHungry = false;
         
-        // --- 表现层配置 (只配置路径，不创建 Sprite) ---
+        // --- Presentation layer configuration (only configure path, don't create Sprite) --- - Refactored with Factory Pattern
         texturePath = "assets/Animals/Pig.png";
         frameSize = cocos2d::Size(32, 32);
         initialRect = cocos2d::Rect(0, 0, 32, 32);
         scaleRange = {0.6f, 1.0f};
     }
     
-    // 如果 Pig 有特殊的交互声音或行为，可以在这里重写基类方法
+    // If Pig has special interaction sounds or behaviors, can override base class methods here - Refactored with Factory Pattern
 };
 
-// ==================== 牛 ====================
+// ==================== Cow ==================== - Refactored with Factory Pattern
 class Cow : public Animals {
 public:
     Cow() {
         AnimalName = "Cow";
         CurrentGrowthStage = 0;
         MaxGrowthStage = 1;
-        GrowthDuration = 60 * 60 * 24 * 5; // 5天
+        GrowthDuration = 60 * 60 * 24 * 5; // 5 days - Refactored with Factory Pattern
         
         ProduceItemName = "Milk";
         ProduceCount = 1;
@@ -46,22 +46,22 @@ public:
         Happiness = 100;
         isHungry = false;
 
-        // 假设牛的图也是网格状的
+        // Assume cow's image is also grid-based - Refactored with Factory Pattern
         texturePath = "assets/Animals/Cow.png"; 
-        frameSize = cocos2d::Size(32, 32); // 牛可能更大，例如 48x48
+        frameSize = cocos2d::Size(32, 32); // Cow might be larger, e.g., 48x48 - Refactored with Factory Pattern
         initialRect = cocos2d::Rect(0, 0, 32, 32);
         scaleRange = {0.8f, 1.2f};
     }
 };
 
-// ==================== 鸡 ====================
+// ==================== Chicken ==================== - Refactored with Factory Pattern
 class Chicken : public Animals {
 public:
     Chicken() {
         AnimalName = "Chicken";
         CurrentGrowthStage = 0;
         MaxGrowthStage = 1;
-        GrowthDuration = 60 * 60 * 24 * 3; // 3天
+        GrowthDuration = 60 * 60 * 24 * 3; // 3 days - Refactored with Factory Pattern
         
         ProduceItemName = "Egg";
         ProduceCount = 1;
@@ -70,7 +70,7 @@ public:
         isHungry = false;
 
         texturePath = "assets/Animals/Chicken.png";
-        frameSize = cocos2d::Size(16, 16); // 鸡比较小
+        frameSize = cocos2d::Size(16, 16); // Chicken is smaller - Refactored with Factory Pattern
         initialRect = cocos2d::Rect(0, 0, 16, 16);
         scaleRange = {0.5f, 0.8f};
     }

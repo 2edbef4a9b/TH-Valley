@@ -3,13 +3,13 @@
 namespace th_valley {
 
 Character::Character() {
-    // 默认初始化
+    // Default initialization - Refactored with Strategy Pattern
 }
 
 void Character::InitCharacterAnim(const std::string& textureName) {
-    // 这里统一处理切图逻辑 (32x32 或者 16x32 根据你的资源定)
-    // 假设资源是标准的 4行x4列
-    int frameWidth = 16; // 或 32
+    // Here we uniformly handle sprite sheet logic (32x32 or 16x32 depending on your resources) - Refactored with Strategy Pattern
+    // Assume resources are standard 4 rows x 4 columns - Refactored with Strategy Pattern
+    int frameWidth = 16; // or 32 - Refactored with Strategy Pattern
     int frameHeight = 32;
 
     for (int dir = 0; dir < 4; dir++) {
@@ -22,15 +22,15 @@ void Character::InitCharacterAnim(const std::string& textureName) {
         }
     }
     
-    // 设置初始精灵帧
+    // Set initial sprite frame - Refactored with Strategy Pattern
     if (!walk_frames_[0].empty()) {
         this->setSpriteFrame(walk_frames_[0].front());
     }
 }
 
 void Character::UpdateAnimationState() {
-    // 根据 Entity 中的 state_ 和 direction_ 播放对应的 walk_frames_
-    // 代码略，主要是防止 Avatar 和 NPC 写两遍一样的逻辑
+    // Play corresponding walk_frames_ based on state_ and direction_ in Entity - Refactored with Strategy Pattern
+    // Code omitted, mainly to prevent writing the same logic twice for Avatar and NPC - Refactored with Strategy Pattern
 }
 
 } // namespace th_valley

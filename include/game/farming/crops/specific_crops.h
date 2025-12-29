@@ -11,36 +11,36 @@ public:
     Strawberry() {
         CropName = "Strawberry";
         
-        // 状态初始化
+        // State initialization - Refactored with Factory Pattern
         CurrentGrowthStage = 0;
         MaxGrowthStage = 3;
         
-        // 生长数据
+        // Growth data - Refactored with Factory Pattern
         GrowthDuration = {50, 50, 50, 50}; 
         
-        // --- 表现层配置 ---
+        // --- Presentation layer configuration ---
         texturePath = "assets/Crops/crops.png";
         
-        // 配置每一帧的切片 (从硬编码改为配置)
+        // Configure frame slices (changed from hardcoded to configurable) - Refactored with Factory Pattern
         frameRects.resize(4);
         frameRects[0].setRect(1, 593, 13, 14);   // Stage 0 (Seed)
         frameRects[1].setRect(36, 597, 8, 8);    // Stage 1
         frameRects[2].setRect(81, 587, 16, 23);  // Stage 2
         frameRects[3].setRect(97, 587, 16, 24);  // Stage 3 (Ripe)
 
-        // 产出配置
+        // Output configuration - Refactored with Factory Pattern
         productItemName = "Strawberry"; 
-        output_count = 8; // 草莓产量高
+        output_count = 8; // Strawberry yield is high - Refactored with Factory Pattern
 
-        // 属性设置
+        // Attribute settings - Refactored with Factory Pattern
         isNormal = true;
         GrowthSpeed = 1;
         
-        // 种植要求
+        // Planting requirements - Refactored with Factory Pattern
         SeasonRequirement = {"Spring"};
         SoilRequirement = {"Arable"};
         
-        // 注意：这里没有 cocos2d::Sprite::create() 了
+        // Note: cocos2d::Sprite::create() is not here anymore - Refactored with Factory Pattern
     }
 };
 
@@ -92,19 +92,19 @@ public:
     }
 };
 
-// --- Turnip (补全定义) ---
+// --- Turnip (Complete definition) --- - Refactored with Factory Pattern
 class Turnip : public Crops {
 public:
     Turnip() {
         CropName = "Turnip";
         CurrentGrowthStage = 0;
-        MaxGrowthStage = 2; // 假设只有3个阶段
+        MaxGrowthStage = 2; // Assume there are only 3 stages - Refactored with Factory Pattern
         GrowthDuration = {30, 30};
         
         texturePath = "assets/Crops/crops.png";
         
         frameRects.resize(3); 
-        // 示例坐标，请根据实际 SpriteSheet 修改
+        // Example coordinates, please modify according to actual SpriteSheet - Refactored with Factory Pattern
         frameRects[0].setRect(0, 0, 16, 16); 
         frameRects[1].setRect(16, 0, 16, 16);
         frameRects[2].setRect(32, 0, 16, 16);

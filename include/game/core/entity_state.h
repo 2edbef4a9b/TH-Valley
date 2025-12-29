@@ -14,7 +14,7 @@ struct Input {
     cocos2d::Vec2 clickPosition;
 };
 
-// --- 接口 Interface ---
+// --- Interface - Refactored with State Pattern ---
 class IEntityState {
 public:
     virtual ~IEntityState() = default;
@@ -24,7 +24,7 @@ public:
     virtual void HandleInput(Entity* entity, const Input& input) = 0;
 };
 
-// --- 1. 待机状态 (Idle) ---
+// --- 1. Standby State (Idle) - Refactored with State Pattern ---
 class IdleState : public IEntityState {
 public:
     void Enter(Entity* entity) override;
@@ -33,7 +33,7 @@ public:
     void HandleInput(Entity* entity, const Input& input) override;
 };
 
-// --- 2. 移动状态 (Move) ---
+// --- 2. Movement State (Move) - Refactored with State Pattern ---
 class MoveState : public IEntityState {
 public:
     void Enter(Entity* entity) override;
@@ -42,11 +42,11 @@ public:
     void HandleInput(Entity* entity, const Input& input) override;
 };
 
-// --- 3. 动作/攻击状态 (Action) ---
+// --- 3. Action/Attack State (Action) - Refactored with State Pattern ---
 class ActionState : public IEntityState {
 private:
-    float duration_timer_; // 记录动作持续时间
-    const float ACTION_DURATION = 0.5f; // 动作持续0.5秒
+    float duration_timer_; // Record action duration - Refactored with State Pattern
+    const float ACTION_DURATION = 0.5f; // Action duration 0.5 seconds - Refactored with State Pattern
 
 public:
     ActionState();

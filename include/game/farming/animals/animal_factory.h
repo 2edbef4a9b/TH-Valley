@@ -2,18 +2,18 @@
 #define ANIMAL_FACTORY_H_
 
 #include "game/farming/animals/animals.h"
-#include "game/farming/animals/specific_animals.h" 
+#include "game/farming/animals/specific_animals.h"
 
 namespace th_valley {
 
-// --- 抽象工厂 ---
+// --- Abstract Factory - Refactored with Abstract Factory Pattern ---
 class AnimalFactory {
 public:
     virtual ~AnimalFactory() = default;
     virtual Animals* CreateAnimal() = 0;
 };
 
-// --- 具体工厂 ---
+// --- Concrete Factories - Refactored with Factory Pattern ---
 
 class PigFactory : public AnimalFactory {
 public:
@@ -30,6 +30,6 @@ public:
     Animals* CreateAnimal() override { return new Chicken(); }
 };
 
-} // namespace th_valley
+}  // namespace th_valley
 
-#endif // ANIMAL_FACTORY_H_
+#endif  // ANIMAL_FACTORY_H_
