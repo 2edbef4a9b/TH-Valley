@@ -3,6 +3,7 @@
 
 #include "game/character.h" 
 #include "game/tool_strategies.h"
+#include <list>
 
 namespace th_valley {
 

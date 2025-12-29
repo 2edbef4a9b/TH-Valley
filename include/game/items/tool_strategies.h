@@ -3,6 +3,8 @@
 
 #include "cocos2d.h"
 #include "game/entity.h" // 需要用到 Direction 枚举
+#include <list>
+#include <string>
 
 namespace th_valley {
 
@@ -14,6 +16,17 @@ public:
     virtual ~IToolStrategy() = default;
     // 定义使用工具的通用接口
     virtual void Use(Avatar* user, cocos2d::Vec2 targetPos) = 0;
+
+    // --- Object Pool Pattern ---
+    // 静态池，供所有策略共享
+    static void CleanupPool(); // 清理池
+
+protected:
+    static cocos2d::Sprite* GetEffectSprite(const std::string& textureName, const cocos2d::Rect& rect);
+    static void ReturnEffectSprite(cocos2d::Sprite* sprite);
+
+private:
+    static std::list<cocos2d::Sprite*> effect_pool_;
 };
 
 // --- 具体策略：喷壶 ---
